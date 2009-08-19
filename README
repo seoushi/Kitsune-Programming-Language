@@ -1,0 +1,7 @@
+Kitsune is a simple prototype based programming language.
+
+Goals:
+Compiles to C for portability
+Reasonably Fast (within an order of magnitude times slower than C)
+Have fun creating a new programming language (fun)
+Has a good/complete standard library with a focus on games
