@@ -1,0 +1,16 @@
+sources = Split("""boolean.c
+					core.c
+					object.c
+					string.c""")
+
+CFLAGS = Split("""-ansi
+					-Wall""")
+
+LIBS = Split("""gc
+				""")
+
+
+
+Library('kitsune', sources,
+		LIBS = LIBS,
+		CFLAGS = CFLAGS)
