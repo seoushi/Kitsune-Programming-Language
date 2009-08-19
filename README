@@ -1,7 +1,21 @@
 Kitsune is a simple prototype based programming language.
 
 Goals:
+
 Compiles to C for portability
 Reasonably Fast (within an order of magnitude times slower than C)
 Have fun creating a new programming language (fun)
 Has a good/complete standard library with a focus on games
+
+
+
+Requirements:
+
+libgc -> http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+scons -> http://www.scons.org/
+
+
+Compiles on:
+
+Mac OS X 10.5 and libgc 7.1
+Ubuntu 9.04 and libgc 6.8
