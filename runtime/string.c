@@ -511,6 +511,7 @@ Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...)
 	char*				delimStr;
 	char*				tmpStr;
 	int					arraySize = 0;
+	int					curArrayIdx = 0;
 	int					i;
 	int					prevFind = 0;
 	Kitsune_Object**	array;
@@ -538,17 +539,25 @@ Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...)
 	{
 		if( strstr(&curStr[i], delimStr) == &curStr[i] )
 		{
-			/*
-			tmpStr = GC_MALLOC(sizeof(char) (i -  prevFind);
-			prevFind = i;
-			 i + strlen(delimStr)
+			tmpStr = (char*) GC_MALLOC(sizeof(char) * (i -  prevFind + 1));
+			strncpy(tmpStr, &curStr[prevFind], i - prevFind);
 			
+			prevFind = i + strlen(delimStr);
+			
+			array[curArrayIdx] = Kitsune_MakeString(tmpStr);
+			curArrayIdx++;
+
 			i += strlen(delimStr) - 1;
-			*/
 		}
 	}
 	
-	/*return NULL;*/
+	if(curArrayIdx < (arraySize - 1))
+	{
+		tmpStr = GC_MALLOC(sizeof(char) * (strlen(curStr) - prevFind + 1));
+		strncpy(tmpStr, &curStr[prevFind], strlen(curStr) - prevFind);
+	}
+	
+	return Kitsune_MakeArrayVec(arraySize, array);
 }
 
 Kitsune_Object* Kitsune_String_toString(Kitsune_Object* obj, ...)
