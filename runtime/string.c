@@ -37,6 +37,7 @@
 
 #include "object.h"
 #include "boolean.h"
+#include "integer.h"
 
 /****************************
  * function prototypes

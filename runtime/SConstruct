@@ -1,5 +1,6 @@
 sources = Split("""boolean.c
 					core.c
+					integer.c
 					object.c
 					string.c""")
 
