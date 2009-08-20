@@ -330,7 +330,7 @@ Kitsune_Object* Kitsune_String_replace(Kitsune_Object* obj, ...)
 	newLen = strlen(replaceStr);
 	oldLen = strlen(searchStr);
 	
-	for(i = 0; curStr[i] != '\0'; i++)
+	for(i = 0; curStr[i] != 0; i++)
 	{
 		if( strstr(&curStr[i], searchStr) == &curStr[i] )
 		{
@@ -354,7 +354,7 @@ Kitsune_Object* Kitsune_String_replace(Kitsune_Object* obj, ...)
 		else
 		{
 			newStr[i++] = *curStr++;
-			newStr[i] = '\0';
+			newStr[i] = 0;
 		}
 	}
 	
@@ -484,12 +484,71 @@ Kitsune_Object* Kitsune_String_append(Kitsune_Object* obj, ...)
 
 Kitsune_Object* Kitsune_String_subString(Kitsune_Object* obj, ...)
 {
-	return NULL;
+	va_list	args;
+	char*	curStr;
+	char*	newStr;
+	int		fromIdx;
+	int		toIdx;
+	int		length;
+	
+	va_start(args, obj);
+	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	fromIdx = (int)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-int-value");
+	toIdx = (int)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-int-value");
+	
+	length = toIdx - fromIdx;
+	newStr = (char*)GC_MALLOC(sizeof(char) * (length + 1));
+
+	strncpy(newStr, &curStr[fromIdx], length + 1);
+	
+	return Kitsune_MakeString(newStr);
 }
 
 Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...)
 {
-	return NULL;
+	va_list				args;
+	char*				curStr;
+	char*				delimStr;
+	char*				tmpStr;
+	int					arraySize = 0;
+	int					i;
+	int					prevFind = 0;
+	Kitsune_Object**	array;
+
+	
+	va_start(args, obj);
+	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	delimStr = (char*)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-string-value");
+	
+	
+	/* calculate the size of array */
+	for(i = 0; curStr[i] != 0; i++)
+	{
+		if( strstr(&curStr[i], delimStr) == &curStr[i] )
+		{
+			arraySize++;
+			i += strlen(delimStr) - 1;
+		}
+	}
+	
+	array = GC_MALLOC(sizeof(Kitsune_Object*) * arraySize);
+	
+	/* fill array */
+	for(i = 0; curStr[i] != 0; i++)
+	{
+		if( strstr(&curStr[i], delimStr) == &curStr[i] )
+		{
+			/*
+			tmpStr = GC_MALLOC(sizeof(char) (i -  prevFind);
+			prevFind = i;
+			 i + strlen(delimStr)
+			
+			i += strlen(delimStr) - 1;
+			*/
+		}
+	}
+	
+	/*return NULL;*/
 }
 
 Kitsune_Object* Kitsune_String_toString(Kitsune_Object* obj, ...)
