@@ -148,7 +148,7 @@ Kitsune_Object* Kitsune_Array_append(Kitsune_Object* obj, ...)
 
 	/* resize array */
 	GC_REALLOC(array, sizeof(Kitsune_Object*) * (arraySize + argArraySize));
-	Kitsune_SendMessage(obj, "set-value", "c-count-value", arraySize + argArraySize)
+	Kitsune_SendMessage(obj, "set-value", "c-count-value", arraySize + argArraySize);
 	
 	/* add new items from the argument */
 	for(i = arraySize; i < (arraySize + argArraySize); i++)
