@@ -63,7 +63,7 @@ bool Kitsune_InternString(Kitsune_Object* obj, char* string, unsigned int* resul
 Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 {
 	unsigned int	messageId;
-	Kitsune_Slot*		slot;	
+	Kitsune_Slot*	slot;	
 	Kitsune_Object*	curObj = obj;
 	va_list			args;
 	
