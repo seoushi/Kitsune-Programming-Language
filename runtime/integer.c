@@ -39,6 +39,7 @@
 #include "object.h"
 #include "boolean.h"
 #include "string.h"
+#include "float.h"
 
 
 /****************************
