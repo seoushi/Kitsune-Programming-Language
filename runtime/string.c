@@ -39,6 +39,7 @@
 #include "boolean.h"
 #include "integer.h"
 #include "float.h"
+#include "character.h"
 
 /****************************
  * function prototypes
@@ -112,9 +113,11 @@ Kitsune_Object* Kitsune_InitString()
 		Kitsune_SendMessage(obj, "set-method", "to-lower",		&Kitsune_String_toLower);
 		
 		Kitsune_SendMessage(obj, "set-method", "print",		&Kitsune_String_print);
-		Kitsune_SendMessage(obj, "set-method", "printLn",	&Kitsune_String_printLn);
+		Kitsune_SendMessage(obj, "set-method", "print-line",	&Kitsune_String_printLn);
 		
-		Kitsune_SendMessage(obj, "set-method", "append",		&Kitsune_String_append);
+		Kitsune_SendMessage(obj, "set-method", "++",		&Kitsune_String_append);
+		Kitsune_SendMessage(obj, "set-method", "append",	&Kitsune_String_append);
+		
 		Kitsune_SendMessage(obj, "set-method", "sub-string",	&Kitsune_String_subString);
 		Kitsune_SendMessage(obj, "set-method", "split",			&Kitsune_String_split);
 		
@@ -375,7 +378,7 @@ Kitsune_Object* Kitsune_String_toInteger(Kitsune_Object* obj, ...)
 {
 	char* string = (char*)Kitsune_SendMessage(obj, "c-string-value");
 	
-	return Kitsune_MakeFloat(atoi(string));
+	return Kitsune_MakeInteger(atoi(string));
 }
 
 Kitsune_Object* Kitsune_String_toFloat(Kitsune_Object* obj, ...)
