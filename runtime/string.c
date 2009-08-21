@@ -40,6 +40,7 @@
 #include "integer.h"
 #include "float.h"
 #include "character.h"
+#include "array.h"
 
 /****************************
  * function prototypes

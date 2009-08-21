@@ -105,7 +105,7 @@ Kitsune_Object* Kitsune_InitFloat()
 		Kitsune_SendMessage(obj, "set-method", "to-s",		&Kitsune_Float_toString);
 		Kitsune_SendMessage(obj, "set-method", "to-string",	&Kitsune_Float_toString);
 
-		/* add integer value */
+		/* add float value */
 		tmpFloat = (float*)GC_MALLOC( sizeof(float) );
 		(*tmpFloat) = 0;
 		Kitsune_SendMessage(obj, "set-value", "c-float-value", tmpFloat);

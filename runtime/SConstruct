@@ -1,4 +1,5 @@
-sources = Split("""boolean.c
+sources = Split("""array.c
+					boolean.c
 					character.c
 					core.c
 					float.c

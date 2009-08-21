@@ -95,7 +95,7 @@ Kitsune_Object* Kitsune_InitCharacter()
 		Kitsune_SendMessage(obj, "set-method", "to-s",		&Kitsune_Character_toString);
 		Kitsune_SendMessage(obj, "set-method", "to-string",	&Kitsune_Character_toString);
 
-		/* add string value */
+		/* add character value */
 		Kitsune_SendMessage(obj, "set-value", "c-char-value", 0);
 	}
 		
