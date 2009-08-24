@@ -46,29 +46,29 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_String_isEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_isGreaterThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_isLessThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_isGreaterThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_isLessThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_isNotEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_length(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_charAt(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_includes(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_reverse(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_replace(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_remove(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_toInteger(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_toFloat(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_capitalize(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_toUpper(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_toLower(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_print(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_printLn(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_append(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_subString(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_String_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_String_isEqual(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_isGreaterThan(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_isLessThan(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_isNotEqual(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_length(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_charAt(Kitsune_Object* self, Kitsune_Object* index);
+Kitsune_Object* Kitsune_String_includes(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_reverse(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_replace(Kitsune_Object* self, Kitsune_Object* search, Kitsune_Object* replacement);
+Kitsune_Object* Kitsune_String_remove(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_toInteger(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_toFloat(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_capitalize(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_toUpper(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_toLower(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_print(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_printLn(Kitsune_Object* self);
+Kitsune_Object* Kitsune_String_append(Kitsune_Object* self, Kitsune_Object* string);
+Kitsune_Object* Kitsune_String_subString(Kitsune_Object* self, Kitsune_Object* startIndex, Kitsune_Object* endIndex);
+Kitsune_Object* Kitsune_String_split(Kitsune_Object* self, Kitsune_Object* delimiter);
+Kitsune_Object* Kitsune_String_toString(Kitsune_Object* self);
 
 /****************************
  * end prototypes
@@ -143,17 +143,10 @@ Kitsune_Object* Kitsune_MakeString(char* string)
 }
 
 
-Kitsune_Object* Kitsune_String_isEqual(Kitsune_Object* obj, ...)
-{
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) == 0)
+Kitsune_Object* Kitsune_String_isEqual(Kitsune_Object* self, Kitsune_Object* string)
+{	
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) == 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -162,17 +155,10 @@ Kitsune_Object* Kitsune_String_isEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_isGreaterThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_isGreaterThan(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) > 0)
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) > 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -181,17 +167,10 @@ Kitsune_Object* Kitsune_String_isGreaterThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_isLessThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_isLessThan(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) < 0)
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) < 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -200,17 +179,10 @@ Kitsune_Object* Kitsune_String_isLessThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) >= 0)
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) >= 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -219,17 +191,10 @@ Kitsune_Object* Kitsune_String_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_isLessThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) <= 0)
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) <= 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -238,17 +203,10 @@ Kitsune_Object* Kitsune_String_isLessThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_isNotEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_isNotEqual(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strcmp( (char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value") ) != 0)
+	if(strcmp( (char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value") ) != 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -257,36 +215,24 @@ Kitsune_Object* Kitsune_String_isNotEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_String_length(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_length(Kitsune_Object* self)
 {
-	return Kitsune_MakeInteger(strlen((char*)Kitsune_SendMessage(obj, "c-string-value")));
+	return Kitsune_MakeInteger(strlen((char*)Kitsune_SendMessage(self, "c-string-value")));
 }
 
-Kitsune_Object* Kitsune_String_charAt(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_charAt(Kitsune_Object* self, Kitsune_Object* _index)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	int 			index;
+	int index = (int)Kitsune_SendMessage(_index, "c-integer-value");
 	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	index = (int)Kitsune_SendMessage(argObj, "c-integer-value");
-	
-	return Kitsune_MakeCharacter( ((char*)Kitsune_SendMessage(obj, "c-string-value"))[index]);
+	return Kitsune_MakeCharacter( ((char*)Kitsune_SendMessage(self, "c-string-value"))[index]);
 }
 
-Kitsune_Object* Kitsune_String_includes(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_includes(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if(strstr(	(char*)Kitsune_SendMessage(obj, "c-string-value"), 
-				(char*)Kitsune_SendMessage(argObj, "c-string-value")) != 0)
+	if(strstr(	(char*)Kitsune_SendMessage(self, "c-string-value"), 
+				(char*)Kitsune_SendMessage(string, "c-string-value")) != 0)
 	{
 		return Kitsune_MakeBoolean(true);
 	}			
@@ -294,14 +240,15 @@ Kitsune_Object* Kitsune_String_includes(Kitsune_Object* obj, ...)
 	return Kitsune_MakeBoolean(false);
 }
 
-Kitsune_Object* Kitsune_String_reverse(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_reverse(Kitsune_Object* self)
 {
 	int 	pos;
 	int		idx;
 	char*	curStr;
 	char*	newStr;
 	
-	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
 	newStr = (char*)GC_MALLOC( sizeof(char) * (strlen(curStr) + 1));
 	newStr[strlen(curStr)] = 0;
 	idx = 0;
@@ -315,22 +262,17 @@ Kitsune_Object* Kitsune_String_reverse(Kitsune_Object* obj, ...)
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_replace(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_replace(Kitsune_Object* self, Kitsune_Object* search, Kitsune_Object* replacement)
 {
-	va_list			args;
-	char*			searchStr;
-	char*			replaceStr;
-	char*			curStr;
-	char*			newStr;
-	int				i;
-	int				count = 0;
-	size_t			newLen;
-	size_t			oldLen;
-	
-	va_start(args, obj);
-	searchStr = (char*)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-string-value");
-	replaceStr = (char*)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-string-value");
-	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char*	searchStr = (char*)Kitsune_SendMessage(search, "c-string-value");
+	char*	replaceStr = (char*)Kitsune_SendMessage(replacement, "c-string-value");
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
+	char*	newStr;
+	int		i;
+	int		count = 0;
+	size_t	newLen;
+	size_t	oldLen;
 	
 	/* calculate the size of the new string */
 	newLen = strlen(replaceStr);
@@ -367,31 +309,32 @@ Kitsune_Object* Kitsune_String_replace(Kitsune_Object* obj, ...)
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_remove(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_remove(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list args;
-	va_start(args, obj);
-	
-	return Kitsune_String_replace(obj, va_arg(args, Kitsune_Object*), Kitsune_MakeString(""));
+	return Kitsune_String_replace(self, string, Kitsune_MakeString(""));
 }
 
-Kitsune_Object* Kitsune_String_toInteger(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_toInteger(Kitsune_Object* self)
 {
-	char* string = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char* string = (char*)Kitsune_SendMessage(self, "c-string-value");
 	
 	return Kitsune_MakeInteger(atoi(string));
 }
 
-Kitsune_Object* Kitsune_String_toFloat(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_toFloat(Kitsune_Object* self)
 {
-	char* string = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char* string = (char*)Kitsune_SendMessage(self, "c-string-value");
 	
 	return Kitsune_MakeFloat(atof(string));
 }
 
-Kitsune_Object* Kitsune_String_capitalize(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_capitalize(Kitsune_Object* self)
 {
-	char*	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
 	int		i;
 	char*	newStr;
 	
@@ -412,9 +355,10 @@ Kitsune_Object* Kitsune_String_capitalize(Kitsune_Object* obj, ...)
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_toUpper(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_toUpper(Kitsune_Object* self)
 {
-	char*	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
 	int		i;
 	char*	newStr;
 	
@@ -432,9 +376,10 @@ Kitsune_Object* Kitsune_String_toUpper(Kitsune_Object* obj, ...)
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_toLower(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_toLower(Kitsune_Object* self)
 {
-	char*	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
 	int		i;
 	char*	newStr;
 	
@@ -452,80 +397,63 @@ Kitsune_Object* Kitsune_String_toLower(Kitsune_Object* obj, ...)
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_print(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_print(Kitsune_Object* self)
 {
-	char* string = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char* string = (char*)Kitsune_SendMessage(self, "c-string-value");
 
 	printf("%s",string);
 	
 	return NULL;
 }
 
-Kitsune_Object* Kitsune_String_printLn(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_printLn(Kitsune_Object* self)
 {
-	char* string = (char*)Kitsune_SendMessage(obj, "c-string-value");
+	char* string = (char*)Kitsune_SendMessage(self, "c-string-value");
 
 	printf("%s\n", string);
 	
 	return NULL;
 }
 
-Kitsune_Object* Kitsune_String_append(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_append(Kitsune_Object* self, Kitsune_Object* string)
 {
-	va_list	args;
-	char*	newStr;
-	char*	appendingString;
-	char*	curStr;
-	
-	va_start(args, obj);
-	appendingString = (char*)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-string-value");
-	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
-	
-	newStr = (char*)GC_MALLOC(sizeof(char) * (strlen(curStr) + strlen(appendingString) + 1));
+	char*	appendingString = (char*)Kitsune_SendMessage(string, "c-string-value");
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
+	char*	newStr = (char*)GC_MALLOC(sizeof(char) * (strlen(curStr) + strlen(appendingString) + 1));
+
 	strcpy(newStr, curStr);
 	newStr = strcat(newStr, appendingString);
 	
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_subString(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_String_subString(Kitsune_Object* self, Kitsune_Object* startIndex, Kitsune_Object* endIndex)
 {
-	va_list	args;
-	char*	curStr;
-	char*	newStr;
-	int		fromIdx;
-	int		toIdx;
-	int		length;
-	
-	va_start(args, obj);
-	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
-	fromIdx = (int)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-int-value");
-	toIdx = (int)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-int-value");
-	
-	length = toIdx - fromIdx;
-	newStr = (char*)GC_MALLOC(sizeof(char) * (length + 1));
+	char*	curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
+	int		fromIdx = (int)Kitsune_SendMessage(startIndex, "c-int-value");
+	int		toIdx = (int)Kitsune_SendMessage(endIndex, "c-int-value");
+	int		length = toIdx - fromIdx;
+	char*	newStr = (char*)GC_MALLOC(sizeof(char) * (length + 1));
 
 	strncpy(newStr, &curStr[fromIdx], length + 1);
 	
 	return Kitsune_MakeString(newStr);
 }
 
-Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_split(Kitsune_Object* self, Kitsune_Object* delimiter)
 {
-	va_list				args;
-	char*				curStr;
-	char*				delimStr;
+	char*				curStr = (char*)Kitsune_SendMessage(self, "c-string-value");
+	char*				delimStr = (char*)Kitsune_SendMessage(delimiter, "c-string-value");
 	char*				tmpStr;
 	int					arraySize = 0;
 	int					curArrayIdx = 0;
 	int					i;
 	int					prevFind = 0;
 	Kitsune_Object**	array;
-
-	
-	va_start(args, obj);
-	curStr = (char*)Kitsune_SendMessage(obj, "c-string-value");
-	delimStr = (char*)Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "c-string-value");
 	
 	
 	/* calculate the size of array */
@@ -566,8 +494,8 @@ Kitsune_Object* Kitsune_String_split(Kitsune_Object* obj, ...)
 	return Kitsune_MakeArrayVec(arraySize, array);
 }
 
-Kitsune_Object* Kitsune_String_toString(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_String_toString(Kitsune_Object* self)
 {
-	return obj;
+	return self;
 }
 
