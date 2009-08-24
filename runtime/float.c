@@ -46,21 +46,21 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Float_isEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_isGreaterThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_isLessThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_isGreaterThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_isLessThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_isNotEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_add(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_sub(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_div(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_mul(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_pow(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_sqrt(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_toFloat(Kitsune_Object* obj, ...);	
-Kitsune_Object* Kitsune_Float_toInteger(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Float_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Float_isEqual(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_isGreaterThan(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_isLessThan(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_isNotEqual(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_add(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_sub(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_div(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_mul(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_pow(Kitsune_Object* self, Kitsune_Object* floatValue);
+Kitsune_Object* Kitsune_Float_sqrt(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Float_toFloat(Kitsune_Object* self);	
+Kitsune_Object* Kitsune_Float_toInteger(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Float_toString(Kitsune_Object* self);
 
 /****************************
  * end prototypes
@@ -127,15 +127,13 @@ Kitsune_Object* Kitsune_MakeFloat(float floatingPoint)
 }
 
 
-Kitsune_Object* Kitsune_Float_isEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isEqual(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) == (*argValue))
 	{
@@ -146,15 +144,13 @@ Kitsune_Object* Kitsune_Float_isEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_isGreaterThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isGreaterThan(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) > (*argValue))
 	{
@@ -165,15 +161,13 @@ Kitsune_Object* Kitsune_Float_isGreaterThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_isLessThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isLessThan(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) < (*argValue))
 	{
@@ -184,15 +178,13 @@ Kitsune_Object* Kitsune_Float_isLessThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) >= (*argValue))
 	{
@@ -203,15 +195,13 @@ Kitsune_Object* Kitsune_Float_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_isLessThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) <= (*argValue))
 	{
@@ -222,15 +212,13 @@ Kitsune_Object* Kitsune_Float_isLessThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_isNotEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_isNotEqual(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	if((*selfValue) != (*argValue))
 	{
@@ -241,101 +229,91 @@ Kitsune_Object* Kitsune_Float_isNotEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Float_add(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_add(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	return Kitsune_MakeFloat((*selfValue) + (*argValue));
 }
 
 
-Kitsune_Object* Kitsune_Float_sub(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_sub(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	return Kitsune_MakeFloat((*selfValue) - (*argValue));
 }
 
 
-Kitsune_Object* Kitsune_Float_div(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_div(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	return Kitsune_MakeFloat((*selfValue) / (*argValue));
 }
 
 
-Kitsune_Object* Kitsune_Float_mul(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_mul(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	return Kitsune_MakeFloat((*selfValue) * (*argValue));
 }
 
 
-Kitsune_Object* Kitsune_Float_pow(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_pow(Kitsune_Object* self, Kitsune_Object* floatValue)
 {
-	va_list	args;
 	float*	argValue;
 	float*	selfValue;
 	
-	va_start(args, obj);
-	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-f"), "c-float-value");
-	selfValue = (float*)Kitsune_SendMessage(obj, "c-float-value");
+	argValue = (float*)Kitsune_SendMessage(Kitsune_SendMessage(floatValue, "to-f"), "c-float-value");
+	selfValue = (float*)Kitsune_SendMessage(self, "c-float-value");
 	
 	return Kitsune_MakeFloat( pow((*selfValue), (*argValue)) );
 }
 
 
-Kitsune_Object* Kitsune_Float_sqrt(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_sqrt(Kitsune_Object* self)
 {	
-	return Kitsune_MakeFloat(sqrtf( (*(float*)Kitsune_SendMessage(obj, "c-float-value"))));
+	return Kitsune_MakeFloat(sqrtf( (*(float*)Kitsune_SendMessage(self, "c-float-value"))));
 }
 
 
-Kitsune_Object* Kitsune_Float_toFloat(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_toFloat(Kitsune_Object* self)
 {
-	return obj;
+	return self;
 }
 
 
-Kitsune_Object* Kitsune_Float_toInteger(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_toInteger(Kitsune_Object* self)
 {
-	return Kitsune_MakeInteger((*(float*)Kitsune_SendMessage(obj, "c-float-value")));
+	return Kitsune_MakeInteger((*(float*)Kitsune_SendMessage(self, "c-float-value")));
 }
 
 
-Kitsune_Object* Kitsune_Float_toString(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Float_toString(Kitsune_Object* self)
 {
 	char 	buffer[128];
 	int		strSize;
 	char*	finalStr;
 	
-	strSize = sprintf(buffer, "%f", (*(float*)Kitsune_SendMessage(obj, "c-float-value")));
+	strSize = sprintf(buffer, "%f", (*(float*)Kitsune_SendMessage(self, "c-float-value")));
 	
 	finalStr = GC_MALLOC(sizeof(char) * (strSize + 1) );
 	strncpy(finalStr, buffer, strSize + 1);

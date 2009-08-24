@@ -45,17 +45,17 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Character_isEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_isGreaterThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_isLessThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_isGreaterThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_isLessThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_isNotEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_toUpper(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_toLower(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_toInteger(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_toFloat(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Character_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Character_isEqual(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_isGreaterThan(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_isLessThan(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_isNotEqual(Kitsune_Object* self, Kitsune_Object* character);
+Kitsune_Object* Kitsune_Character_toUpper(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Character_toLower(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Character_toInteger(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Character_toFloat(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Character_toString(Kitsune_Object* self);
 
 /****************************
  * end prototypes
@@ -113,16 +113,9 @@ Kitsune_Object* Kitsune_MakeCharacter(char character)
 }
 
 
-Kitsune_Object* Kitsune_Character_isEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isEqual(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) == ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) == ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -131,16 +124,9 @@ Kitsune_Object* Kitsune_Character_isEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_isGreaterThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isGreaterThan(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) > ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) > ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -149,16 +135,9 @@ Kitsune_Object* Kitsune_Character_isGreaterThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_isLessThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isLessThan(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) < ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) < ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -167,16 +146,9 @@ Kitsune_Object* Kitsune_Character_isLessThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) >= ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) >= ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -185,16 +157,9 @@ Kitsune_Object* Kitsune_Character_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_isLessThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) <= ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) <= ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -203,16 +168,9 @@ Kitsune_Object* Kitsune_Character_isLessThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_isNotEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_isNotEqual(Kitsune_Object* self, Kitsune_Object* character)
 {
-	va_list			args;
-	Kitsune_Object*	argObj;
-	
-	va_start(args, obj);
-	argObj = va_arg(args, Kitsune_Object*);
-	
-	
-	if( ((int)Kitsune_SendMessage(obj, "c-char-value")) != ((int)Kitsune_SendMessage(argObj, "c-char-value")))
+	if( ((int)Kitsune_SendMessage(self, "c-char-value")) != ((int)Kitsune_SendMessage(character, "c-char-value")))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -221,9 +179,9 @@ Kitsune_Object* Kitsune_Character_isNotEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_toUpper(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_toUpper(Kitsune_Object* self)
 {
-	int	curChar = (int)Kitsune_SendMessage(obj, "c-char-value");
+	int	curChar = (int)Kitsune_SendMessage(self, "c-char-value");
 	
 	if( (curChar >= 'a') && (curChar <= 'z') )
 	{
@@ -234,9 +192,9 @@ Kitsune_Object* Kitsune_Character_toUpper(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_toLower(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_toLower(Kitsune_Object* self)
 {
-	int	curChar = (int)Kitsune_SendMessage(obj, "c-char-value");
+	int	curChar = (int)Kitsune_SendMessage(self, "c-char-value");
 	
 	if( (curChar >= 'A') && (curChar <= 'Z') )
 	{
@@ -247,21 +205,21 @@ Kitsune_Object* Kitsune_Character_toLower(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Character_toInteger(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_toInteger(Kitsune_Object* self)
 {
-	return Kitsune_MakeInteger((int)Kitsune_SendMessage(obj, "c-char-value"));
+	return Kitsune_MakeInteger((int)Kitsune_SendMessage(self, "c-char-value"));
 }
 
 
-Kitsune_Object* Kitsune_Character_toFloat(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_toFloat(Kitsune_Object* self)
 {
-	return Kitsune_MakeFloat((int)Kitsune_SendMessage(obj, "c-char-value"));
+	return Kitsune_MakeFloat((int)Kitsune_SendMessage(self, "c-char-value"));
 }
 
 
-Kitsune_Object* Kitsune_Character_toString(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Character_toString(Kitsune_Object* self)
 {
-	int		curChar = (int)Kitsune_SendMessage(obj, "c-char-value");
+	int		curChar = (int)Kitsune_SendMessage(self, "c-char-value");
 	char*	newStr = (char*) GC_MALLOC(sizeof(char) * 2);
 	
 	newStr[0] = (char)curChar;

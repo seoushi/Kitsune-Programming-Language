@@ -42,16 +42,16 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Array_at(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_append(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_slice(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_clear(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_removeLast(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_count(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_add(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_set(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Array_each(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Array_at(Kitsune_Object* self, Kitsune_Object* index);
+Kitsune_Object* Kitsune_Array_append(Kitsune_Object* self, Kitsune_Object* array);
+Kitsune_Object* Kitsune_Array_slice(Kitsune_Object* self, Kitsune_Object* startIndex, Kitsune_Object* endIndex);
+Kitsune_Object* Kitsune_Array_clear(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* self, Kitsune_Object* index);
+Kitsune_Object* Kitsune_Array_removeLast(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Array_count(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Array_add(Kitsune_Object* self, Kitsune_Object* object);
+Kitsune_Object* Kitsune_Array_set(Kitsune_Object* obj, Kitsune_Object* index, Kitsune_Object* value);
+Kitsune_Object* Kitsune_Array_each(Kitsune_Object* obj, Kitsune_FunctionPtr	function);
 
 /****************************
  * end prototypes
@@ -115,40 +115,26 @@ Kitsune_Object* Kitsune_MakeArrayVec(int size, Kitsune_Object** objects)
 }
 
 
-Kitsune_Object* Kitsune_Array_at(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_at(Kitsune_Object* self, Kitsune_Object* _index)
 {
-	va_list				args;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int					index;
-	
-	va_start(args, obj);
-	index = (int)Kitsune_SendMessage( Kitsune_SendMessage((Kitsune_Object*)va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
+	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	int					index = (int)Kitsune_SendMessage(Kitsune_SendMessage(_index, "to-i"), "c-integer-value");
 	
 	return array[index];
 }
 
 
-Kitsune_Object* Kitsune_Array_append(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_append(Kitsune_Object* self, Kitsune_Object* _array)
 {
-	va_list				args;
-	Kitsune_Object*		arg;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	Kitsune_Object**	argArray;
+	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	Kitsune_Object**	argArray = (Kitsune_Object**)Kitsune_SendMessage(_array, "c-array-value");
 	int					i;
-	int					arraySize;
-	int					argArraySize;
-	
-	va_start(args, obj);
-	arg = va_arg(args, Kitsune_Object*);
-	
-	argArray = (Kitsune_Object**)Kitsune_SendMessage(arg, "c-array-value");
-	
-	arraySize = (int)Kitsune_SendMessage(obj, "c-count-value");
-	argArraySize = (int)Kitsune_SendMessage(arg, "c-count-value");
+	int					arraySize = (int)Kitsune_SendMessage(self, "c-count-value");
+	int					argArraySize = (int)Kitsune_SendMessage(_array, "c-count-value");
 
 	/* resize array */
 	GC_REALLOC(array, sizeof(Kitsune_Object*) * (arraySize + argArraySize));
-	Kitsune_SendMessage(obj, "set-value", "c-count-value", arraySize + argArraySize);
+	Kitsune_SendMessage(self, "set-value", "c-count-value", arraySize + argArraySize);
 	
 	/* add new items from the argument */
 	for(i = arraySize; i < (arraySize + argArraySize); i++)
@@ -160,23 +146,15 @@ Kitsune_Object* Kitsune_Array_append(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Array_slice(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_slice(Kitsune_Object* self, Kitsune_Object* _startIndex, Kitsune_Object* _endIndex)
 {
-	va_list				args;
-	int					startIndex;
-	int					endIndex;
-	int					newArraySize;
-	Kitsune_Object**	curArray = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	Kitsune_Object**	newArray;
+	int					startIndex = (int)Kitsune_SendMessage(Kitsune_SendMessage(_startIndex, "to-i"), "c-integer-value");
+	int					endIndex = (int)Kitsune_SendMessage(Kitsune_SendMessage(_endIndex, "to-i"), "c-integer-value");
+	int					newArraySize = endIndex - startIndex;
+	Kitsune_Object**	curArray = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	Kitsune_Object**	newArray = GC_MALLOC(sizeof(Kitsune_Object*) * newArraySize);
 	int					i;
 	
-	va_start(args, obj);
-	startIndex = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	endIndex = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	newArraySize = endIndex - startIndex;
-	
-	/* make new array */
-	newArray = GC_MALLOC(sizeof(Kitsune_Object*) * newArraySize);
 	
 	/* 'copy' items to the new array */
 	for(i = startIndex; i <= endIndex; i++)
@@ -188,25 +166,21 @@ Kitsune_Object* Kitsune_Array_slice(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Array_clear(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_clear(Kitsune_Object* self)
 {
-	Kitsune_SendMessage(obj, "set-value", "c-array-value", 0);
-	Kitsune_SendMessage(obj, "set-value", "c-count-value", 0);
+	Kitsune_SendMessage(self, "set-value", "c-array-value", 0);
+	Kitsune_SendMessage(self, "set-value", "c-count-value", 0);
 	
 	return NULL;
 }
 
 
-Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* self, Kitsune_Object* _index)
 {
-	va_list				args;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int					arraySize = (int)Kitsune_SendMessage(obj, "c-count-value");
-	int					index;
+	Kitsune_Object**	array 		= (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	int					arraySize	= (int)Kitsune_SendMessage(self, "c-count-value");
+	int					index		= (int)Kitsune_SendMessage(Kitsune_SendMessage(_index, "to-i"), "c-integer-value");
 	int					i;
-	
-	va_start(args, obj);
-	index = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
 	
 	
 	/* shift everything up one */
@@ -219,7 +193,7 @@ Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* obj, ...)
 	
 	/* add change count */
 	arraySize--;
-	(int)Kitsune_SendMessage(obj, "set-value", "c-count-value", arraySize);
+	(int)Kitsune_SendMessage(self, "set-value", "c-count-value", arraySize);
 	
 	
 	/* resize array */
@@ -229,84 +203,65 @@ Kitsune_Object* Kitsune_Array_remove(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Array_removeLast(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_removeLast(Kitsune_Object* self)
 {
-	Kitsune_Object** 	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int 				count = (int)Kitsune_SendMessage(obj, "c-count-value");
+	Kitsune_Object** 	array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	int 				count = (int)Kitsune_SendMessage(self, "c-count-value");
 	
 	/* resize array */
 	count--;
 	array[count] = 0;
 
 	GC_REALLOC(array, sizeof(Kitsune_Object*) * count);	
-	Kitsune_SendMessage(obj, "set-value", "c-count-value", count);
+	Kitsune_SendMessage(self, "set-value", "c-count-value", count);
 	
 	return NULL;
 }
 
 
-Kitsune_Object* Kitsune_Array_count(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_count(Kitsune_Object* self)
 {
-	return Kitsune_MakeInteger((int)Kitsune_SendMessage(obj, "c-count-value"));
+	return Kitsune_MakeInteger((int)Kitsune_SendMessage(self, "c-count-value"));
 }
 
 
-Kitsune_Object* Kitsune_Array_add(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_add(Kitsune_Object* self, Kitsune_Object* object)
 {
-	va_list				args;
-	Kitsune_Object*		arg;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int					arraySize = (int)Kitsune_SendMessage(obj, "c-count-value");
-	
-	va_start(args, obj);
-	arg = va_arg(args, Kitsune_Object*);
-	
-	
+	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	int					arraySize = (int)Kitsune_SendMessage(self, "c-count-value");
+
 	/* resize array */
 	arraySize++;
 	GC_REALLOC(array, sizeof(Kitsune_Object*) * arraySize);
 
 	/* add object and change count */
-	array[arraySize - 1] = arg;
-	(int)Kitsune_SendMessage(obj, "set-value", "c-count-value", arraySize);
+	array[arraySize - 1] = object;
+	(int)Kitsune_SendMessage(self, "set-value", "c-count-value", arraySize);
 	
 	return NULL;
 }
 
 
-Kitsune_Object* Kitsune_Array_set(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_set(Kitsune_Object* self, Kitsune_Object* index, Kitsune_Object* value)
 {
-	va_list				args;
-	Kitsune_Object*		arg;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int					index;
+	Kitsune_Object** array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
 	
-	va_start(args, obj);
-	index = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	arg = va_arg(args, Kitsune_Object*);
-
-	
-	array[index] = arg;
+	array[ (int)Kitsune_SendMessage(Kitsune_SendMessage(index, "to-i"), "c-integer-value") ] = value;
 	
 	return NULL;
 }
 
 
-Kitsune_Object* Kitsune_Array_each(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Array_each(Kitsune_Object* self, Kitsune_FunctionPtr function)
 {
-	va_list				args;
-	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(obj, "c-array-value");
-	int					arraySize = (int)Kitsune_SendMessage(obj, "c-count-value");
+	Kitsune_Object**	array = (Kitsune_Object**)Kitsune_SendMessage(self, "c-array-value");
+	int					arraySize = (int)Kitsune_SendMessage(self, "c-count-value");
 	int					i;
-	Kitsune_FunctionPtr	function;
-	
-	va_start(args, obj);
-	function = va_arg(args, Kitsune_FunctionPtr);
-	
+
 	
 	for(i = 0; i < arraySize; i++)
 	{
-		function(obj, array[i]);
+		function(self, array[i]);
 	}
 	
 	return NULL;

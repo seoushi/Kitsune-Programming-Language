@@ -42,12 +42,12 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Boolean_isEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Boolean_isNotEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Boolean_and(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Boolean_or(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Boolean_not(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Boolean_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Boolean_isEqual(Kitsune_Object* self, Kitsune_Object* boolean);
+Kitsune_Object* Kitsune_Boolean_isNotEqual(Kitsune_Object* self, Kitsune_Object* boolean);
+Kitsune_Object* Kitsune_Boolean_and(Kitsune_Object* self, Kitsune_Object* boolean);
+Kitsune_Object* Kitsune_Boolean_or(Kitsune_Object* self, Kitsune_Object* boolean);
+Kitsune_Object* Kitsune_Boolean_not(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Boolean_toString(Kitsune_Object* self);
 
 /****************************
  * end prototypes
@@ -98,17 +98,9 @@ Kitsune_Object* Kitsune_MakeBoolean(bool value)
 }
 
 	
-Kitsune_Object* Kitsune_Boolean_isEqual(Kitsune_Object* obj, ...)
-{
-	va_list				args;
-	Kitsune_Object*		boolArg;
-	
-	
-	va_start(args, obj);
-	boolArg = va_arg(args, Kitsune_Object*);
-	
-	
-	if(Kitsune_SendMessage(obj, "c-bool-value") == Kitsune_SendMessage(boolArg, "c-bool-value"))
+Kitsune_Object* Kitsune_Boolean_isEqual(Kitsune_Object* self, Kitsune_Object* boolean)
+{	
+	if(Kitsune_SendMessage(self, "c-bool-value") == Kitsune_SendMessage(boolean, "c-bool-value"))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -116,17 +108,9 @@ Kitsune_Object* Kitsune_Boolean_isEqual(Kitsune_Object* obj, ...)
 	return Kitsune_MakeBoolean(false);
 }
 
-Kitsune_Object* Kitsune_Boolean_isNotEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Boolean_isNotEqual(Kitsune_Object* self, Kitsune_Object* boolean)
 {
-	va_list				args;
-	Kitsune_Object*		boolArg;
-	
-	
-	va_start(args, obj);
-	boolArg = va_arg(args, Kitsune_Object*);
-	
-	
-	if(Kitsune_SendMessage(obj, "c-bool-value") != Kitsune_SendMessage(boolArg, "c-bool-value"))
+	if(Kitsune_SendMessage(self, "c-bool-value") != Kitsune_SendMessage(boolean, "c-bool-value"))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -134,17 +118,9 @@ Kitsune_Object* Kitsune_Boolean_isNotEqual(Kitsune_Object* obj, ...)
 	return Kitsune_MakeBoolean(false);
 }
 
-Kitsune_Object* Kitsune_Boolean_and(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Boolean_and(Kitsune_Object* self, Kitsune_Object* boolean)
 {
-	va_list				args;
-	Kitsune_Object*		boolArg;
-	
-	
-	va_start(args, obj);
-	boolArg = va_arg(args, Kitsune_Object*);
-	
-	
-	if(Kitsune_SendMessage(obj, "c-bool-value") && Kitsune_SendMessage(boolArg, "c-bool-value"))
+	if(Kitsune_SendMessage(self, "c-bool-value") && Kitsune_SendMessage(boolean, "c-bool-value"))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -152,17 +128,9 @@ Kitsune_Object* Kitsune_Boolean_and(Kitsune_Object* obj, ...)
 	return Kitsune_MakeBoolean(false);
 }
 
-Kitsune_Object* Kitsune_Boolean_or(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Boolean_or(Kitsune_Object* self, Kitsune_Object* boolean)
 {
-	va_list				args;
-	Kitsune_Object*		boolArg;
-	
-	
-	va_start(args, obj);
-	boolArg = va_arg(args, Kitsune_Object*);
-	
-	
-	if(Kitsune_SendMessage(obj, "c-bool-value") || Kitsune_SendMessage(boolArg, "c-bool-value"))
+	if(Kitsune_SendMessage(self, "c-bool-value") || Kitsune_SendMessage(boolean, "c-bool-value"))
 	{
 		return Kitsune_MakeBoolean(true);
 	}
@@ -170,14 +138,16 @@ Kitsune_Object* Kitsune_Boolean_or(Kitsune_Object* obj, ...)
 	return Kitsune_MakeBoolean(false);
 }
 
-Kitsune_Object* Kitsune_Boolean_not(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_Boolean_not(Kitsune_Object* self)
 {
-	return Kitsune_MakeBoolean(!Kitsune_SendMessage(obj, "c-bool-value"));
+	return Kitsune_MakeBoolean(!Kitsune_SendMessage(self, "c-bool-value"));
 }
 
-Kitsune_Object* Kitsune_Boolean_toString(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_Boolean_toString(Kitsune_Object* self)
 {
-	if(Kitsune_SendMessage(obj, "c-bool-value"))
+	if(Kitsune_SendMessage(self, "c-bool-value"))
 	{
 		return Kitsune_MakeString("true");
 	}
