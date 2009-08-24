@@ -82,7 +82,7 @@ Kitsune_Object* Kitsune_InitObject()
 		obj->numSlots = 0;
 		
 		/* add set method directly so we can use it */
-		Kitsune_Object_setMethod(obj, "set-method", &Kitsune_Object_setMethod);		
+		Kitsune_Object_setMethod(obj, "set-method", (Kitsune_FunctionPtr)&Kitsune_Object_setMethod);
 			
 		/*	add methods	*/
 		Kitsune_SendMessage(obj, "set-method", "has-slot",	&Kitsune_Object_hasSlot);
