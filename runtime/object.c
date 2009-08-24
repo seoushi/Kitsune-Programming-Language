@@ -43,12 +43,12 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Object_hasSlot(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Object_clone(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Object_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Object_hasSlot(Kitsune_Object* self, char* slotName);
+Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* self, char* methodName, Kitsune_FunctionPtr method);
+Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* self, char* valueName, Kitsune_Object* value);
+Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* self, char* slotName);
+Kitsune_Object* Kitsune_Object_clone(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Object_toString(Kitsune_Object* self);
 	
 /****************************
  * end prototypes
@@ -82,8 +82,7 @@ Kitsune_Object* Kitsune_InitObject()
 		obj->numSlots = 0;
 		
 		/* add set method directly so we can use it */
-		Kitsune_Object_setMethod(obj, "set-method", &Kitsune_Object_setMethod);
-		
+		Kitsune_Object_setMethod(obj, "set-method", &Kitsune_Object_setMethod);		
 			
 		/*	add methods	*/
 		Kitsune_SendMessage(obj, "set-method", "has-slot",	&Kitsune_Object_hasSlot);
@@ -101,18 +100,10 @@ Kitsune_Object* Kitsune_InitObject()
 }
 
 
-Kitsune_Object* Kitsune_Object_hasSlot(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Object_hasSlot(Kitsune_Object* self, char* slotName)
 {
-	va_list			args;
-	char*			slotName;
-	Kitsune_Object*	curObj;
-	
-	va_start(args, obj);
-	slotName = va_arg(args, char*);
-	
-	
-	curObj = obj;
-	
+	Kitsune_Object*	curObj = self;
+
 	while(curObj)
 	{
 		if(Kitsune_InternString(curObj, slotName, NULL))
@@ -121,34 +112,27 @@ Kitsune_Object* Kitsune_Object_hasSlot(Kitsune_Object* obj, ...)
 		}
 		else
 		{
-			curObj = obj->parent;
+			curObj = curObj->parent;
 		}
-	}
-	
+	}	
 	
 	return Kitsune_MakeBoolean(false);
 }
 	
 
-Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* self, char* methodName, Kitsune_FunctionPtr method)
 {
-	va_list				args;
-	char*				methodName;
-	Kitsune_FunctionPtr	method;
 	int					i;
 	Kitsune_Slot*		newSlot;
 	
-	va_start(args, obj);
-	methodName	= va_arg(args, char*);
-	method		= va_arg(args, Kitsune_FunctionPtr);
 
 	/* try and replace current slots first */
-	for(i = 0; i < obj->numSlots; i++)
+	for(i = 0; i < self->numSlots; i++)
 	{
-		if( strcmp(methodName, obj->slotKeys[i]) == 0 )
+		if( strcmp(methodName, self->slotKeys[i]) == 0 )
 		{
-			obj->slots[i]->type = KITSUNE_SLOT_TYPE_METHOD;
-			obj->slots[i]->data = method;
+			self->slots[i]->type = KITSUNE_SLOT_TYPE_METHOD;
+			self->slots[i]->data = method;
 			
 			return NULL;
 		}
@@ -156,40 +140,33 @@ Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* obj, ...)
 	
 
 	/* add new slot */
-	obj->numSlots++;
-	Kitsune_Object_Helper_ResizeSlots(obj);
+	self->numSlots++;
+	Kitsune_Object_Helper_ResizeSlots(self);
 	
 	/* set the new data */
 	newSlot = (Kitsune_Slot*)GC_MALLOC( sizeof(Kitsune_Slot) );
 	newSlot->type = KITSUNE_SLOT_TYPE_METHOD;
 	newSlot->data = method;
 	
-	obj->slots[obj->numSlots - 1] = newSlot;
-	obj->slotKeys[obj->numSlots -1] = methodName;
+	self->slots[self->numSlots - 1] = newSlot;
+	self->slotKeys[self->numSlots -1] = methodName;
 	
 	return NULL;
 }
 	
-	
-Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* obj, ...)
+
+Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* self, char* valueName, Kitsune_Object* value)
 {
-	va_list				args;
-	char*				valueName;
-	Kitsune_Object*		value;
 	int					i;
-	Kitsune_Slot*			newSlot;
-	
-	va_start(args, obj);
-	valueName	= va_arg(args, char*);
-	value		= va_arg(args, Kitsune_Object*);
+	Kitsune_Slot*		newSlot;
 
 	/* try and replace current slots first */
-	for(i = 0; i < obj->numSlots; i++)
+	for(i = 0; i < self->numSlots; i++)
 	{
-		if( strcmp(valueName, obj->slotKeys[i]) == 0 )
+		if( strcmp(valueName, self->slotKeys[i]) == 0 )
 		{
-			obj->slots[i]->type = KITSUNE_SLOT_TYPE_VALUE;
-			obj->slots[i]->data = value;
+			self->slots[i]->type = KITSUNE_SLOT_TYPE_VALUE;
+			self->slots[i]->data = value;
 			
 			return NULL;
 		}
@@ -197,47 +174,42 @@ Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* obj, ...)
 	
 
 	/* add new slot */
-	obj->numSlots++;
-	Kitsune_Object_Helper_ResizeSlots(obj);
+	self->numSlots++;
+	Kitsune_Object_Helper_ResizeSlots(self);
 	
 	/* set the new data */
 	newSlot = (Kitsune_Slot*)GC_MALLOC( sizeof(Kitsune_Slot) );
 	newSlot->type = KITSUNE_SLOT_TYPE_VALUE;
 	newSlot->data = value;
 	
-	obj->slots[obj->numSlots - 1] = newSlot;
-	obj->slotKeys[obj->numSlots -1] = valueName;
+	self->slots[self->numSlots - 1] = newSlot;
+	self->slotKeys[self->numSlots -1] = valueName;
 	
 	return NULL;
 }
 	
 	
-	
-Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* self, char* slotName)
 {
-	va_list				args;
-	char*				slotName;
 	int					i;
 	Kitsune_Object*		curObj;
-	Kitsune_Slot*			newSlot;
+	Kitsune_Slot*		newSlot;
 	
-	va_start(args, obj);
-	slotName = va_arg(args, char*);
 	
 	/* see if slot exits to remove */
-	for(i = 0; i < obj->numSlots; i++)
+	for(i = 0; i < self->numSlots; i++)
 	{
-		if( strcmp(slotName, obj->slotKeys[i]) == 0 )
+		if( strcmp(slotName, self->slotKeys[i]) == 0 )
 		{
-			obj->slots[i]->type = KITSUNE_SLOT_TYPE_NO_OP;
-			obj->slots[i]->data = NULL;
+			self->slots[i]->type = KITSUNE_SLOT_TYPE_NO_OP;
+			self->slots[i]->data = NULL;
 			
 			return NULL;
 		}
 	}
 	
 	/* see if parent has the slot */
-	curObj = obj->parent;
+	curObj = self->parent;
 	
 	while(curObj)
 	{
@@ -245,22 +217,22 @@ Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* obj, ...)
 		{
 			/* parent has the slot that needs to be removed, we will cover it up by adding
 				a no op in the top most object */
-			obj->numSlots++;
-			Kitsune_Object_Helper_ResizeSlots(obj);
+			self->numSlots++;
+			Kitsune_Object_Helper_ResizeSlots(self);
 			
 			/* set the new data */
 			newSlot = (Kitsune_Slot*)GC_MALLOC( sizeof(Kitsune_Slot) );
 			newSlot->type = KITSUNE_SLOT_TYPE_NO_OP;
 			newSlot->data = NULL;
 	
-			obj->slots[obj->numSlots - 1] = newSlot;
-			obj->slotKeys[obj->numSlots -1] = slotName;
+			self->slots[self->numSlots - 1] = newSlot;
+			self->slotKeys[self->numSlots -1] = slotName;
 	
 			return NULL;
 		}
 		else
 		{
-			curObj = obj->parent;
+			curObj = curObj->parent;
 		}
 	}
 	
@@ -268,21 +240,21 @@ Kitsune_Object* Kitsune_Object_removeSlot(Kitsune_Object* obj, ...)
 }
 	
 	
-Kitsune_Object* Kitsune_Object_clone(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Object_clone(Kitsune_Object* self)
 {
 	Kitsune_Object* newObj = (Kitsune_Object*) GC_MALLOC( sizeof(Kitsune_Object) );
 	
-	newObj->parent = obj;
+	newObj->parent = self;
 	newObj->numSlots = 0;
 	
 	return newObj;
 }
 
-Kitsune_Object* Kitsune_Object_toString(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Object_toString(Kitsune_Object* self)
 {
 	char string[24];
 	
-	sprintf(string, "object @ %p", obj);
+	sprintf(string, "object @ %p", self);
 	
 	return Kitsune_MakeString(string);
 }

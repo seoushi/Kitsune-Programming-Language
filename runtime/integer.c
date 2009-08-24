@@ -46,22 +46,22 @@
  * function prototypes
  ****************************/
 
-Kitsune_Object* Kitsune_Integer_isEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_isGreaterThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_isLessThan(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_isGreaterThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_isLessThanOrEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_isNotEqual(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_add(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_sub(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_div(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_mul(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_pow(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_mod(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_sqrt(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_toFloat(Kitsune_Object* obj, ...);	
-Kitsune_Object* Kitsune_Integer_toInteger(Kitsune_Object* obj, ...);
-Kitsune_Object* Kitsune_Integer_toString(Kitsune_Object* obj, ...);
+Kitsune_Object* Kitsune_Integer_isEqual(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_isGreaterThan(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_isLessThan(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_isNotEqual(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_add(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_sub(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_div(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_mul(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_pow(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_mod(Kitsune_Object* self, Kitsune_Object* intValue);
+Kitsune_Object* Kitsune_Integer_sqrt(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Integer_toFloat(Kitsune_Object* self);	
+Kitsune_Object* Kitsune_Integer_toInteger(Kitsune_Object* self);
+Kitsune_Object* Kitsune_Integer_toString(Kitsune_Object* self);
 
 /****************************
  * end prototypes
@@ -124,15 +124,10 @@ Kitsune_Object* Kitsune_MakeInteger(int integer)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isEqual(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue == argValue)
 	{
@@ -143,15 +138,10 @@ Kitsune_Object* Kitsune_Integer_isEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isGreaterThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isGreaterThan(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue > argValue)
 	{
@@ -162,15 +152,10 @@ Kitsune_Object* Kitsune_Integer_isGreaterThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isLessThan(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isLessThan(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue < argValue)
 	{
@@ -181,15 +166,10 @@ Kitsune_Object* Kitsune_Integer_isLessThan(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isGreaterThanOrEqual(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue >= argValue)
 	{
@@ -200,15 +180,10 @@ Kitsune_Object* Kitsune_Integer_isGreaterThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isLessThanOrEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isLessThanOrEqual(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue <= argValue)
 	{
@@ -219,15 +194,10 @@ Kitsune_Object* Kitsune_Integer_isLessThanOrEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_isNotEqual(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_isNotEqual(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	if(selfValue != argValue)
 	{
@@ -238,115 +208,85 @@ Kitsune_Object* Kitsune_Integer_isNotEqual(Kitsune_Object* obj, ...)
 }
 
 
-Kitsune_Object* Kitsune_Integer_add(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_add(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger(selfValue + argValue);
 }
 
 
-Kitsune_Object* Kitsune_Integer_sub(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_sub(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger(selfValue - argValue);
 }
 
 
-Kitsune_Object* Kitsune_Integer_div(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_div(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger(selfValue / argValue);
 }
 
 
-Kitsune_Object* Kitsune_Integer_mul(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_mul(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger(selfValue * argValue);
 }
 
 
-Kitsune_Object* Kitsune_Integer_pow(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_pow(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger( pow(selfValue, argValue) );
 }
 
 
-Kitsune_Object* Kitsune_Integer_mod(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_mod(Kitsune_Object* self, Kitsune_Object* intValue)
 {
-	va_list	args;
-	int		argValue;
-	int		selfValue;
-	
-	va_start(args, obj);
-	argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(va_arg(args, Kitsune_Object*), "to-i"), "c-integer-value");
-	selfValue = (int)Kitsune_SendMessage(obj, "c-integer-value");
+	int argValue = (int)Kitsune_SendMessage(Kitsune_SendMessage(intValue, "to-i"), "c-integer-value");
+	int selfValue = (int)Kitsune_SendMessage(self, "c-integer-value");
 	
 	return Kitsune_MakeInteger(selfValue % argValue);
 }
 
 
-Kitsune_Object* Kitsune_Integer_sqrt(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_sqrt(Kitsune_Object* self)
 {	
-	return Kitsune_MakeFloat(sqrtf((int)Kitsune_SendMessage(obj, "c-integer-value")));
+	return Kitsune_MakeFloat(sqrtf((int)Kitsune_SendMessage(self, "c-integer-value")));
 }
 
 
-Kitsune_Object* Kitsune_Integer_toFloat(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_toFloat(Kitsune_Object* self)
 {
-	return Kitsune_MakeFloat((int)Kitsune_SendMessage(obj, "c-integer-value"));
+	return Kitsune_MakeFloat((int)Kitsune_SendMessage(self, "c-integer-value"));
 }
 
 
-Kitsune_Object* Kitsune_Integer_toInteger(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_toInteger(Kitsune_Object* self)
 {
-	return obj;
+	return self;
 }
 
 
-Kitsune_Object* Kitsune_Integer_toString(Kitsune_Object* obj, ...)
+Kitsune_Object* Kitsune_Integer_toString(Kitsune_Object* self)
 {
 	char 	buffer[128];
 	int		strSize;
 	char*	finalStr;
 	
-	strSize = sprintf(buffer, "%d", (int)Kitsune_SendMessage(obj, "c-integer-value"));
+	strSize = sprintf(buffer, "%d", (int)Kitsune_SendMessage(self, "c-integer-value"));
 	
 	finalStr = GC_MALLOC(sizeof(char) * (strSize + 1) );
 	strncpy(finalStr, buffer, strSize + 1);
