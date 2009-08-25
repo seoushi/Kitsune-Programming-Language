@@ -12,7 +12,7 @@ CFLAGS = Split("""-ansi
 					-Wall""")
 
 LIBS = Split("""gc
-				""")
+				m""")
 
 
 
