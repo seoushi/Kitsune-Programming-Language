@@ -1,13 +1,13 @@
 #include <gc/gc.h>
 
-#include "runtime/core.h"
-#include "runtime/array.h"
-#include "runtime/boolean.h"
-#include "runtime/character.h"
-#include "runtime/float.h"
-#include "runtime/integer.h"
-#include "runtime/object.h"
-#include "runtime/string.h"
+#include "../runtime/core.h"
+#include "../runtime/array.h"
+#include "../runtime/boolean.h"
+#include "../runtime/character.h"
+#include "../runtime/float.h"
+#include "../runtime/integer.h"
+#include "../runtime/object.h"
+#include "../runtime/string.h"
 
 Kitsune_Object* entry_HYPHEN_point(Kitsune_Object* arguments)
 {

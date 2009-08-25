@@ -1,0 +1,21 @@
+sources = Split("""../runtime/array.c
+					../runtime/boolean.c
+					../runtime/character.c
+					../runtime/core.c
+					../runtime/float.c
+					../runtime/integer.c
+					../runtime/object.c
+					../runtime/string.c
+					helloWorld.c""")
+
+CFLAGS = Split("""-ansi
+					-Wall""")
+
+LIBS = Split("""gc
+				""")
+
+
+
+Program('helloWorld', sources,
+				LIBS = LIBS,
+				CFLAGS = CFLAGS)
