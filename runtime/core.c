@@ -29,7 +29,6 @@
  */
 
 #include <stdio.h>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -61,13 +60,11 @@ bool Kitsune_InternString(Kitsune_Object* obj, char* string, unsigned int* resul
 	return false;
 }
 
-Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
+Kitsune_Object* Kitsune_Bind(Kitsune_Object* obj, char* slotName, int* resultCode)
 {
 	unsigned int		messageId;
 	Kitsune_Slot*		slot;
 	Kitsune_Object*		curObj = obj;
-	va_list				args;
-	Kitsune_FunctionPtr func;
 	
 	while(curObj)
 	{
@@ -78,12 +75,12 @@ Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 			switch(slot->type)
 			{
 				case KITSUNE_SLOT_TYPE_METHOD:
-					va_start(args, slotName);
-					func = (Kitsune_FunctionPtr)slot->data;
-					return func(obj, args);
+					(*resultCode) = 1;
+					return (Kitsune_Object*)slot->data;
 					break;
 				case KITSUNE_SLOT_TYPE_VALUE:
-					return (Kitsune_Object*)slot;
+					(*resultCode) = 2;
+					return (Kitsune_Object*)slot->data;
 					break;
 				case KITSUNE_SLOT_TYPE_NO_OP:
 					curObj = NULL; /* break from the main while loop so the parent isn't searched */
@@ -92,13 +89,14 @@ Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 		}
 		else
 		{
-			curObj = obj->parent;
+			curObj = curObj->parent;
 		}
 	}
 
 	/* throw warning message on slot not found */
 	fprintf(stderr, "WARNING: could not find slot '%s in object %p \n", slotName, obj);
 	
+	(*resultCode) = 0;
 	return NULL;
 }
 

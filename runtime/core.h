@@ -68,9 +68,25 @@ typedef Kitsune_Object* (*Kitsune_FunctionPtr)(Kitsune_Object*, ... );
 /*	core runtime functions	*/
 bool Kitsune_InternString(Kitsune_Object* obj, char* string, unsigned int* result);
 
-Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... );
+
+/* for reference bind can result three result codes
+* 0 = no method found
+* 1 = method
+* 2 = value
+*/
+Kitsune_Object* Kitsune_Bind(Kitsune_Object* obj, char* slotName, int* resultCode);
 
 
+#define Kitsune_SendMessage(RCV, MSG, ARGS...) ({ 									\
+	Kitsune_Object* r = (Kitsune_Object*)(RCV);										\
+	Kitsune_Object*	result;															\
+	int				resultCode;														\
+																					\
+	result = Kitsune_Bind(r, (MSG), &resultCode);									\
+																					\
+	(resultCode == 0) ? NULL : 														\
+		((resultCode == 2) ? result : ((Kitsune_FunctionPtr)result)(r, ##ARGS));	\
+}) 
 
 #endif
  																																			
