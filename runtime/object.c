@@ -152,14 +152,6 @@ Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* self, char* methodName,
 	self->slots[self->numSlots - 1] = newSlot;
 	self->slotKeys[self->numSlots -1] = methodName;
 	
-	printf("adding slot %s \n", methodName);
-	
-	for(i = 0; i < self->numSlots; i++)
-	{
-		printf("slot[%d] = %s \n", i, self->slotKeys[i]);
-	}
-	printf("\n");
-	
 	return NULL;
 }
 
@@ -192,7 +184,7 @@ Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* self, char* valueName, K
 	newSlot->data = value;
 	
 	self->slots[self->numSlots - 1] = newSlot;
-	self->slotKeys[self->numSlots -1] = valueName;
+	self->slotKeys[self->numSlots - 1] = valueName;
 	
 	return NULL;
 }
