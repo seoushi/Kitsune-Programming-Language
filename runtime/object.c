@@ -72,10 +72,10 @@ void Kitsune_Object_Helper_ResizeSlots(Kitsune_Object* obj)
 
 Kitsune_Object* Kitsune_InitObject()
 {
-	static Kitsune_Object*	obj = NULL;
+	static Kitsune_Object* obj = NULL;
 		
 	if(obj == NULL)
-	{
+	{		
 		/*	initialize object	*/
 		obj = (Kitsune_Object*)GC_MALLOC( sizeof(Kitsune_Object) );
 		obj->parent = NULL;
@@ -83,7 +83,7 @@ Kitsune_Object* Kitsune_InitObject()
 		
 		/* add set method directly so we can use it */
 		Kitsune_Object_setMethod(obj, "set-method", (Kitsune_FunctionPtr)&Kitsune_Object_setMethod);
-			
+		
 		/*	add methods	*/
 		Kitsune_SendMessage(obj, "set-method", "has-slot",	&Kitsune_Object_hasSlot);
 		
@@ -143,6 +143,7 @@ Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* self, char* methodName,
 	self->numSlots++;
 	Kitsune_Object_Helper_ResizeSlots(self);
 	
+	
 	/* set the new data */
 	newSlot = (Kitsune_Slot*)GC_MALLOC( sizeof(Kitsune_Slot) );
 	newSlot->type = KITSUNE_SLOT_TYPE_METHOD;
@@ -151,9 +152,17 @@ Kitsune_Object* Kitsune_Object_setMethod(Kitsune_Object* self, char* methodName,
 	self->slots[self->numSlots - 1] = newSlot;
 	self->slotKeys[self->numSlots -1] = methodName;
 	
+	printf("adding slot %s \n", methodName);
+	
+	for(i = 0; i < self->numSlots; i++)
+	{
+		printf("slot[%d] = %s \n", i, self->slotKeys[i]);
+	}
+	printf("\n");
+	
 	return NULL;
 }
-	
+
 
 Kitsune_Object* Kitsune_Object_setValue(Kitsune_Object* self, char* valueName, Kitsune_Object* value)
 {

@@ -29,6 +29,7 @@
  */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -62,10 +63,11 @@ bool Kitsune_InternString(Kitsune_Object* obj, char* string, unsigned int* resul
 
 Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 {
-	unsigned int	messageId;
-	Kitsune_Slot*	slot;	
-	Kitsune_Object*	curObj = obj;
-	va_list			args;
+	unsigned int		messageId;
+	Kitsune_Slot*		slot;
+	Kitsune_Object*		curObj = obj;
+	va_list				args;
+	Kitsune_FunctionPtr func;
 	
 	while(curObj)
 	{
@@ -77,7 +79,8 @@ Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 			{
 				case KITSUNE_SLOT_TYPE_METHOD:
 					va_start(args, slotName);
-					return ((Kitsune_FunctionPtr)slot->data)(obj, args);
+					func = (Kitsune_FunctionPtr)slot->data;
+					return func(obj, args);
 					break;
 				case KITSUNE_SLOT_TYPE_VALUE:
 					return (Kitsune_Object*)slot;
@@ -94,7 +97,7 @@ Kitsune_Object* Kitsune_SendMessage(Kitsune_Object* obj, char* slotName, ... )
 	}
 
 	/* throw warning message on slot not found */
-	fprintf(stderr, "WARNING: could not find slot '%s in object %p", slotName, obj);
+	fprintf(stderr, "WARNING: could not find slot '%s in object %p \n", slotName, obj);
 	
 	return NULL;
 }
