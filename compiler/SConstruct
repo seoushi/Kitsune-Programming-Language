@@ -1,0 +1,14 @@
+sources = Split("""lexer.c
+					main.c""")
+
+CFLAGS = Split("""-ansi
+					-Wall""")
+
+LIBS = Split("""gc
+				""")
+
+
+
+Program('kitsunec', sources,
+				LIBS = LIBS,
+				CFLAGS = CFLAGS)
