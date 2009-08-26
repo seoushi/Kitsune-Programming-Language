@@ -31,9 +31,39 @@
 #include "lexer.h"
 #include <gc/gc.h>
 
+
+void lexTest(char* filename)
+{
+	Kitsune_LexerData*	lexer = Kitsune_Lex_make();
+	Kitsune_Token*		token;
+	
+	if(Kitsune_Lex_openFile(lexer, filename))
+	{
+		while(true)
+		{
+			token = Kitsune_Lex_parseNextToken(lexer);
+		
+			printf("%s\n", Kitsune_Token_toString(token));
+			
+			if(token->type == kitsune_tok_eof)
+			{
+				break;
+			}
+		}
+	}
+}
+
 int main(int argc, char** argv)
 {
+	int i;
+	
 	GC_INIT();
+	
+	for(i = 1; i < argc; i++)
+	{
+		printf("Parsing %s \n", argv[i]);
+		lexTest(argv[i]);
+	}
 	
 	return 0;
 }

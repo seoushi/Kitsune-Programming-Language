@@ -85,12 +85,6 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 		}
 	}
 
-	/* eat EOL */
-	if(lexer->lastChar == '\n')
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-	}
-
 	/* check for end of line */
 	if((lexer->lastChar == '\n') || (lexer->lastChar == ','))
 	{
@@ -140,6 +134,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	if(lexer->lastChar == '\"')
 	{
 		i = 0;
+		buffer[0] = '\0';
 
 		Kitsune_Lex_getNextCharacter(lexer);
 
@@ -158,21 +153,23 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 				if(tmpChar != '\\')
 				{
 					i++;
-					buffer[i] = 0;
+					buffer[i] = '\0';
 					break;
 				}
 			}
 
-			i++;
 			buffer[i] = lexer->lastChar;
+			i++;
 			Kitsune_Lex_getNextCharacter(lexer);
 		}
-
+		buffer[i] = '\0';
+		i--;
+		
 		/* eat last " */
 		Kitsune_Lex_getNextCharacter(lexer);
 
 		curToken = Kitsune_Token_make(kitsune_tok_string);
-		curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * i);
+		curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
 		strncpy(curToken->data.identifier, buffer, i);
 
         return curToken;
@@ -192,6 +189,8 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			i++;
 			buffer[i] = lexer->lastChar;
 
+			Kitsune_Lex_getNextCharacter(lexer);
+
 			if(lexer->lastChar == '.')
 			{
 				if(hasPeriod)
@@ -207,8 +206,6 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 				{
 					isValid = false;
 				}
-				
-				Kitsune_Lex_getNextCharacter(lexer);
 			}
 
 			if(!isValid)
@@ -277,20 +274,23 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 		while( !Kitsune_Lex_isReservedCharacter(lexer->lastChar) )
 		{
-			i++;
 			buffer[i] = lexer->lastChar;
+			i++;
 			Kitsune_Lex_getNextCharacter(lexer);
-		}		
-		i++;
+		}
 		buffer[i] = '\0';
 
 		if(strcmp(buffer,"def") == 0)
 		{
 			return Kitsune_Token_make(kitsune_tok_def);
 		}
+		if(strcmp(buffer,"=") == 0)
+		{
+			return Kitsune_Token_make(kitsune_tok_equal);
+		}
 
 		curToken = Kitsune_Token_make(kitsune_tok_identifier);
-		curToken->data.identifier = GC_MALLOC(sizeof(char) * i);
+		curToken->data.identifier = GC_MALLOC(sizeof(char) * i + 1);
 		strncpy(curToken->data.identifier, buffer, i);
 
 		return curToken;
@@ -347,10 +347,88 @@ bool Kitsune_Lex_isReservedCharacter(char character)
 		case ',':
 		case '\\':
 		case '|':
+		case '\"':
 		case EOF:
 			return true;
 			break;
 	}
 	
 	return false;
+}
+
+
+char* Kitsune_Token_toString(Kitsune_Token* token)
+{
+	char* result;
+	
+	if(!token)
+	{
+		return "NULL_TOKEN";
+	}
+	
+	switch(token->type)
+	{
+		case kitsune_tok_eof:
+			return "EOF";
+			break;
+		case kitsune_tok_def:
+			return "DEF";
+			break;
+		case kitsune_tok_identifier:
+			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
+			sprintf(result, "IDENTIFIER(%s)", token->data.identifier);
+			return result;
+			break;
+		case kitsune_tok_int:
+			result = GC_MALLOC(sizeof(char) * 24);
+			sprintf(result, "INT(%d)", token->data.intValue);
+			return result;
+			break;
+		case kitsune_tok_float:
+			result = GC_MALLOC(sizeof(char) * 24);
+			sprintf(result, "FLOAT(%f)", token->data.floatValue);
+			return result;
+		case kitsune_tok_equal:
+			return "EQUALS";
+			break;
+		case kitsune_tok_string:
+			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
+			sprintf(result, "STRING(%s)", token->data.identifier);
+			return result;
+			break;
+		case kitsune_tok_openBrace:
+			return "OPEN_BRACE";
+			break;
+		case kitsune_tok_closeBrace:
+			return "CLOSE_BRACE";
+			break;
+		case kitsune_tok_pipe:
+			return "PIPE";
+			break;
+		case kitsune_tok_comma:
+			return "COMMA";
+			break;
+		case kitsune_tok_comment:
+			return "COMMENT";
+			break;
+		case kitsune_tok_eol:
+			return "EOL";
+			break;
+		case kitsune_tok_openParen:
+			return "OPEN_PAREN";
+			break;
+		case kitsune_tok_closeParen:
+			return "CLOSE_PAREN";
+			break;
+		case kitsune_tok_invalid:
+			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
+			sprintf(result, "INVALID(%s)", token->data.identifier);
+			return result;
+			break;
+		default:
+			result = GC_MALLOC(sizeof(char) *  12);
+			sprintf(result, "UNKNOWN(%c)", token->type);
+			return result;
+			break;
+	}
 }
