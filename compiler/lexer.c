@@ -31,7 +31,8 @@
 #include "lexer.h"
 
 #include <gc/gc.h>
-
+#include <ctype.h>
+#include <stdlib.h>
 
 
 Kitsune_LexerData* Kitsune_Lex_make()
@@ -66,6 +67,8 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	static char 	buffer[1024];
 	int				i;
 	char			tmpChar;
+	bool			hasPeriod;
+	bool			isValid;
 	
 	
 	while( (lexer->lastChar == ' ') || (lexer->lastChar == '\t') || (lexer->lastChar == '\r') )
@@ -177,63 +180,66 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 	
 	/* check for ints and floats */
+	if(isdigit(lexer->lastChar))
+	{
+		i = 0;
+		buffer[0] = '\0';
+		hasPeriod = false;
+		isValid = true;
 
-/* this needs to be fixed up 
+		while( !Kitsune_Lex_isReservedCharacter(lexer->lastChar) )
+		{
+			i++;
+			buffer[i] = lexer->lastChar;
 
-	    if(isdigit(lastChar))
-	    {
-	        std::string identifier = "";
+			if(lexer->lastChar == '.')
+			{
+				if(hasPeriod)
+				{
+					isValid = false;
+				}
+				else
+				{
+					hasPeriod = true;
+				}
 
-	        bool hasPeriod = false;
-	        bool isValid = true;
+				if( !isdigit(lexer->lastChar) && (lexer->lastChar != '.'))
+				{
+					isValid = false;
+				}
+				
+				Kitsune_Lex_getNextCharacter(lexer);
+			}
 
-	        while( !IsReservedCharacter() )
-	        {
-	            identifier += lastChar;
+			if(!isValid)
+			{
+				curToken = Kitsune_Token_make(kitsune_tok_invalid);
+				i++;
+				buffer[i] = '\0';
+				curToken->data.identifier = GC_MALLOC( sizeof(char) * i);
+				strncpy(curToken->data.identifier, buffer, i);
+				
+				return curToken;
+			}
 
-	            if(lastChar == '.')
-	            {
-	                if(hasPeriod)
-	                {
-	                    isValid = false;
-	                }
-	                else
-	                {
-	                    hasPeriod = true;
-	                }
-	            }
+			if(hasPeriod)
+			{
+				i++;
+				buffer[i] = '\0';
+				curToken = Kitsune_Token_make(kitsune_tok_float);
+				curToken->data.floatValue = atof(buffer);
 
-	            if( !isdigit(lastChar) && (lastChar != '.'))
-	            {
-	                isValid = false;
-	            }
+				return curToken;
+			}
 
-	            GetNextCharacter();
-	        }
+			curToken = Kitsune_Token_make(kitsune_tok_int);
+			i++;
+			buffer[i] = '\0';
+	        curToken->data.intValue = atoi(buffer);
 
-	        if(!isValid)
-	        {
-	            currentToken.tokenType = tok_invalid;
-	            currentToken.identifierValue = identifier;
-
-	            return currentToken;
-	        }
-
-	        if(hasPeriod)
-	        {
-	            currentToken.floatValue = atof(identifier.c_str());
-	            currentToken.tokenType = tok_float;
-
-	            return currentToken;
-	        }
-
-
-	        currentToken.intValue = atoi(identifier.c_str());
-	        currentToken.tokenType = tok_int;
-
-	        return currentToken;
-	    }
-*/
+	        return curToken;
+		}
+	}
 
 	/* open brace */
 	if(lexer->lastChar == '{')

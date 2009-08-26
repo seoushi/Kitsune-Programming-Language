@@ -53,6 +53,7 @@ typedef enum
 	kitsune_tok_eol = -13,
 	kitsune_tok_openParen = -8,
     kitsune_tok_closeParen = -9,
+    kitsune_tok_invalid = -10,
 } Kitsune_TokenType;
 
 
