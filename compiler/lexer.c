@@ -294,9 +294,14 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			lexer->curToken = Kitsune_Token_make(kitsune_tok_def);
 			return lexer->curToken;
 		}
-		if(strcmp(buffer,"=") == 0)
+		else if(strcmp(buffer,"=") == 0)
 		{
 			lexer->curToken = Kitsune_Token_make(kitsune_tok_equal);
+			return lexer->curToken;
+		}
+		else if(strcmp(buffer,"return") == 0)
+		{
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_return);
 			return lexer->curToken;
 		}
 
