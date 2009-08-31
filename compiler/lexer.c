@@ -63,7 +63,6 @@ Kitsune_Token* Kitsune_Token_make(Kitsune_TokenType type)
 
 Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 {
-	Kitsune_Token* 	curToken;
 	static char 	buffer[1024];
 	int				i;
 	char			tmpChar;
@@ -94,10 +93,10 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			lexer->curColumn = 0;
 		}
 			
-		curToken = Kitsune_Token_make(kitsune_tok_eol);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_eol);
 		Kitsune_Lex_getNextCharacter(lexer);
 
-		return curToken;
+		return lexer->curToken;
     }
 
 
@@ -110,7 +109,8 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			Kitsune_Lex_getNextCharacter(lexer);
         }
 
-		return Kitsune_Token_make(kitsune_tok_comment);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_comment);
+		return lexer->curToken;
     }
 
 
@@ -118,7 +118,9 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	if(lexer->lastChar == '(' )
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
-		return Kitsune_Token_make(kitsune_tok_openParen);
+		
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_openParen);
+		return lexer->curToken;
 	}
 	
 
@@ -126,7 +128,8 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	if(lexer->lastChar == ')')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
-		return Kitsune_Token_make(kitsune_tok_closeParen);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeParen);
+		return lexer->curToken;
 	}
 
 
@@ -168,11 +171,13 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 		/* eat last " */
 		Kitsune_Lex_getNextCharacter(lexer);
 
-		curToken = Kitsune_Token_make(kitsune_tok_string);
-		curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
-		strncpy(curToken->data.identifier, buffer, i);
+		
+		
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_string);
+		lexer->curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
+		strncpy(lexer->curToken->data.identifier, buffer, i);
 
-        return curToken;
+        return lexer->curToken;
 	}
 
 	
@@ -210,31 +215,31 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 			if(!isValid)
 			{
-				curToken = Kitsune_Token_make(kitsune_tok_invalid);
+				lexer->curToken = Kitsune_Token_make(kitsune_tok_invalid);
 				i++;
 				buffer[i] = '\0';
-				curToken->data.identifier = GC_MALLOC( sizeof(char) * i);
-				strncpy(curToken->data.identifier, buffer, i);
+				lexer->curToken->data.identifier = GC_MALLOC( sizeof(char) * i);
+				strncpy(lexer->curToken->data.identifier, buffer, i);
 				
-				return curToken;
+				return lexer->curToken;
 			}
 
 			if(hasPeriod)
 			{
 				i++;
 				buffer[i] = '\0';
-				curToken = Kitsune_Token_make(kitsune_tok_float);
-				curToken->data.floatValue = atof(buffer);
+				lexer->curToken = Kitsune_Token_make(kitsune_tok_float);
+				lexer->curToken->data.floatValue = atof(buffer);
 
-				return curToken;
+				return lexer->curToken;
 			}
 
-			curToken = Kitsune_Token_make(kitsune_tok_int);
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_int);
 			i++;
 			buffer[i] = '\0';
-	        curToken->data.intValue = atoi(buffer);
+	        lexer->curToken->data.intValue = atoi(buffer);
 
-	        return curToken;
+	        return lexer->curToken;
 		}
 	}
 
@@ -242,27 +247,31 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	if(lexer->lastChar == '{')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
-		return Kitsune_Token_make(kitsune_tok_openBrace);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_openBrace);
+		return lexer->curToken;
 	}
 
 	/* close brace */
 	if(lexer->lastChar == '}')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
-		return Kitsune_Token_make(kitsune_tok_closeBrace);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeBrace);
+		return lexer->curToken;
 	}
 
 	/* pipe */
 	if(lexer->lastChar == '|')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
-		return Kitsune_Token_make(kitsune_tok_pipe);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_pipe);
+		return lexer->curToken;
 	}
 
     /* check for the end of the file */
 	if(lexer->lastChar == EOF)
 	{
-		return Kitsune_Token_make(kitsune_tok_eof);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_eof);
+		return lexer->curToken;
 	}
 
 
@@ -282,27 +291,29 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 		if(strcmp(buffer,"def") == 0)
 		{
-			return Kitsune_Token_make(kitsune_tok_def);
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_def);
+			return lexer->curToken;
 		}
 		if(strcmp(buffer,"=") == 0)
 		{
-			return Kitsune_Token_make(kitsune_tok_equal);
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_equal);
+			return lexer->curToken;
 		}
 
-		curToken = Kitsune_Token_make(kitsune_tok_identifier);
-		curToken->data.identifier = GC_MALLOC(sizeof(char) * i + 1);
-		strncpy(curToken->data.identifier, buffer, i);
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_identifier);
+		lexer->curToken->data.identifier = GC_MALLOC(sizeof(char) * i + 1);
+		strncpy(lexer->curToken->data.identifier, buffer, i);
 
-		return curToken;
+		return lexer->curToken;
     }
 
 
 
 	/* seems we found something we don't know about just return it */
-	curToken = Kitsune_Token_make(lexer->lastChar);
+	lexer->curToken = Kitsune_Token_make(lexer->lastChar);
 	Kitsune_Lex_getNextCharacter(lexer);
 
-	return curToken;
+	return lexer->curToken;
 }
 
 

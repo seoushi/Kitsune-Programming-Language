@@ -29,8 +29,8 @@
  */
 
 
-#ifndef _KITSUNE_LEXER_HPP
-#define	_KITSUNE_LEXER_HPP
+#ifndef _KITSUNE_LEXER_H
+#define	_KITSUNE_LEXER_H
 
 #include <string.h>
 #include <stdio.h>
@@ -73,7 +73,7 @@ typedef struct
 typedef struct
 {
 	FILE*			fileHandle;
-    Kitsune_Token	curToken;
+    Kitsune_Token*	curToken;
     int          	lastChar;
     int          	curLine;
     int          	curColumn;
