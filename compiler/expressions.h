@@ -39,8 +39,8 @@ typedef enum
 	Kitsune_ExprType_None,
 	Kitsune_ExprType_Eof,
 	Kitsune_ExprType_Def,
-/*	Kitsune_ExprType_Function,
-	Kitsune_ExprType_FunCall,
+	Kitsune_ExprType_Function,
+/*	Kitsune_ExprType_FunCall,
 	Kitsune_ExprType_Int,
 	Kitsune_ExprType_Float,
 	Kitsune_ExprType_String */
@@ -70,8 +70,8 @@ typedef struct
 	int		numArgs;
 	char**	args;
 	
-	int					numBodyExprs;
-	Kitsune_Expression* bodyExprs;
+	int						numBodyExprs;
+	Kitsune_Expression**	bodyExprs;
 
 }Kitsune_FunctionExpr_Data;
 
