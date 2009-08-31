@@ -165,25 +165,171 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 {
 	/* format for a function expression is "{ | <ARGUMENT>... | <EXPRESSION>... }" */
+	Kitsune_ResultTuple*		result;
+	Kitsune_Expression*			expr;
+	Kitsune_FunctionExpr_Data*	funcData = (Kitsune_FunctionExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunctionExpr_Data));
+	Kitsune_Token* 				token = lexer->curToken;
+	char* 						tmpText;
+	bool 						running;
 	
-	/* for now just eat everything */
-	Kitsune_Token* token = lexer->curToken;
+	/* parse { */
+	if(token->type != kitsune_tok_openBrace)
+	{
+		Kitsune_ParseError("function", token, lexer, "{");
+		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	}
 	
-	while(true)
+	
+	token = Kitsune_Lex_parseNextToken(lexer);
+	
+	/* try parse pipe */
+	if(token->type == kitsune_tok_pipe)
+	{
+		token = Kitsune_Lex_parseNextToken(lexer);
+		running = true;
+		
+		while(running)
+		{
+			switch(token->type)
+			{
+				case kitsune_tok_identifier:
+					funcData->numArgs++;
+					if(funcData->numArgs == 1)
+					{
+						funcData->args = (char**)GC_MALLOC(sizeof(char*));
+					}
+					else
+					{
+						funcData->args = (char**)GC_REALLOC(funcData->args, funcData->numArgs * sizeof(char*));
+					}
+					funcData->args[funcData->numArgs - 1] = token->data.identifier;
+					
+					token = Kitsune_Lex_parseNextToken(lexer);
+					break;
+					
+				case kitsune_tok_pipe:
+					running = false;
+					break;
+					
+				default:
+					Kitsune_ParseError("function", token, lexer, "identifier' or '|");
+					return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+			}
+		}
+		
+		tmpText = GC_MALLOC(sizeof(char) * 32);
+		sprintf(tmpText, "NumArgs = %i", funcData->numArgs);
+		Kitsune_PrintDebug(tmpText);
+	}
+	else
+	{
+		funcData->numArgs = 0;
+		funcData->args = 0;
+	}
+
+
+	/* optionaly after the arguments (if there are any) you can have a new line */
+	Kitsune_Parse_EatEolsAndComments(lexer);
+
+
+	/* parse the body */
+	funcData->numBodyExprs = 0;
+	funcData->bodyExprs = 0;
+
+
+	running = true;
+	while(running)
 	{
 		switch(token->type)
 		{
 			case kitsune_tok_eof:
+				Kitsune_ParseError("function", token, lexer, "expression");
 				return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
 				break;
 			case kitsune_tok_closeBrace:
 				token = Kitsune_Lex_parseNextToken(lexer);
 				Kitsune_PrintDebug("Got function");
-				return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), true);
-			default:
+				running = false;
+				break;
+			case kitsune_tok_return: /* return statement */
+				result = Kitsune_Parse_Return(lexer);
+				if(!result->succeeded)
+				{
+					return result;
+				}
+				break;
+			case kitsune_tok_def: /* def statement */
+				result = Kitsune_Parse_Def(lexer);
+				if(!result->succeeded)
+				{
+					return result;
+				}
+				break;
+			default: /* function call statement */
+				result = Kitsune_Parse_FuncCall(lexer);
+				if(!result->succeeded)
+				{
+					return result;
+				}
 				break;
 		}
 		
-		token = Kitsune_Lex_parseNextToken(lexer);
+		/* add expression to body */
+		if(running)
+		{
+			funcData->numBodyExprs++;
+			if(funcData->numBodyExprs == 1)
+			{
+				funcData->bodyExprs = (Kitsune_Expression**)GC_MALLOC(sizeof(Kitsune_Expression*));
+			}
+			else
+			{
+				funcData->bodyExprs = (Kitsune_Expression**)GC_REALLOC(funcData->args, funcData->numBodyExprs * sizeof(Kitsune_Expression*));
+			}
+			funcData->bodyExprs[funcData->numBodyExprs - 1] = result->expr;
+			
+			token = lexer->curToken;
+		}
 	}
+	
+	
+	expr = Kitsune_Expression_Make(Kitsune_ExprType_Function);
+	expr->data = funcData;
+	return Kitsune_ResultTuple_make(expr, true);
 }
+
+
+Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
+{
+	Kitsune_PrintDebug("Kitsune_Parse_FuncCall not implemented");
+	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+}
+
+
+Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
+{
+	Kitsune_PrintDebug("Kitsune_Parse_Return not implemented");
+	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+}
+
+
+Kitsune_ResultTuple* Kitsune_Parse_String(Kitsune_LexerData* lexer)
+{
+	Kitsune_PrintDebug("Kitsune_Parse_String not implemented");
+	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+}
+
+
+Kitsune_ResultTuple* Kitsune_Parse_Int(Kitsune_LexerData* lexer)
+{
+	Kitsune_PrintDebug("Kitsune_Parse_Int not implemented");
+	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+}
+
+
+Kitsune_ResultTuple* Kitsune_Parse_Float(Kitsune_LexerData* lexer)
+{
+	Kitsune_PrintDebug("Kitsune_Parse_Float not implemented");
+	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+}
+
