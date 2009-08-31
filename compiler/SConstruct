@@ -1,5 +1,8 @@
-sources = Split("""lexer.c
-					main.c""")
+sources = Split("""expressions.c
+					lexer.c
+					main.c
+					parser.c
+					""")
 
 CFLAGS = Split("""-ansi
 					-Wall""")

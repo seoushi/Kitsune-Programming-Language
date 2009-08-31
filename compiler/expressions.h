@@ -1,5 +1,5 @@
 /*
- *  main.c
+ *  expressions.h
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,63 +28,81 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _EXPRESSIONS_H
+#define	_EXPRESSIONS_H
+
 #include "lexer.h"
-#include "parser.h"
-#include <gc/gc.h>
 
 
-void lexTest(char* filename)
+typedef enum
 {
-	Kitsune_LexerData*	lexer = Kitsune_Lex_make();
-	Kitsune_Token*		token;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			token = Kitsune_Lex_parseNextToken(lexer);
+	Kitsune_ExprType_None,
+	Kitsune_ExprType_Eof,
+	Kitsune_ExprType_Def,
+/*	Kitsune_ExprType_Function,
+	Kitsune_ExprType_FunCall,
+	Kitsune_ExprType_Int,
+	Kitsune_ExprType_Float,
+	Kitsune_ExprType_String */
+}Kitsune_ExpressionType;
+
+
+typedef struct
+{
+	Kitsune_ExpressionType type;
+	void* data;
 		
-			printf("%s\n", Kitsune_Token_toString(token));
-			
-			if(token->type == kitsune_tok_eof)
-			{
-				break;
-			}
-		}
-	}
-}
+} Kitsune_Expression;
 
-void parseTest(char* filename)
-{
-	Kitsune_LexerData*		lexer = Kitsune_Lex_make();
-	Kitsune_ResultTuple*	result;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			result = Kitsune_Parse_TopLevel(lexer);
-			
-			if((!result->succeeded) || (result->expr->type == Kitsune_ExprType_Eof))
-			{
-				break;
-			}
-		}
-	}
-}
+Kitsune_Expression* Kitsune_Expression_Make(Kitsune_ExpressionType type);
 
-int main(int argc, char** argv)
+
+typedef struct
 {
-	int i;
+	char* identifer;
+	Kitsune_Expression*	expr;
+}Kitsune_DefExpr_Data;
+
+Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression*	expr);
+
+typedef struct
+{
+	int		numArgs;
+	char**	args;
 	
-	GC_INIT();
+	int					numBodyExprs;
+	Kitsune_Expression* bodyExprs;
+
+}Kitsune_FunctionExpr_Data;
+
+
+typedef struct
+{
+	char*	objectName;
+	char*	funName;
 	
-	for(i = 1; i < argc; i++)
-	{
-		printf("Parsing %s \n", argv[i]);
-		/* lexTest(); */
-		parseTest(argv[i]);
-	}
-	
-	return 0;
-}
+	int					numArgs;
+	Kitsune_Expression* args;
+
+}Kitsune_FunCallExpr_Data;
+
+
+typedef struct
+{
+	int value;
+}Kitsune_IntExpr_Data;
+
+
+typedef struct
+{
+	float value;
+}Kitsune_FloatExpr_Data;
+
+
+typedef struct
+{
+	char* value;
+}Kitsune_StringExpr_Data;
+
+#endif
+

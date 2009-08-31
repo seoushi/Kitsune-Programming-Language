@@ -1,5 +1,5 @@
 /*
- *  main.c
+ *  parser.h
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,63 +28,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+#ifndef _PARSER_H
+#define	_PARSER_H
+
 #include "lexer.h"
-#include "parser.h"
-#include <gc/gc.h>
+#include "expressions.h"
+#include <stdbool.h>
 
 
-void lexTest(char* filename)
+void Kitsune_ParseError(char* exprType, Kitsune_Token* token, Kitsune_LexerData* lexer, char* expected);
+void Kitsune_PrintDebug(char* message);
+
+typedef struct
 {
-	Kitsune_LexerData*	lexer = Kitsune_Lex_make();
-	Kitsune_Token*		token;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			token = Kitsune_Lex_parseNextToken(lexer);
-		
-			printf("%s\n", Kitsune_Token_toString(token));
-			
-			if(token->type == kitsune_tok_eof)
-			{
-				break;
-			}
-		}
-	}
-}
+    Kitsune_Expression* expr;
+    bool succeeded;
+}Kitsune_ResultTuple;
 
-void parseTest(char* filename)
-{
-	Kitsune_LexerData*		lexer = Kitsune_Lex_make();
-	Kitsune_ResultTuple*	result;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			result = Kitsune_Parse_TopLevel(lexer);
-			
-			if((!result->succeeded) || (result->expr->type == Kitsune_ExprType_Eof))
-			{
-				break;
-			}
-		}
-	}
-}
+Kitsune_ResultTuple* Kitsune_ResultTuple_make(Kitsune_Expression* expr, bool succeeded);
 
-int main(int argc, char** argv)
-{
-	int i;
-	
-	GC_INIT();
-	
-	for(i = 1; i < argc; i++)
-	{
-		printf("Parsing %s \n", argv[i]);
-		/* lexTest(); */
-		parseTest(argv[i]);
-	}
-	
-	return 0;
-}
+
+
+Kitsune_ResultTuple* Kitsune_Parse_TopLevel(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer);
+
+
+#endif
+

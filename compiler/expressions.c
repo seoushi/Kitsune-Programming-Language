@@ -1,5 +1,5 @@
 /*
- *  main.c
+ *  expressions.c
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,63 +28,28 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "lexer.h"
-#include "parser.h"
 #include <gc/gc.h>
 
+#include "expressions.h"
 
-void lexTest(char* filename)
+Kitsune_Expression* Kitsune_Expression_Make(Kitsune_ExpressionType type)
 {
-	Kitsune_LexerData*	lexer = Kitsune_Lex_make();
-	Kitsune_Token*		token;
+	Kitsune_Expression* result = (Kitsune_Expression*)GC_MALLOC( sizeof(Kitsune_Expression) );
+	result->type = type;
 	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			token = Kitsune_Lex_parseNextToken(lexer);
-		
-			printf("%s\n", Kitsune_Token_toString(token));
-			
-			if(token->type == kitsune_tok_eof)
-			{
-				break;
-			}
-		}
-	}
+	return result;
 }
 
-void parseTest(char* filename)
+
+Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression* expr)
 {
-	Kitsune_LexerData*		lexer = Kitsune_Lex_make();
-	Kitsune_ResultTuple*	result;
+	Kitsune_Expression* result = Kitsune_Expression_Make(Kitsune_ExprType_Def);
+	Kitsune_DefExpr_Data* data = (Kitsune_DefExpr_Data*)GC_MALLOC( sizeof(Kitsune_DefExpr_Data) );
+	data->identifer = identifier;
+	data->expr = expr;
+
+	result->data = data;
 	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			result = Kitsune_Parse_TopLevel(lexer);
-			
-			if((!result->succeeded) || (result->expr->type == Kitsune_ExprType_Eof))
-			{
-				break;
-			}
-		}
-	}
+	return result;
 }
 
-int main(int argc, char** argv)
-{
-	int i;
-	
-	GC_INIT();
-	
-	for(i = 1; i < argc; i++)
-	{
-		printf("Parsing %s \n", argv[i]);
-		/* lexTest(); */
-		parseTest(argv[i]);
-	}
-	
-	return 0;
-}
