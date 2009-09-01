@@ -55,9 +55,6 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer);
 Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer);
 Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer);
 Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_String(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_Int(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_Float(Kitsune_LexerData* lexer);
 
 #endif
 

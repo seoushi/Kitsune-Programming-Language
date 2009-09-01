@@ -209,6 +209,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 					
 				case kitsune_tok_pipe:
 					running = false;
+					token = Kitsune_Lex_parseNextToken(lexer);
 					break;
 					
 				default:
@@ -301,35 +302,191 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 
 Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 {
-	Kitsune_PrintDebug("Kitsune_Parse_FuncCall not implemented");
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	/* format for a function call expression is "<LITERAL> <IDENTIFIER> <LITERAL>... <EOL>" */
+	Kitsune_Token*				token = lexer->curToken;
+	Kitsune_Expression*			expr;
+	Kitsune_FunCallExpr_Data*	funCallData = (Kitsune_FunCallExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunCallExpr_Data));
+	Kitsune_LiteralExpr_Data*	litData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
+	bool						running;
+	
+	/* check for literal (object) */
+	funCallData->object = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+	funCallData->object->data = litData;
+	
+	switch(token->type)
+	{
+		case kitsune_tok_identifier:		
+			litData->type = Kitsune_Literal_Identifier;
+			litData->data.identifier = token->data.identifier;
+			break;
+		case kitsune_tok_string:
+			litData->type = Kitsune_Literal_String;
+			litData->data.identifier = token->data.identifier;
+			break;
+		case kitsune_tok_int:
+			litData->type = Kitsune_Literal_Int;
+			litData->data.intValue = token->data.intValue;
+			break;
+		case kitsune_tok_float:
+			litData->type = Kitsune_Literal_Float;
+			litData->data.floatValue = token->data.floatValue;
+			break;
+		default:
+			Kitsune_ParseError("function call", token, lexer, "literal");
+			return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+			break;
+	}
+	
+	
+	/* check for function name */
+	token = Kitsune_Lex_parseNextToken(lexer);
+	
+	if(token->type != kitsune_tok_identifier)
+	{
+		Kitsune_ParseError("function call", token, lexer, "identifier");
+		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	}
+	
+	funCallData->funName = token->data.identifier;
+	
+	
+	/* get all arguments */
+	funCallData->numArgs = 0;
+	funCallData->args = 0;
+	running = true;
+	
+	while(running)
+	{
+		litData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
+		token = Kitsune_Lex_parseNextToken(lexer);
+		
+		switch(token->type)
+		{
+			case kitsune_tok_identifier:		
+				litData->type = Kitsune_Literal_Identifier;
+				litData->data.identifier = token->data.identifier;
+				break;
+			case kitsune_tok_string:
+				litData->type = Kitsune_Literal_String;
+				litData->data.identifier = token->data.identifier;
+				break;
+			case kitsune_tok_int:
+				litData->type = Kitsune_Literal_Int;
+				litData->data.intValue = token->data.intValue;
+				break;
+			case kitsune_tok_float:
+				litData->type = Kitsune_Literal_Float;
+				litData->data.floatValue = token->data.floatValue;
+				break;
+			case kitsune_tok_eol:
+				Kitsune_Parse_EatEolsAndComments(lexer);
+				running = false;
+				break;
+			default:
+				Kitsune_ParseError("function call", token, lexer, "literal' or 'EOL");
+				return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+				break;
+		}
+		
+		if(running)
+		{
+			funCallData->numArgs++;
+			
+			if(funCallData->numArgs == 1)
+			{
+				funCallData->args = (Kitsune_Expression**)GC_MALLOC(sizeof(Kitsune_Expression*));
+			}
+			else
+			{
+				funCallData->args = (Kitsune_Expression**)GC_REALLOC(funCallData->args, sizeof(Kitsune_Expression*));
+			}
+			funCallData->args[funCallData->numArgs - 1] = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+			funCallData->args[funCallData->numArgs - 1]->data = litData;
+		}
+	}
+	
+	
+	expr = Kitsune_Expression_Make(Kitsune_ExprType_FunCall);
+	expr->data = funCallData;
+	
+	Kitsune_PrintDebug("Got funcCall");
+	
+	return Kitsune_ResultTuple_make(expr, true);
 }
 
 
 Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 {
-	Kitsune_PrintDebug("Kitsune_Parse_Return not implemented");
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	/* format for a return expression is "return <LITERAL | FUNC_CALL><EOL>" */
+	Kitsune_Token*				token = lexer->curToken;
+	Kitsune_Expression*			expr = Kitsune_Expression_Make(Kitsune_ExprType_Return);
+	Kitsune_ReturnExpr_Data*	returnData = (Kitsune_ReturnExpr_Data*)GC_MALLOC(sizeof(Kitsune_ReturnExpr_Data));
+	Kitsune_LiteralExpr_Data*	litData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
+	Kitsune_ResultTuple*		result;
+
+	expr->data = returnData;
+
+
+	/* check for return token */
+	if(token->type != kitsune_tok_return)
+	{
+		Kitsune_ParseError("return", token, lexer, "return");
+		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	}
+	
+	
+
+	/* check for literal or function call */
+	token = Kitsune_Lex_parseNextToken(lexer);
+	
+	switch(token->type)
+	{
+		case kitsune_tok_identifier: /* this will always be a function call */
+			result = Kitsune_Parse_FuncCall(lexer);
+			if(!result->succeeded)
+			{
+				return result;
+			}
+			returnData->expr = result->expr;
+			return Kitsune_ResultTuple_make(expr, true);
+			break;
+		case kitsune_tok_string: /* this can either be a function call or a straight literal, for now it is only a literal */
+			litData->type = Kitsune_Literal_String;
+			litData->data.identifier = token->data.identifier;
+			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+			returnData->expr->data = litData;
+			break;
+		case kitsune_tok_int: /* this can either be a function call or a straight literal, for now it is only a literal */
+			litData->type = Kitsune_Literal_Int;
+			litData->data.intValue = token->data.intValue;
+			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+			returnData->expr->data = litData;
+			break;
+		case kitsune_tok_float: /* this can either be a function call or a straight literal, for now it is only a literal */
+			litData->type = Kitsune_Literal_Float;
+			litData->data.floatValue = token->data.floatValue;
+			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+			returnData->expr->data = litData;
+		default:
+			Kitsune_ParseError("return", token, lexer, "literal' or 'function call");
+			return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+			break;
+	}
+	
+	/* check for EOL */
+	token = Kitsune_Lex_parseNextToken(lexer);
+	
+	if((token->type != kitsune_tok_eol) && (token->type != kitsune_tok_comment))
+	{
+		Kitsune_ParseError("return", token, lexer, "EOL' or 'COMMENT");
+		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+	}
+	
+	Kitsune_Parse_EatEolsAndComments(lexer);
+	
+	Kitsune_PrintDebug("Got return");
+	
+	return Kitsune_ResultTuple_make(expr, true);
 }
 
-
-Kitsune_ResultTuple* Kitsune_Parse_String(Kitsune_LexerData* lexer)
-{
-	Kitsune_PrintDebug("Kitsune_Parse_String not implemented");
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
-}
-
-
-Kitsune_ResultTuple* Kitsune_Parse_Int(Kitsune_LexerData* lexer)
-{
-	Kitsune_PrintDebug("Kitsune_Parse_Int not implemented");
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
-}
-
-
-Kitsune_ResultTuple* Kitsune_Parse_Float(Kitsune_LexerData* lexer)
-{
-	Kitsune_PrintDebug("Kitsune_Parse_Float not implemented");
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
-}
 

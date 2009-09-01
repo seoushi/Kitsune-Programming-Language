@@ -313,7 +313,6 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
     }
 
 
-
 	/* seems we found something we don't know about just return it */
 	lexer->curToken = Kitsune_Token_make(lexer->lastChar);
 	Kitsune_Lex_getNextCharacter(lexer);
@@ -326,7 +325,7 @@ char* Kitsune_Lex_positionStr(Kitsune_LexerData* lexer)
 {
 	char* buffer = GC_MALLOC(sizeof(char) * 32);
 	
-	sprintf(buffer, "Line: %d Col: %d", lexer->curLine, lexer->curColumn);
+	sprintf(buffer, "Line: %d Col: %d", lexer->curLine + 1, lexer->curColumn);
 	
 	return buffer;
 }
@@ -441,9 +440,12 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 			sprintf(result, "INVALID(%s)", token->data.identifier);
 			return result;
 			break;
+		case kitsune_tok_return:
+			return "RETURN";
+			break;
 		default:
 			result = GC_MALLOC(sizeof(char) *  12);
-			sprintf(result, "UNKNOWN(%c)", token->type);
+			sprintf(result, "UNKNOWN(%i)", token->type);
 			return result;
 			break;
 	}
