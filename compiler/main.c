@@ -30,6 +30,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "generator.h"
 #include <gc/gc.h>
 
 
@@ -73,6 +74,11 @@ void parseTest(char* filename)
 	}
 }
 
+void generateTest(char* filename)
+{
+	Kitsune_Generate(filename);
+}
+
 int main(int argc, char** argv)
 {
 	int i;
@@ -81,9 +87,10 @@ int main(int argc, char** argv)
 	
 	for(i = 1; i < argc; i++)
 	{
-		printf("Parsing %s \n", argv[i]);
+		printf("Processing %s \n", argv[i]);
 		/* lexTest(); */
-		parseTest(argv[i]);
+		/* parseTest(argv[i]); */
+		generateTest(argv[i]);
 	}
 	
 	return 0;

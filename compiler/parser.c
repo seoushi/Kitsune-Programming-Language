@@ -398,7 +398,7 @@ Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 			}
 			else
 			{
-				funCallData->args = (Kitsune_Expression**)GC_REALLOC(funCallData->args, sizeof(Kitsune_Expression*));
+				funCallData->args = (Kitsune_Expression**)GC_REALLOC(funCallData->args, sizeof(Kitsune_Expression*) * funCallData->numArgs);
 			}
 			funCallData->args[funCallData->numArgs - 1] = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
 			funCallData->args[funCallData->numArgs - 1]->data = litData;

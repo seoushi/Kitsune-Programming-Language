@@ -1,4 +1,5 @@
 sources = Split("""expressions.c
+					generator.c
 					lexer.c
 					main.c
 					parser.c

@@ -32,6 +32,32 @@
 
 #include "expressions.h"
 
+
+char* Kitsune_ExprType_toString(Kitsune_ExpressionType exprType)
+{
+	switch(exprType)
+	{
+		case Kitsune_ExprType_Eof:
+			return "EOF";
+		case Kitsune_ExprType_Def:
+			return "DEF";
+		case Kitsune_ExprType_Function:
+			return "FUNCTION";
+		case Kitsune_ExprType_FunCall:
+			return "FUNCTION CALL";
+		case Kitsune_ExprType_Literal:
+			return "LITERAL";
+		case Kitsune_ExprType_Return:
+			return "RETURN";
+		default:
+			return "UNKNOWN";
+	}
+	
+	return "UNKNOWN";
+}
+
+
+
 Kitsune_Expression* Kitsune_Expression_Make(Kitsune_ExpressionType type)
 {
 	Kitsune_Expression* result = (Kitsune_Expression*)GC_MALLOC( sizeof(Kitsune_Expression) );

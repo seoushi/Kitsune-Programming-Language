@@ -4,7 +4,7 @@
 	# entry-point: Array -> Int 
 	def entry-point = { | arguments |
 	      “Hello World” print-line
-	      0
+	      return 0
 	}
 */
 

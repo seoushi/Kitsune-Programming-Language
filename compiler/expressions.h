@@ -45,6 +45,7 @@ typedef enum
 	Kitsune_ExprType_Return,
 }Kitsune_ExpressionType;
 
+char* Kitsune_ExprType_toString(Kitsune_ExpressionType exprType);
 
 typedef struct
 {
