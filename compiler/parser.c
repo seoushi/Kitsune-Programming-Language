@@ -44,7 +44,9 @@ void Kitsune_ParseError(char* exprType, Kitsune_Token* token, Kitsune_LexerData*
 
 void Kitsune_PrintDebug(char* message)
 {
+	/*
 	fprintf(stdout, "(DEBUG) %s\n", message);
+	 */
 }
 
 
