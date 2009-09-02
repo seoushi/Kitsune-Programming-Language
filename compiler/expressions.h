@@ -65,6 +65,7 @@ typedef struct
 
 Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression*	expr);
 
+
 typedef struct
 {
 	int		numArgs;
@@ -84,6 +85,7 @@ typedef enum
 	Kitsune_Literal_Int,
 	Kitsune_Literal_Float,
 }Kitsune_LiteralType;
+
 
 typedef struct
 {

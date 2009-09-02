@@ -26,6 +26,7 @@
                    displayName="Important Files"
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
+      <itemPath>../../testing/helloWorld.c</itemPath>
       <itemPath>../../testing/helloWorld.kit</itemPath>
       <itemPath>../../testing/helloWorld.kit.c</itemPath>
     </logicalFolder>
