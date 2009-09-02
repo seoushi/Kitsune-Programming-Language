@@ -217,10 +217,6 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 					return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
 			}
 		}
-		
-		tmpText = GC_MALLOC(sizeof(char) * 32);
-		sprintf(tmpText, "NumArgs = %i", funcData->numArgs);
-		Kitsune_PrintDebug(tmpText);
 	}
 	else
 	{
@@ -285,14 +281,12 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 			}
 			else
 			{
-				funcData->bodyExprs = (Kitsune_Expression**)GC_REALLOC(funcData->args, funcData->numBodyExprs * sizeof(Kitsune_Expression*));
+				funcData->bodyExprs = (Kitsune_Expression**)GC_REALLOC(funcData->bodyExprs, funcData->numBodyExprs * sizeof(Kitsune_Expression*));
 			}
-			funcData->bodyExprs[funcData->numBodyExprs - 1] = result->expr;
-			
+			funcData->bodyExprs[funcData->numBodyExprs - 1] = result->expr;		
 			token = lexer->curToken;
 		}
 	}
-	
 	
 	expr = Kitsune_Expression_Make(Kitsune_ExprType_Function);
 	expr->data = funcData;
