@@ -117,10 +117,21 @@ int main(int argc, char** argv)
 {	
 	GC_INIT();
 
-	if(argc >= 1)
+	if(argc >= 2)
 	{
-		printf("Processing %s \n", argv[1]);
-		generateTest(argv[1], argc, argv);
+		if((strcmp("help", argv[1]) == 0) || (strcmp("HELP", argv[1]) == 0))
+		{
+			printf("Usage is: kitsunec <file.kit> <C Compile Options> \n");
+		}
+		else
+		{
+			printf("Processing %s \n", argv[1]);
+			generateTest(argv[1], argc, argv);
+		}
+	}
+	else
+	{
+		printf("invalid usage. The proper format is:  kitsunec <file.kit> <C Compile Options> \n");
 	}
 	
 	return 0;
