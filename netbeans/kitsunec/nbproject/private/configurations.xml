@@ -11,7 +11,7 @@
       <gizmo_options version="1">
       </gizmo_options>
       <runprofile version="5">
-        <args>../../testing/helloWorld.kit</args>
+        <args>../../testing/helloWorld.kit -I../../ -o hello-world</args>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>0</console-type>
@@ -28,7 +28,7 @@
       <gizmo_options version="1">
       </gizmo_options>
       <runprofile version="5">
-        <args></args>
+        <args>../../testing/helloWorld.kit -I../../ -o hello-world</args>
         <rundir></rundir>
         <buildfirst>true</buildfirst>
         <console-type>0</console-type>

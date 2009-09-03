@@ -74,23 +74,53 @@ void parseTest(char* filename)
 	}
 }
 
-void generateTest(char* filename)
+void generateTest(char* filename, int argc, char** argv)
 {
-	Kitsune_Generate(filename);
+	int		optsSize = 0;
+	int		i;
+	int		j;
+	int		idx;
+	char*	ccOpts;
+	
+	for(i = 2; i < argc; i++)
+	{
+		optsSize += strlen(argv[i]) + 1;
+	}
+
+	if(optsSize == 0)
+	{	
+		ccOpts = (char*)GC_MALLOC(sizeof(char));
+		ccOpts[0] = '\0';
+	}
+	else
+	{
+		ccOpts = (char*)GC_MALLOC(sizeof(char) * optsSize);
+
+		idx = 0;
+		for(i = 2; i < argc; i++)
+		{
+			for(j = 0; j < strlen(argv[i]); j++)
+			{
+				ccOpts[idx] = argv[i][j];
+				idx++;
+			}
+			ccOpts[idx] = ' ';
+			idx++;
+		}
+		ccOpts[idx] = '\0';
+	}
+
+	Kitsune_Generate(filename, ccOpts);
 }
 
 int main(int argc, char** argv)
-{
-	int i;
-	
+{	
 	GC_INIT();
-	
-	for(i = 1; i < argc; i++)
+
+	if(argc >= 1)
 	{
-		printf("Processing %s \n", argv[i]);
-		/* lexTest(); */
-		/* parseTest(argv[i]); */
-		generateTest(argv[i]);
+		printf("Processing %s \n", argv[1]);
+		generateTest(argv[1], argc, argv);
 	}
 	
 	return 0;

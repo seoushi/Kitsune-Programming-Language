@@ -33,6 +33,6 @@
 
 #include "parser.h"
 
-bool Kitsune_Generate(char* filename);
+bool Kitsune_Generate(char* filename, char* copts);
 
 #endif
