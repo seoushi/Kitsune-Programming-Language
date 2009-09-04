@@ -29,6 +29,7 @@
       <itemPath>../../testing/helloWorld.c</itemPath>
       <itemPath>../../testing/helloWorld.kit</itemPath>
       <itemPath>../../testing/helloWorld.kit.c</itemPath>
+      <itemPath>../../testing/helloWorld.kit.h</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
