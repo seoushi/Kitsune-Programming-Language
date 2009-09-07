@@ -95,7 +95,7 @@ typedef struct
 	{
 		char*	identifier;
 		char*	stringData;
-		int		intValue;
+		int	intValue;
 		float	floatValue;
 	}data;
 

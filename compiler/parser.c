@@ -32,13 +32,25 @@
 
 #include <gc/gc.h>
 
-void Kitsune_ParseError(char* exprType, Kitsune_Token* token, Kitsune_LexerData* lexer, char* expected)
+
+/*
+Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer);
+*/
+
+void Kitsune_ParseError(Kitsune_Token* token, Kitsune_LexerData* lexer, char* expected, char* additional)
 {
-	fprintf(stderr, "(%s) Error while parsing %s expression Got '%s', Expected: '%s' \n", 
+	fprintf(stderr, "(%s) Error Got '%s', Expected: '%s' \n", 
 				Kitsune_Lex_positionStr(lexer),
-				exprType,
 				Kitsune_Token_toString(token),
 				expected);
+
+	if(additional)
+	{
+		fprintf(stderr, "\t%s\n", additional);
+	}
 }
 
 
@@ -60,55 +72,119 @@ Kitsune_ResultTuple* Kitsune_ResultTuple_make(Kitsune_Expression* expr, bool suc
 }
 
 
-void Kitsune_Parse_EatEolsAndComments(Kitsune_LexerData* lexer)
+void Kitsune_Parse_stackPush(Kitsune_Expression*** stack, int* numItems, Kitsune_Expression* expr)
 {
-	Kitsune_Token* token = lexer->curToken;
+	(*numItems)++;
 
-	while( (token->type == kitsune_tok_comment) || (token->type == kitsune_tok_eol))
+	if((*numItems) == 1)
 	{
-		if(token->type == kitsune_tok_eof)
-		{
-			return;
-		}
-
-		token = Kitsune_Lex_parseNextToken(lexer);
+		(*stack) = (Kitsune_Expression**)GC_MALLOC(sizeof(Kitsune_Expression*));
 	}
+	else
+	{
+		(*stack) = (Kitsune_Expression**)GC_REALLOC((*stack), sizeof(Kitsune_Expression*) * (*numItems));
+	}
+	
+	(*stack)[(*numItems) - 1] = expr;
 }
 
-
-Kitsune_ResultTuple* Kitsune_Parse_TopLevel(Kitsune_LexerData* lexer)
+Kitsune_ResultTuple* Kitsune_Parse_topLevel(Kitsune_LexerData* lexer)
 {
-	Kitsune_Token* token = Kitsune_Lex_parseNextToken(lexer);
+	Kitsune_Token*				token = Kitsune_Lex_parseNextToken(lexer);
+	Kitsune_ResultTuple*		result;
+	Kitsune_Expression**		exprStack;
+	int							exprStackSize = 0;
+	Kitsune_Expression*			tmpExpr;
+	Kitsune_LiteralExpr_Data*	tmpLitData;
 
-	Kitsune_Parse_EatEolsAndComments(lexer);
 
 	token = lexer->curToken;
 	
+parse_next:
+	
 	switch(token->type)
 	{
-		case kitsune_tok_def:
-			return Kitsune_Parse_Def(lexer);
-	        break;
-	
+		/* end of file */
 		case kitsune_tok_eof:
 			return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), true);
+
+		/* end line marker */
+		case kitsune_tok_dot: 
+			switch(exprStackSize)
+			{
+				case 0:
+					Kitsune_ParseError(token, lexer, "one expression", "No expression before the dot.");
+					return Kitsune_ResultTuple_make(NULL, false);
+				case 1:
+					return Kitsune_ResultTuple_make(exprStack[0], true);
+				default:
+					Kitsune_ParseError(token, lexer, "one expression", "too many expressions before the dot.");
+					return Kitsune_ResultTuple_make(NULL, false);
+			}
+			break;
+
+		/* add literals to the stack */
+		case kitsune_tok_identifier:
+		case kitsune_tok_string:
+		case kitsune_tok_int:
+		case kitsune_tok_float:
+			tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+			tmpLitData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
+			tmpExpr->data = tmpLitData;
+			
+			switch(token->type)
+			{
+				case kitsune_tok_identifier:
+					tmpLitData->type = Kitsune_Literal_Identifier;
+					tmpLitData->data.identifier = token->data.identifier;
+					break;
+				case kitsune_tok_string:
+					tmpLitData->type = Kitsune_Literal_String;
+					tmpLitData->data.identifier = token->data.identifier;
+					break;
+				case kitsune_tok_int:
+					tmpLitData->type = Kitsune_Literal_Int;
+					tmpLitData->data.intValue = token->data.intValue;
+					break;
+				case kitsune_tok_float:
+					tmpLitData->type = Kitsune_Literal_Float;
+					tmpLitData->data.floatValue = token->data.floatValue;
+					break;
+			}
+
+			Kitsune_Parse_stackPush(&exprStack, &exprStackSize, tmpExpr);
 			break;
 
 		default:
+			//result = Kitsune_Parse_tok(token);
 			break;
 	}
 
-	Kitsune_ParseError("top-level", token, lexer, "def");
-	
-	return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
+
+	/* try and reduce statement */
+	if(exprStackSize > 1)
+	{
+		
+	}
+
+	token = Kitsune_Lex_parseNextToken(lexer);
+
+	goto parse_next;
+
+
+	/* this will never happen but I want to make the compiler happy anyways */
+	return NULL;
 }
 
 
+
+/*
 Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 {
-	/* format for a def expression is "def <IDENTIFIER> = <EXPRESSION>"
+*/
+/* format for a def expression is "def <IDENTIFIER> = <EXPRESSION>"
 		Where expression is a funCall, function, or value*/
-
+/*
 	Kitsune_Token*			token = lexer->curToken;
 	Kitsune_Token*			idToken;
 	Kitsune_Expression*		expr;
@@ -116,7 +192,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 	
 	
 	/* parse def */
-	if(token->type != kitsune_tok_def)
+/*	if(token->type != kitsune_tok_def)
 	{
 		Kitsune_ParseError("def", token, lexer, "def");
 		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
@@ -124,7 +200,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 		
 
 	/* parse IDENTIFIER */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	if(token->type != kitsune_tok_identifier)
 	{
@@ -136,7 +212,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 	
 	
 	/* parse = */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	if(token->type != kitsune_tok_equal)
 	{
@@ -147,7 +223,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 	
 	/* parse EXPRESSION */
 	/*TODO: this should be fixed to parse funCalls, functions, or values */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	result = Kitsune_Parse_Function(lexer);
 	
 	if(!result->succeeded)
@@ -156,7 +232,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 	}
 	
 	/* alls well */
-	expr = Kitsune_DefExpr_Make(idToken->data.identifier, result->expr);
+/*	expr = Kitsune_DefExpr_Make(idToken->data.identifier, result->expr);
 	
 	Kitsune_PrintDebug("Got def");
 	
@@ -167,7 +243,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer)
 Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 {
 	/* format for a function expression is "{ | <ARGUMENT>... | <EXPRESSION>... }" */
-	Kitsune_ResultTuple*		result;
+/*	Kitsune_ResultTuple*		result;
 	Kitsune_Expression*			expr;
 	Kitsune_FunctionExpr_Data*	funcData = (Kitsune_FunctionExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunctionExpr_Data));
 	Kitsune_Token* 				token = lexer->curToken;
@@ -175,7 +251,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 	bool 						running;
 	
 	/* parse { */
-	if(token->type != kitsune_tok_openBrace)
+/*	if(token->type != kitsune_tok_openBrace)
 	{
 		Kitsune_ParseError("function", token, lexer, "{");
 		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
@@ -185,7 +261,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	/* try parse pipe */
-	if(token->type == kitsune_tok_pipe)
+/*	if(token->type == kitsune_tok_pipe)
 	{
 		token = Kitsune_Lex_parseNextToken(lexer);
 		running = true;
@@ -228,11 +304,11 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 
 
 	/* optionaly after the arguments (if there are any) you can have a new line */
-	Kitsune_Parse_EatEolsAndComments(lexer);
+/*	Kitsune_Parse_EatEolsAndComments(lexer);
 
 
 	/* parse the body */
-	funcData->numBodyExprs = 0;
+/*	funcData->numBodyExprs = 0;
 	funcData->bodyExprs = 0;
 
 
@@ -251,21 +327,21 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 				running = false;
 				break;
 			case kitsune_tok_return: /* return statement */
-				result = Kitsune_Parse_Return(lexer);
+/*				result = Kitsune_Parse_Return(lexer);
 				if(!result->succeeded)
 				{
 					return result;
 				}
 				break;
 			case kitsune_tok_def: /* def statement */
-				result = Kitsune_Parse_Def(lexer);
+/*				result = Kitsune_Parse_Def(lexer);
 				if(!result->succeeded)
 				{
 					return result;
 				}
 				break;
 			default: /* function call statement */
-				result = Kitsune_Parse_FuncCall(lexer);
+/*				result = Kitsune_Parse_FuncCall(lexer);
 				if(!result->succeeded)
 				{
 					return result;
@@ -274,7 +350,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 		}
 		
 		/* add expression to body */
-		if(running)
+/*		if(running)
 		{
 			funcData->numBodyExprs++;
 			if(funcData->numBodyExprs == 1)
@@ -299,14 +375,14 @@ Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer)
 Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 {
 	/* format for a function call expression is "<LITERAL> <IDENTIFIER> <LITERAL>... <EOL>" */
-	Kitsune_Token*				token = lexer->curToken;
+/*	Kitsune_Token*				token = lexer->curToken;
 	Kitsune_Expression*			expr;
 	Kitsune_FunCallExpr_Data*	funCallData = (Kitsune_FunCallExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunCallExpr_Data));
 	Kitsune_LiteralExpr_Data*	litData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
 	bool						running;
 	
 	/* check for literal (object) */
-	funCallData->object = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
+/*	funCallData->object = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
 	funCallData->object->data = litData;
 	
 	switch(token->type)
@@ -335,7 +411,7 @@ Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 	
 	
 	/* check for function name */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	if(token->type != kitsune_tok_identifier)
 	{
@@ -347,7 +423,7 @@ Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 	
 	
 	/* get all arguments */
-	funCallData->numArgs = 0;
+/*	funCallData->numArgs = 0;
 	funCallData->args = 0;
 	running = true;
 	
@@ -414,7 +490,7 @@ Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer)
 Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 {
 	/* format for a return expression is "return <LITERAL | FUNC_CALL><EOL>" */
-	Kitsune_Token*				token = lexer->curToken;
+/*	Kitsune_Token*				token = lexer->curToken;
 	Kitsune_Expression*			expr = Kitsune_Expression_Make(Kitsune_ExprType_Return);
 	Kitsune_ReturnExpr_Data*	returnData = (Kitsune_ReturnExpr_Data*)GC_MALLOC(sizeof(Kitsune_ReturnExpr_Data));
 	Kitsune_LiteralExpr_Data*	litData = (Kitsune_LiteralExpr_Data*)GC_MALLOC(sizeof(Kitsune_LiteralExpr_Data));
@@ -424,7 +500,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 
 
 	/* check for return token */
-	if(token->type != kitsune_tok_return)
+/*	if(token->type != kitsune_tok_return)
 	{
 		Kitsune_ParseError("return", token, lexer, "return");
 		return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), false);
@@ -433,12 +509,12 @@ Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 	
 
 	/* check for literal or function call */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	switch(token->type)
 	{
 		case kitsune_tok_identifier: /* this will always be a function call */
-			result = Kitsune_Parse_FuncCall(lexer);
+/*			result = Kitsune_Parse_FuncCall(lexer);
 			if(!result->succeeded)
 			{
 				return result;
@@ -447,19 +523,19 @@ Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 			return Kitsune_ResultTuple_make(expr, true);
 			break;
 		case kitsune_tok_string: /* this can either be a function call or a straight literal, for now it is only a literal */
-			litData->type = Kitsune_Literal_String;
+/*			litData->type = Kitsune_Literal_String;
 			litData->data.identifier = token->data.identifier;
 			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
 			returnData->expr->data = litData;
 			break;
 		case kitsune_tok_int: /* this can either be a function call or a straight literal, for now it is only a literal */
-			litData->type = Kitsune_Literal_Int;
+/*			litData->type = Kitsune_Literal_Int;
 			litData->data.intValue = token->data.intValue;
 			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
 			returnData->expr->data = litData;
 			break;
 		case kitsune_tok_float: /* this can either be a function call or a straight literal, for now it is only a literal */
-			litData->type = Kitsune_Literal_Float;
+/*			litData->type = Kitsune_Literal_Float;
 			litData->data.floatValue = token->data.floatValue;
 			returnData->expr = Kitsune_Expression_Make(Kitsune_ExprType_Literal);
 			returnData->expr->data = litData;
@@ -470,7 +546,7 @@ Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 	}
 	
 	/* check for EOL */
-	token = Kitsune_Lex_parseNextToken(lexer);
+/*	token = Kitsune_Lex_parseNextToken(lexer);
 	
 	if((token->type != kitsune_tok_eol) && (token->type != kitsune_tok_comment))
 	{
@@ -486,3 +562,4 @@ Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer)
 }
 
 
+*/

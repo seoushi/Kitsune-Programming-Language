@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=kitsunec
 
 # Active Configuration
-DEFAULTCONF=Debug
+DEFAULTCONF=Mac-Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release 
+ALLCONFS=Mac-Debug Mac-Release Linux-Debug 
 
 
 # build

@@ -70,7 +70,7 @@ bool Kitsune_Generate(char* filename, char* copts)
 	{
 		while(true)
 		{
-			result = Kitsune_Parse_TopLevel(lexer);
+			result = Kitsune_Parse_topLevel(lexer);
 			
 			
 			if(!result->succeeded)
@@ -121,7 +121,10 @@ bool Kitsune_Generate(char* filename, char* copts)
 		
 		Kitsune_Gen_header(outFile, cHeaderName);
 
-		for(i = 0; i < numExprs; i++)
+		fwrite("Kitsune_Object* kitsune_entry_function(Kitsune_Object* self)\n", 61, 1, outFile);
+		fwrite("{\n", 2, 1, outFile);
+
+                for(i = 0; i < numExprs; i++)
 		{
 			curExpr = exprs[i];
 			
@@ -131,8 +134,23 @@ bool Kitsune_Generate(char* filename, char* copts)
 			}
 		}
 
-		/* write all loose function */
+		fwrite("}\n\n\n", 4, 1, outFile);
 
+		/* write all loose function */
+                for(i = 0; i < _numFunctions; i++)
+		{
+			curExpr = _functions[i];
+
+                        fwrite("Kitsune_Object* kit_function_", 29, 1, outFile);
+
+			sprintf(tmpBuffer, "%i", i + 1);
+			fwrite(tmpBuffer, strlen(tmpBuffer), 1, outFile);
+
+			if(!Kitsune_Gen_fun(outFile, curExpr))
+			{
+				break;
+			}
+		}
 
 
 		/* write function prototypes to header */
@@ -166,7 +184,7 @@ bool Kitsune_Generate(char* filename, char* copts)
 
 		
 		sysCommand = GC_MALLOC(sizeof(char) * (strlen(filename) + 55 + strlen(copts)));
-		sprintf(sysCommand, "gcc %s %s -lkitsune -lgc", cFileName, copts);
+		sprintf(sysCommand, "gcc %s %s -lkitsune -lgc -lm", cFileName, copts);
 
 		printf("%s\n", sysCommand);
 
@@ -280,15 +298,12 @@ bool Kitsune_Gen_fun(FILE* outFile, Kitsune_Expression* expr)
 	
 
 	/* write args */
-	fwrite("( ", 2, 1, outFile);
+	fwrite("(Kitsune_Object* self", 21, 1, outFile);
 	
 	for(i = 0; i < data->numArgs; i++)
 	{
-		if(i > 0)
-		{
-			fwrite(", ", 2, 1, outFile);
-		}
-        fwrite("Kitsune_Object* ", 16, 1, outFile);
+		fwrite(", ", 2, 1, outFile);
+		fwrite("Kitsune_Object* ", 16, 1, outFile);
 		fwrite(data->args[i], strlen(data->args[i]), 1, outFile);
 	}
 	fwrite(" )\n{\n", 5, 1, outFile);
@@ -454,9 +469,9 @@ void Kitsune_Gen_footer(FILE* outFile)
 {
 	fwrite("\n\nint main(int argc, char** argv)\n", 34, 1, outFile);
 	fwrite("{\n", 2, 1, outFile);
-	fwrite("Kitsune_Object*\tresult;\n", 24, 1, outFile);
 	fwrite("Kitsune_Object*\targuments;\n", 27, 1, outFile);
 	fwrite("Kitsune_Object**\tarray;\n", 24, 1, outFile);
+        fwrite("Kitsune_Object*\ttopLevel;\n", 26, 1, outFile);
 	fwrite("int\t\t\ti;\n\n", 10, 1, outFile);
 
 	fwrite("GC_INIT();\n\n", 12, 1, outFile);
@@ -476,9 +491,13 @@ void Kitsune_Gen_footer(FILE* outFile)
 	fwrite("}\n\n", 3, 1, outFile);
 
 	fwrite("arguments = Kitsune_MakeArrayVec(argc, array);\n", 47, 1, outFile);
-	fwrite("result = entry_HYPHEN_point(arguments);\n\n", 41, 1, outFile);
+
+	fwrite("topLevel = Kitsune_SendMessage(Kitsune_InitObject(), \"clone\");\n", 63, 1, outFile);
+	fwrite("Kitsune_SendMessage(topLevel, \"set-value\", \"arguments\", arguments);\n", 68, 1, outFile);
+	fwrite("Kitsune_SendMessage(topLevel, \"set-method\", \"entry-point\", &kitsune_entry_function);\n", 84, 1, outFile);
 	
-	fwrite("return (int)Kitsune_SendMessage(result, \"c-integer-value\");\n", 60, 1, outFile);
+	fwrite("Kitsune_SendMessage(topLevel, \"entry-point\");\n", 46, 1, outFile);
+	fwrite("return 0;\n", 10, 1, outFile);
 	fwrite("}\n\n", 3, 1, outFile);
 
 

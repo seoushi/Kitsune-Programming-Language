@@ -64,7 +64,7 @@ void parseTest(char* filename)
 	{
 		while(true)
 		{
-			result = Kitsune_Parse_TopLevel(lexer);
+			result = Kitsune_Parse_topLevel(lexer);
 			
 			if((!result->succeeded) || (result->expr->type == Kitsune_ExprType_Eof))
 			{

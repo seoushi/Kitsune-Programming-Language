@@ -37,9 +37,6 @@
 #include <stdbool.h>
 
 
-void Kitsune_ParseError(char* exprType, Kitsune_Token* token, Kitsune_LexerData* lexer, char* expected);
-void Kitsune_PrintDebug(char* message);
-
 typedef struct
 {
     Kitsune_Expression* expr;
@@ -49,12 +46,7 @@ typedef struct
 Kitsune_ResultTuple* Kitsune_ResultTuple_make(Kitsune_Expression* expr, bool succeeded);
 
 
-
-Kitsune_ResultTuple* Kitsune_Parse_TopLevel(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_Def(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_Function(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_FuncCall(Kitsune_LexerData* lexer);
-Kitsune_ResultTuple* Kitsune_Parse_Return(Kitsune_LexerData* lexer);
+Kitsune_ResultTuple* Kitsune_Parse_topLevel(Kitsune_LexerData* lexer);
 
 #endif
 

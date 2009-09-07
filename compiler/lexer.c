@@ -70,34 +70,10 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	bool			isValid;
 	
 	
-	while( (lexer->lastChar == ' ') || (lexer->lastChar == '\t') || (lexer->lastChar == '\r') )
+	while( (lexer->lastChar == ' ') || (lexer->lastChar == '\t') || (lexer->lastChar == '\r') || (lexer->lastChar == '\n') )
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
 	}
-
-	/* check for line extension */
-	if(lexer->lastChar == '\\')
-	{
-		while( (lexer->lastChar != EOF) && (lexer->lastChar != '\n'))
-		{
-			Kitsune_Lex_getNextCharacter(lexer);
-		}
-	}
-
-	/* check for end of line */
-	if((lexer->lastChar == '\n') || (lexer->lastChar == ','))
-	{
-		if(lexer->lastChar == '\n')
-		{
-			lexer->curLine++;
-			lexer->curColumn = 0;
-		}
-			
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_eol);
-		Kitsune_Lex_getNextCharacter(lexer);
-
-		return lexer->curToken;
-    }
 
 
 	/* check for comment */
@@ -109,8 +85,8 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			Kitsune_Lex_getNextCharacter(lexer);
         }
 
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_comment);
-		return lexer->curToken;
+		/* we don't care about the comment, return the next thing */
+		return Kitsune_Lex_parseNextToken(lexer);
     }
 
 
@@ -259,14 +235,6 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 		return lexer->curToken;
 	}
 
-	/* pipe */
-	if(lexer->lastChar == '|')
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_pipe);
-		return lexer->curToken;
-	}
-
     /* check for the end of the file */
 	if(lexer->lastChar == EOF)
 	{
@@ -299,9 +267,9 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 			lexer->curToken = Kitsune_Token_make(kitsune_tok_equal);
 			return lexer->curToken;
 		}
-		else if(strcmp(buffer,"return") == 0)
+		else if(strcmp(buffer,".") == 0)
 		{
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_return);
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_dot);
 			return lexer->curToken;
 		}
 
@@ -417,17 +385,17 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 		case kitsune_tok_closeBrace:
 			return "CLOSE_BRACE";
 			break;
-		case kitsune_tok_pipe:
+/*		case kitsune_tok_pipe:
 			return "PIPE";
-			break;
+			break;*/
 		case kitsune_tok_comma:
 			return "COMMA";
 			break;
 		case kitsune_tok_comment:
 			return "COMMENT";
 			break;
-		case kitsune_tok_eol:
-			return "EOL";
+		case kitsune_tok_dot:
+			return "DOT";
 			break;
 		case kitsune_tok_openParen:
 			return "OPEN_PAREN";
@@ -440,9 +408,9 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 			sprintf(result, "INVALID(%s)", token->data.identifier);
 			return result;
 			break;
-		case kitsune_tok_return:
+/*		case kitsune_tok_return:
 			return "RETURN";
-			break;
+			break;*/
 		default:
 			result = GC_MALLOC(sizeof(char) *  12);
 			sprintf(result, "UNKNOWN(%i)", token->type);

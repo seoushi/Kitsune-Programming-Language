@@ -47,14 +47,14 @@ typedef enum
 	kitsune_tok_string = -7,
 	kitsune_tok_openBrace = -8,
 	kitsune_tok_closeBrace = -9,
-	kitsune_tok_pipe = -10,
+/*	kitsune_tok_pipe = -10,	    */
 	kitsune_tok_comma = -11,
 	kitsune_tok_comment = -12,
-	kitsune_tok_eol = -13,
+	kitsune_tok_dot = -13,
 	kitsune_tok_openParen = -14,
 	kitsune_tok_closeParen = -15,
 	kitsune_tok_invalid = -16,
-	kitsune_tok_return = -17,
+/*	kitsune_tok_return = -17, */
 } Kitsune_TokenType;
 
 
