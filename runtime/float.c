@@ -303,7 +303,8 @@ Kitsune_Object* Kitsune_Float_toFloat(Kitsune_Object* self)
 
 Kitsune_Object* Kitsune_Float_toInteger(Kitsune_Object* self)
 {
-	return Kitsune_MakeInteger((*(float*)Kitsune_SendMessage(self, "c-float-value")));
+	/* the 0.5f is for automatic rounding to the nearest integer */
+	return Kitsune_MakeInteger((*(float*)Kitsune_SendMessage(self, "c-float-value")) + 0.5f);
 }
 
 
@@ -312,7 +313,7 @@ Kitsune_Object* Kitsune_Float_toString(Kitsune_Object* self)
 	char 	buffer[128];
 	int		strSize;
 	char*	finalStr;
-	
+
 	strSize = sprintf(buffer, "%f", (*(float*)Kitsune_SendMessage(self, "c-float-value")));
 	
 	finalStr = GC_MALLOC(sizeof(char) * (strSize + 1) );
