@@ -72,6 +72,12 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	
 	while( (lexer->lastChar == ' ') || (lexer->lastChar == '\t') || (lexer->lastChar == '\r') || (lexer->lastChar == '\n') )
 	{
+		if(lexer->lastChar == '\n')
+		{
+			lexer->curColumn = 0;
+			lexer->curLine++;
+		}
+
 		Kitsune_Lex_getNextCharacter(lexer);
 	}
 
@@ -147,8 +153,6 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 		/* eat last " */
 		Kitsune_Lex_getNextCharacter(lexer);
 
-		
-		
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_string);
 		lexer->curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
 		strncpy(lexer->curToken->data.identifier, buffer, i);
@@ -161,17 +165,11 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	if(isdigit(lexer->lastChar))
 	{
 		i = 0;
-		buffer[0] = '\0';
 		hasPeriod = false;
 		isValid = true;
 
 		while( !Kitsune_Lex_isReservedCharacter(lexer->lastChar) )
 		{
-			i++;
-			buffer[i] = lexer->lastChar;
-
-			Kitsune_Lex_getNextCharacter(lexer);
-
 			if(lexer->lastChar == '.')
 			{
 				if(hasPeriod)
@@ -200,23 +198,28 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 				return lexer->curToken;
 			}
 
-			if(hasPeriod)
-			{
-				i++;
-				buffer[i] = '\0';
-				lexer->curToken = Kitsune_Token_make(kitsune_tok_float);
-				lexer->curToken->data.floatValue = atof(buffer);
+			buffer[i] = lexer->lastChar;
+			buffer[i + 1] = '\0';
+			i++;
 
-				return lexer->curToken;
-			}
+			Kitsune_Lex_getNextCharacter(lexer);
+		}
 
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_int);
+		if(hasPeriod)
+		{
 			i++;
 			buffer[i] = '\0';
-	        lexer->curToken->data.intValue = atoi(buffer);
-
-	        return lexer->curToken;
+			lexer->curToken = Kitsune_Token_make(kitsune_tok_float);
+			lexer->curToken->data.floatValue = atof(buffer);
+			return lexer->curToken;
 		}
+
+		lexer->curToken = Kitsune_Token_make(kitsune_tok_int);
+		i++;
+		buffer[i] = '\0';
+		lexer->curToken->data.intValue = atoi(buffer);
+
+		return lexer->curToken;
 	}
 
 	/* open brace */
