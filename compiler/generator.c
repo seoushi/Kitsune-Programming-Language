@@ -201,6 +201,7 @@ bool Kitsune_Generate(char* filename, char* copts)
 bool Kitsune_Gen_expr(FILE* outFile, Kitsune_Expression* expr)
 {
 	char tmpBuffer[32];
+	bool tmpResult;
 
 	switch(expr->type)
 	{
@@ -210,6 +211,10 @@ bool Kitsune_Gen_expr(FILE* outFile, Kitsune_Expression* expr)
 		case Kitsune_ExprType_Def:
 			return Kitsune_Gen_def(outFile, expr);
 			break;
+		case Kitsune_ExprType_Line:
+			tmpResult = Kitsune_Gen_expr(outFile, ((Kitsune_LineExpr_Data*)(expr->data))->expr);
+			fwrite(";\n", 2, 1, outFile);
+			return tmpResult;
 		case Kitsune_ExprType_Function:
 			/* add to function list */
 			/* return Kitsune_Gen_fun(outFile, expr); */
@@ -349,6 +354,7 @@ bool Kitsune_Gen_funCall(FILE* outFile, Kitsune_Expression* expr)
 
 	for(i = 0; i < data->numArgs; i++)
 	{
+		fwrite(", ", 2, 1, outFile);
 		succeeded = Kitsune_Gen_expr(outFile, data->args[i]);
 		if(!succeeded)
 		{
@@ -356,7 +362,7 @@ bool Kitsune_Gen_funCall(FILE* outFile, Kitsune_Expression* expr)
 		}
 	}
 
-	fwrite(");\n", 3, 1, outFile);
+	fwrite(")", 1, 1, outFile);
 
 	return true;
 }
@@ -375,7 +381,7 @@ bool Kitsune_Gen_literal(FILE* outFile, Kitsune_Expression* expr)
 			break;
 		case Kitsune_Literal_String:
 			fwrite("Kitsune_MakeString(\"", 20, 1, outFile);
-			fwrite(data->data.stringData, strlen(data->data.stringData), 1, outFile);
+			fwrite(data->data.identifier, strlen(data->data.identifier), 1, outFile);
 			fwrite("\")", 2, 1, outFile);
 			break;
 		case Kitsune_Literal_Int:
@@ -387,7 +393,7 @@ bool Kitsune_Gen_literal(FILE* outFile, Kitsune_Expression* expr)
 			fwrite(")", 1, 1, outFile);
 			break;
 		case Kitsune_Literal_Float:
-			fwrite("Kitsune_MakeInteger(", 20, 1, outFile);
+			fwrite("Kitsune_MakeFloat(", 18, 1, outFile);
 			
 			length = sprintf(buffer,"%f", data->data.floatValue);
 			fwrite(buffer, length, 1, outFile);

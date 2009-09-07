@@ -88,6 +88,78 @@ void Kitsune_Parse_stackPush(Kitsune_Expression*** stack, int* numItems, Kitsune
 	(*stack)[(*numItems) - 1] = expr;
 }
 
+
+void Kitsune_Parse_stackReduce(Kitsune_Expression*** stack, int* numItems)
+{
+	Kitsune_Expression*			tmpExpr;
+	Kitsune_FunCallExpr_Data*	funCallData;
+
+	if((*numItems) < 2)
+	{
+		return;
+	}
+
+	/* <lit> <lit-id> */
+	if( ((*stack)[0]->type == Kitsune_ExprType_Literal) &&
+		((*stack)[1]->type == Kitsune_ExprType_Literal) &&
+		((((Kitsune_LiteralExpr_Data*)(*stack)[1]->data))->type == Kitsune_Literal_Identifier))
+	{
+		tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_FunCall);
+		funCallData = (Kitsune_FunCallExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunCallExpr_Data));
+		funCallData->args = 0;
+		funCallData->numArgs = 0;
+		funCallData->object = (*stack)[0];
+		funCallData->funName = (((Kitsune_LiteralExpr_Data*)(*stack)[1]->data))->data.identifier;
+		tmpExpr->data = funCallData;
+
+		(*stack)[0] = tmpExpr;
+		(*stack)[1] = NULL;
+		(*numItems)--;
+		return;
+	}
+	/* <funCall> <lit> */
+	else if(	((*stack)[0]->type == Kitsune_ExprType_FunCall) &&
+				((*stack)[1]->type == Kitsune_ExprType_Literal))
+	{
+		/* <funCall> <lit-id> */
+		if((((Kitsune_LiteralExpr_Data*)(*stack)[1]->data))->type == Kitsune_Literal_Identifier)
+		{
+			tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_FunCall);
+			funCallData = (Kitsune_FunCallExpr_Data*)GC_MALLOC(sizeof(Kitsune_FunCallExpr_Data));
+			funCallData->args = 0;
+			funCallData->numArgs = 0;
+			funCallData->object = (*stack)[0];
+			funCallData->funName = (((Kitsune_LiteralExpr_Data*)(*stack)[1]->data))->data.identifier;
+			tmpExpr->data = funCallData;
+
+			(*stack)[0] = tmpExpr;
+			(*stack)[1] = NULL;
+			(*numItems)--;
+			return;
+		}
+		/* <funCall> <lit-value> */
+		else if((((Kitsune_LiteralExpr_Data*)(*stack)[1]->data))->type != Kitsune_Literal_Identifier)
+		{
+			funCallData = (*stack)[0]->data;
+			
+			funCallData->numArgs++;
+			
+			if(funCallData->numArgs == 1)
+			{
+				funCallData->args = (Kitsune_Expression**)GC_MALLOC(sizeof(Kitsune_Expression*));
+			}
+			else
+			{
+				funCallData->args = (Kitsune_Expression**)GC_REALLOC(funCallData->args, sizeof(Kitsune_Expression*) * funCallData->numArgs);
+			}
+			funCallData->args[funCallData->numArgs - 1] = (*stack)[1];
+
+			(*numItems)--;
+			return;
+		}
+	}
+}
+
 Kitsune_ResultTuple* Kitsune_Parse_topLevel(Kitsune_LexerData* lexer)
 {
 	Kitsune_Token*				token = Kitsune_Lex_parseNextToken(lexer);
@@ -96,7 +168,7 @@ Kitsune_ResultTuple* Kitsune_Parse_topLevel(Kitsune_LexerData* lexer)
 	int							exprStackSize = 0;
 	Kitsune_Expression*			tmpExpr;
 	Kitsune_LiteralExpr_Data*	tmpLitData;
-
+	Kitsune_LineExpr_Data*		tmpLineData;
 
 	token = lexer->curToken;
 	
@@ -106,17 +178,26 @@ parse_next:
 	{
 		/* end of file */
 		case kitsune_tok_eof:
+			if(exprStackSize > 0)
+			{
+				Kitsune_ParseError(token, lexer, "dot", "missing dot after expression.");
+				return Kitsune_ResultTuple_make(NULL, false);
+			}
 			return Kitsune_ResultTuple_make(Kitsune_Expression_Make(Kitsune_ExprType_Eof), true);
 
 		/* end line marker */
-		case kitsune_tok_dot: 
+		case kitsune_tok_dot:
 			switch(exprStackSize)
 			{
 				case 0:
 					Kitsune_ParseError(token, lexer, "one expression", "No expression before the dot.");
 					return Kitsune_ResultTuple_make(NULL, false);
 				case 1:
-					return Kitsune_ResultTuple_make(exprStack[0], true);
+					tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_Line);
+					tmpLineData = (Kitsune_LineExpr_Data*)GC_MALLOC(sizeof(Kitsune_LineExpr_Data));
+					tmpLineData->expr = exprStack[0];
+					tmpExpr->data = tmpLineData;
+					return Kitsune_ResultTuple_make(tmpExpr, true);
 				default:
 					Kitsune_ParseError(token, lexer, "one expression", "too many expressions before the dot.");
 					return Kitsune_ResultTuple_make(NULL, false);
@@ -162,10 +243,7 @@ parse_next:
 
 
 	/* try and reduce statement */
-	if(exprStackSize > 1)
-	{
-		
-	}
+	Kitsune_Parse_stackReduce(&exprStack, &exprStackSize);
 
 	token = Kitsune_Lex_parseNextToken(lexer);
 

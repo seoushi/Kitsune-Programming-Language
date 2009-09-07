@@ -43,6 +43,7 @@ typedef enum
 	Kitsune_ExprType_FunCall,
 	Kitsune_ExprType_Literal,
 	Kitsune_ExprType_Return,
+	Kitsune_ExprType_Line,
 }Kitsune_ExpressionType;
 
 char* Kitsune_ExprType_toString(Kitsune_ExpressionType exprType);
@@ -68,10 +69,10 @@ Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression*	e
 
 typedef struct
 {
-	int		numArgs;
+	int	numArgs;
 	char**	args;
 	
-	int						numBodyExprs;
+	int			numBodyExprs;
 	Kitsune_Expression**	bodyExprs;
 
 }Kitsune_FunctionExpr_Data;
@@ -94,7 +95,7 @@ typedef struct
 	union
 	{
 		char*	identifier;
-		char*	stringData;
+		/*char*	stringData;*/
 		int	intValue;
 		float	floatValue;
 	}data;
@@ -105,9 +106,9 @@ typedef struct
 typedef struct
 {
 	Kitsune_Expression*	object;
-	char*				funName;
+	char*			funName;
 	
-	int						numArgs;
+	int			numArgs;
 	Kitsune_Expression**	args;
 
 }Kitsune_FunCallExpr_Data;
@@ -118,6 +119,10 @@ typedef struct
 	Kitsune_Expression*	expr;
 }Kitsune_ReturnExpr_Data;
 
+typedef struct
+{
+	Kitsune_Expression*	expr;
+}Kitsune_LineExpr_Data;
 
 typedef struct
 {
