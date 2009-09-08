@@ -44,14 +44,15 @@ typedef enum
 	Kitsune_ExprType_Literal,
 	Kitsune_ExprType_Return,
 	Kitsune_ExprType_Line,
+	Kitsune_ExprType_Assign,
 }Kitsune_ExpressionType;
 
 char* Kitsune_ExprType_toString(Kitsune_ExpressionType exprType);
 
 typedef struct
 {
-	Kitsune_ExpressionType type;
-	void* data;
+	Kitsune_ExpressionType	type;
+	void*					data;
 		
 } Kitsune_Expression;
 
@@ -60,19 +61,27 @@ Kitsune_Expression* Kitsune_Expression_Make(Kitsune_ExpressionType type);
 
 typedef struct
 {
-	char* identifer;
 	Kitsune_Expression*	expr;
 }Kitsune_DefExpr_Data;
 
-Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression*	expr);
+Kitsune_Expression* Kitsune_DefExpr_Make(Kitsune_Expression* expr);
 
 
 typedef struct
 {
-	int	numArgs;
+	char*				identifer;
+	Kitsune_Expression*	expr;
+}Kitsune_AssignExpr_Data;
+
+Kitsune_Expression* Kitsune_AssignExpr_Make(char* identifier, Kitsune_Expression* expr);
+
+
+typedef struct
+{
+	int		numArgs;
 	char**	args;
 	
-	int			numBodyExprs;
+	int						numBodyExprs;
 	Kitsune_Expression**	bodyExprs;
 
 }Kitsune_FunctionExpr_Data;

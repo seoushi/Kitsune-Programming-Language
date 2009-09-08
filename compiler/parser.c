@@ -203,7 +203,68 @@ parse_next:
 					return Kitsune_ResultTuple_make(NULL, false);
 			}
 			break;
+		/* assignment */
+		case kitsune_tok_equal:
+			if(exprStackSize == 0)
+			{
+				Kitsune_ParseError(token, lexer, "an identifer", "assignment statement without something to assign it to.");
+				return Kitsune_ResultTuple_make(NULL, false);
+			}
+			if(exprStackSize > 1)
+			{
+				Kitsune_ParseError(token, lexer, "an identifer", "assignment statement should only have one identifier to assign to.");
+				return Kitsune_ResultTuple_make(NULL, false);
+			}
+			else
+			{
+				/* we can only assign to an identifier */
+				if(	(exprStack[0]->type == Kitsune_ExprType_Literal) &&
+					((((Kitsune_LiteralExpr_Data*)exprStack[0]->data))->type == Kitsune_Literal_Identifier))
+				{
 
+					tmpLitData = (Kitsune_LiteralExpr_Data*)exprStack[0]->data;
+
+					result = Kitsune_Parse_topLevel(lexer);
+					if(!result->succeeded)
+					{
+						return result;
+					}
+
+					tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_Line);
+					tmpLineData = (Kitsune_LineExpr_Data*)GC_MALLOC(sizeof(Kitsune_LineExpr_Data));
+					tmpLineData->expr = Kitsune_AssignExpr_Make(tmpLitData->data.identifier, ((Kitsune_LineExpr_Data*)result->expr->data)->expr );
+					tmpExpr->data = tmpLineData;
+					return Kitsune_ResultTuple_make(tmpExpr, true);
+				}
+				else
+				{
+					Kitsune_ParseError(token, lexer, "an identifer", "assignment statement should have an identifier on the left side of the equals.");
+					return Kitsune_ResultTuple_make(NULL, false);
+				}
+			}
+			
+			break;
+		/* defining */
+		case kitsune_tok_def:
+			if(exprStackSize == 0)
+			{
+				result = Kitsune_Parse_topLevel(lexer);
+				if(!result->succeeded)
+				{
+					return result;
+				}
+
+				tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_Line);
+				tmpLineData = (Kitsune_LineExpr_Data*)GC_MALLOC(sizeof(Kitsune_LineExpr_Data));
+				tmpLineData->expr = Kitsune_DefExpr_Make(((Kitsune_LineExpr_Data*)result->expr->data)->expr );
+				tmpExpr->data = tmpLineData;
+				return Kitsune_ResultTuple_make(tmpExpr, true);
+			}
+			else
+			{
+				Kitsune_ParseError(token, lexer, "not def", "def can only be used to start a statement.");
+				return Kitsune_ResultTuple_make(NULL, false);
+			}
 		/* add literals to the stack */
 		case kitsune_tok_identifier:
 		case kitsune_tok_string:
@@ -237,7 +298,8 @@ parse_next:
 			break;
 
 		default:
-			//result = Kitsune_Parse_tok(token);
+			Kitsune_ParseError(token, lexer, "?", "unknown or used token type.");
+			return Kitsune_ResultTuple_make(NULL, false);
 			break;
 	}
 

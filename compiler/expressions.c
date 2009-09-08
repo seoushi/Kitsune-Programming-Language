@@ -67,15 +67,26 @@ Kitsune_Expression* Kitsune_Expression_Make(Kitsune_ExpressionType type)
 }
 
 
-Kitsune_Expression* Kitsune_DefExpr_Make(char* identifier, Kitsune_Expression* expr)
+Kitsune_Expression* Kitsune_DefExpr_Make(Kitsune_Expression* expr)
 {
 	Kitsune_Expression* result = Kitsune_Expression_Make(Kitsune_ExprType_Def);
 	Kitsune_DefExpr_Data* data = (Kitsune_DefExpr_Data*)GC_MALLOC( sizeof(Kitsune_DefExpr_Data) );
+
+	data->expr = expr;
+	result->data = data;
+	
+	return result;
+}
+
+Kitsune_Expression* Kitsune_AssignExpr_Make(char* identifier, Kitsune_Expression* expr)
+{
+	Kitsune_Expression* result = Kitsune_Expression_Make(Kitsune_ExprType_Assign);
+	Kitsune_AssignExpr_Data* data = (Kitsune_AssignExpr_Data*)GC_MALLOC( sizeof(Kitsune_AssignExpr_Data) );
 	data->identifer = identifier;
 	data->expr = expr;
 
 	result->data = data;
-	
+
 	return result;
 }
 

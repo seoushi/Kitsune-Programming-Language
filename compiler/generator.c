@@ -200,8 +200,9 @@ bool Kitsune_Generate(char* filename, char* copts)
 
 bool Kitsune_Gen_expr(FILE* outFile, Kitsune_Expression* expr)
 {
-	char tmpBuffer[32];
-	bool tmpResult;
+	char	tmpBuffer[32];
+	bool	tmpResult;
+	char*	tmpString;
 
 	switch(expr->type)
 	{
@@ -210,7 +211,11 @@ bool Kitsune_Gen_expr(FILE* outFile, Kitsune_Expression* expr)
 			break;
 		case Kitsune_ExprType_Def:
 			return Kitsune_Gen_def(outFile, expr);
-			break;
+		case Kitsune_ExprType_Assign:
+			tmpString = ((Kitsune_AssignExpr_Data*)(expr->data))->identifer;
+			fwrite( tmpString , strlen(tmpString), 1, outFile);
+			fwrite( " = ", 3, 1, outFile);
+			return Kitsune_Gen_expr(outFile, ((Kitsune_AssignExpr_Data*)(expr->data))->expr );
 		case Kitsune_ExprType_Line:
 			tmpResult = Kitsune_Gen_expr(outFile, ((Kitsune_LineExpr_Data*)(expr->data))->expr);
 			fwrite(";\n", 2, 1, outFile);
@@ -262,36 +267,14 @@ bool Kitsune_Gen_expr(FILE* outFile, Kitsune_Expression* expr)
 bool Kitsune_Gen_def(FILE* outFile, Kitsune_Expression* expr)
 {
 	int						i;
-	Kitsune_DefExpr_Data*	data;
+	Kitsune_DefExpr_Data*	data = expr->data;
 	bool					result;
 	
 	
 	/* write header */
 	fwrite("Kitsune_Object* ", 16, 1, outFile);
 	
-	/* write name */
-	data = expr->data;
-	for( i = 0; i < strlen(data->identifer); i++)
-	{
-		/* replace - with _HYPHEN_ */
-		if(data->identifer[i] == '-')
-		{
-			fwrite("_HYPHEN_", 8, 1, outFile);
-		}
-		else
-		{
-			fwrite(&data->identifer[i], 1, 1, outFile);
-		}
-	}
-
-	fwrite(" = ", 3, 1, outFile);
-
-
-	result = Kitsune_Gen_expr(outFile, data->expr);
-
-	fwrite(";\n", 2, 1, outFile);
-
-	return result;
+	return Kitsune_Gen_expr(outFile, data->expr);
 }
 
 
