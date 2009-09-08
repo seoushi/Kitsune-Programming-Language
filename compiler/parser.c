@@ -230,6 +230,12 @@ parse_next:
 						return result;
 					}
 
+					if(((Kitsune_LineExpr_Data*)result->expr->data)->expr->type == Kitsune_ExprType_Def)
+					{
+						Kitsune_ParseError(token, lexer, "not def", "def can only be used to start a statement.");
+						return Kitsune_ResultTuple_make(NULL, false);
+					}
+
 					tmpExpr = Kitsune_Expression_Make(Kitsune_ExprType_Line);
 					tmpLineData = (Kitsune_LineExpr_Data*)GC_MALLOC(sizeof(Kitsune_LineExpr_Data));
 					tmpLineData->expr = Kitsune_AssignExpr_Make(tmpLitData->data.identifier, ((Kitsune_LineExpr_Data*)result->expr->data)->expr );
