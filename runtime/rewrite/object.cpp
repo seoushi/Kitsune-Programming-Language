@@ -41,12 +41,12 @@ using namespace kitsune;
  * function prototypes
  ****************************/
 
-Object* Object_hasSlot		(Object* closure, Object* self,	std::string slotName);
-Object* Object_setMethod	(Object* closure, Object* self,	std::string methodName,	FunctionPtr method);
-Object* Object_setValue		(Object* closure, Object* self,	std::string valueName,	Object* value);
-Object* Object_removeSlot	(Object* closure, Object* self,	std::string slotName);
-Object* Object_clone		(Object* closure, Object* self);
-Object* Object_toString		(Object* closure, Object* self);
+Object* Object_hasSlot		(Object* __CLOSURE__, Object* self,	std::string slotName);
+Object* Object_setMethod	(Object* __CLOSURE__, Object* self,	std::string methodName,	FunctionPtr method);
+Object* Object_setValue		(Object* __CLOSURE__, Object* self,	std::string valueName,	Object* value);
+Object* Object_removeSlot	(Object* __CLOSURE__, Object* self,	std::string slotName);
+Object* Object_clone		(Object* __CLOSURE__, Object* self);
+Object* Object_toString		(Object* __CLOSURE__, Object* self);
 
 /****************************
  * end prototypes
@@ -82,7 +82,7 @@ Object* InitObject()
 }
 
 
-Object* Object_hasSlot(Object* closure, Object* self, std::string slotName)
+Object* Object_hasSlot(Object* __CLOSURE__, Object* self, std::string slotName)
 {
 	Object*	curObj = self;
 	unsigned int tmp;
@@ -103,7 +103,7 @@ Object* Object_hasSlot(Object* closure, Object* self, std::string slotName)
 }
 	
 
-Object* Object_setMethod(Object* closure, Object* self, std::string methodName, FunctionPtr method)
+Object* Object_setMethod(Object* __CLOSURE__, Object* self, std::string methodName, FunctionPtr method)
 {
 	// try and replace current slots first
 	SlotMapItr itr = self->slots.find(methodName);
@@ -127,7 +127,7 @@ Object* Object_setMethod(Object* closure, Object* self, std::string methodName, 
 }
 
 
-Object* Object_setValue(Object* closure, Object* self, std::string valueName, Object* value)
+Object* Object_setValue(Object* __CLOSURE__, Object* self, std::string valueName, Object* value)
 {
 	// try and replace current slots first
 	SlotMapItr itr = self->slots.find(valueName);
@@ -151,7 +151,7 @@ Object* Object_setValue(Object* closure, Object* self, std::string valueName, Ob
 }
 	
 	
-Object* Object_removeSlot(Object* closure, Object* self, std::string slotName)
+Object* Object_removeSlot(Object* __CLOSURE__, Object* self, std::string slotName)
 {
 	// try and remove from self first
 	SlotMapItr itr = self->slots.find(slotName);
@@ -190,7 +190,7 @@ Object* Object_removeSlot(Object* closure, Object* self, std::string slotName)
 }
 	
 	
-Object* Object_clone(Object* closure, Object* self)
+Object* Object_clone(Object* __CLOSURE__, Object* self)
 {
 	Object* newObj = new Object();
 	newObj->parent = self;
@@ -198,7 +198,7 @@ Object* Object_clone(Object* closure, Object* self)
 	return newObj;
 }
 
-Object* Object_toString(Object* closure, Object* self)
+Object* Object_toString(Object* __CLOSURE__, Object* self)
 {
 	std::stringstream ss;
 	ss << "object @ " << (int)self;

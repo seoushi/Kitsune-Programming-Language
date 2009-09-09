@@ -63,7 +63,6 @@ namespace kitsune
 		public:
 			Object();
 			
-			unsigned int	numSlots;
 			SlotMap			slots;
 			Object*			parent;
 		
