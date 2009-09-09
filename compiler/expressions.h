@@ -104,7 +104,6 @@ typedef struct
 	union
 	{
 		char*	identifier;
-		/*char*	stringData;*/
 		int	intValue;
 		float	floatValue;
 	}data;

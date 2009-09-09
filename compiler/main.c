@@ -34,47 +34,8 @@
 #include <gc/gc.h>
 
 
-void lexTest(char* filename)
-{
-	Kitsune_LexerData*	lexer = Kitsune_Lex_make();
-	Kitsune_Token*		token;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			token = Kitsune_Lex_parseNextToken(lexer);
-		
-			printf("%s\n", Kitsune_Token_toString(token));
-			
-			if(token->type == kitsune_tok_eof)
-			{
-				break;
-			}
-		}
-	}
-}
 
-void parseTest(char* filename)
-{
-	Kitsune_LexerData*		lexer = Kitsune_Lex_make();
-	Kitsune_ResultTuple*	result;
-	
-	if(Kitsune_Lex_openFile(lexer, filename))
-	{
-		while(true)
-		{
-			result = Kitsune_Parse_topLevel(lexer);
-			
-			if((!result->succeeded) || (result->expr->type == Kitsune_ExprType_Eof))
-			{
-				break;
-			}
-		}
-	}
-}
-
-void generateTest(char* filename, int argc, char** argv)
+void generate(char* filename, int argc, char** argv)
 {
 	int		optsSize = 0;
 	int		i;
@@ -126,7 +87,7 @@ int main(int argc, char** argv)
 		else
 		{
 			printf("Processing %s \n", argv[1]);
-			generateTest(argv[1], argc, argv);
+			generate(argv[1], argc, argv);
 		}
 	}
 	else

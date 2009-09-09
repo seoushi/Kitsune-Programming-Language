@@ -54,7 +54,6 @@ typedef enum
 	kitsune_tok_openParen = -14,
 	kitsune_tok_closeParen = -15,
 	kitsune_tok_invalid = -16,
-/*	kitsune_tok_return = -17, */
 } Kitsune_TokenType;
 
 

@@ -411,9 +411,6 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 			sprintf(result, "INVALID(%s)", token->data.identifier);
 			return result;
 			break;
-/*		case kitsune_tok_return:
-			return "RETURN";
-			break;*/
 		default:
 			result = GC_MALLOC(sizeof(char) *  12);
 			sprintf(result, "UNKNOWN(%i)", token->type);
