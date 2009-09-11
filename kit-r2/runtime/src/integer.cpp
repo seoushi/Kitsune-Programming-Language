@@ -32,7 +32,9 @@
 #include <sstream>
 #include <math.h>
 
-#include "integer.hpp"
+#include <kitpl/integer.hpp>
+#include <kitpl/float.hpp>
+#include <kitpl/boolean.hpp>
 
 namespace kit
 {
@@ -110,7 +112,13 @@ namespace kit
 				break;
 			case 16: // to-str
 				result = ((Integer*)sender)->toStr();
-				break;		
+				break;
+			case 20: // to-bool
+				result = ((Float*)sender)->toBool();
+				break;
+			default:
+				throw "Does Not Support Operation";
+				break;
 		}
 		
 		va_end(va);
@@ -209,5 +217,14 @@ namespace kit
 		return String::make(ss.str());
 	}
 
+	Object* Integer::toBool()
+	{
+		if(_value == 0.0f)
+		{
+			return Boolean::make(true);
+		}
+		
+		return Boolean::make(false);
+	}
 }
 
