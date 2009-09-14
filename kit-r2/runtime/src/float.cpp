@@ -35,6 +35,7 @@
 #include <kitpl/float.hpp>
 #include <kitpl/integer.hpp>
 #include <kitpl/boolean.hpp>
+#include <kitpl/string.hpp>
 
 namespace kit
 {

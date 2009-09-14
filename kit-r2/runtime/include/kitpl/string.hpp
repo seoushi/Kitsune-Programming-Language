@@ -1,5 +1,5 @@
 /*
- *  integer.h
+ *  string.hpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -27,45 +27,55 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-       
-       
-#ifndef _KIT_INTEGER_H_
-#define _KIT_INTEGER_H_
 
-#include "core.hpp"
+
+#ifndef _KIT_STRING_H_
+#define _KIT_STRING_H_
+
+#include <kitpl/core.hpp>
+
+#include <string>
+
 
 namespace kit
 {
-
-	class Integer
+	
+	class String
 	{
 		public:
-
-			Integer();
-
-			static Object* make(int integer);
+			
+			String();
+			
+			static Object* make(std::string str);
 			static Object* script(Object* sender, MsgId message, ...);
-
+			
 			Object* equals(Object* value);
 			Object* greaterThan(Object* value);
 			Object* greaterThanOrEqual(Object* value);
 			Object* lessThan(Object* value);
 			Object* lessThanOrEqual(Object* value);
 			Object* notEqual(Object* value);
-
-			Object* add(Object* value);
-			Object* sub(Object* value);
-			Object* div(Object* value);
-			Object* mul(Object* value);
-			Object* power(Object* value);
-			Object* mod(Object* value);
-			Object* squareRoot();
+			
+			Object* length();
+			Object* includes(Object* str);
+			Object* reverse();
+			Object* replace(Object* search, Object* replace);
+			Object* remove(Object* str);
+			Object* toInteger();
 			Object* toFloat();
-			Object* toStr();
-
-			int _value;
+			Object* capitalize();
+			Object* toUpper();
+			Object* toLower();
+			Object* print();
+			Object* printLine();
+			Object* append(Object* str);
+			Object* subString(Object* startIndex, Object* endIndex);
+			Object* split(Object* delimiter);
+			
+			
+			std::string _value;
 	};
 }
 
 #endif
- 																																			
+

@@ -33,6 +33,7 @@
 #include <math.h>
 
 #include <kitpl/boolean.hpp>
+#include <kitpl/string.hpp>
 
 namespace kit
 {

@@ -35,6 +35,7 @@
 #include <kitpl/integer.hpp>
 #include <kitpl/float.hpp>
 #include <kitpl/boolean.hpp>
+#include <kitpl/string.hpp>
 
 namespace kit
 {
@@ -128,73 +129,73 @@ namespace kit
 
 	Object* Integer::equals(Object* value)
 	{
-		return Boolean::make(_value == ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value == ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThan(Object* value)
 	{
-		return Boolean::make(_value > ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value > ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value >= ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value >= ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::lessThan(Object* value)
 	{
-		return Boolean::make(_value < ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value < ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::lessThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value <= ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value <= ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Boolean::make(_value != ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 
 
 	Object* Integer::add(Object* value)
 	{
-		return Integer::make(_value + ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Integer::make(_value + ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::sub(Object* value)
 	{
-		return Integer::make(_value - ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Integer::make(_value - ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::div(Object* value)
 	{
-		return Integer::make(_value / ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Integer::make(_value / ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::mul(Object* value)
 	{
-		return Integer::make(_value * ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Integer::make(_value * ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::power(Object* value)
 	{
-		return Integer::make((int)pow(_value, ((Integer*)value->script(value, 15/* to-int */))->_value));
+		return Integer::make((int)pow(_value, ((Integer*)(value->script(value, 15/* to-int */)))->_value));
 	}
 	
 	
 	Object* Integer::mod(Object* value)
 	{
-		return Integer::make(_value % ((Integer*)value->script(value, 15/* to-int */))->_value);
+		return Integer::make(_value % ((Integer*)(value->script(value, 15/* to-int */)))->_value);
 	}
 	
 	
