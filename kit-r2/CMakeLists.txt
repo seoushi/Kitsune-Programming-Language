@@ -1,6 +1,7 @@
 PROJECT ( libKitsune )
 
-SET ( libKitsune_SRCS	./runtime/src/boolean.cpp
+SET ( libKitsune_SRCS	./runtime/src/array.cpp
+			./runtime/src/boolean.cpp
 			./runtime/src/float.cpp
 			./runtime/src/integer.cpp
 			./runtime/src/string.cpp)
