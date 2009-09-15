@@ -1,5 +1,5 @@
 /*
- *  boolean.h
+ *  main.c
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,16 +28,76 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "core.h"
+#include "lexer.h"
+#include "parser.h"
+#include "generator.h"
+#include <gc/gc.h>
 
-#include <stdbool.h>
 
-#ifndef _KITSUNE_BOOLEAN_H_
-#define _KITSUNE_BOOLEAN_H_
 
-Kitsune_Object* Kitsune_InitBoolean();
+void generate(char* filename, int argc, char** argv)
+{
 
-Kitsune_Object* Kitsune_MakeBoolean(bool value);
+/*	
+	int		optsSize = 0;
+	int		i;
+	int		j;
+	int		idx;
+	char*	ccOpts;
+	
+	for(i = 2; i < argc; i++)
+	{
+		optsSize += strlen(argv[i]) + 1;
+	}
 
-#endif
+	if(optsSize == 0)
+	{	
+		ccOpts = (char*)GC_MALLOC(sizeof(char));
+		ccOpts[0] = '\0';
+	}
+	else
+	{
+		ccOpts = (char*)GC_MALLOC(sizeof(char) * optsSize);
 
+		idx = 0;
+		for(i = 2; i < argc; i++)
+		{
+			for(j = 0; j < strlen(argv[i]); j++)
+			{
+				ccOpts[idx] = argv[i][j];
+				idx++;
+			}
+			ccOpts[idx] = ' ';
+			idx++;
+		}
+		ccOpts[idx] = '\0';
+	}
+
+	Kitsune_Generate(filename, ccOpts);
+*/
+
+}
+
+int main(int argc, char** argv)
+{	
+	GC_INIT();
+
+	if(argc >= 2)
+	{
+		if((strcmp("help", argv[1]) == 0) || (strcmp("HELP", argv[1]) == 0))
+		{
+			printf("Usage is: kitsunec <file.kit> <C Compile Options> \n");
+		}
+		else
+		{
+			printf("Processing %s \n", argv[1]);
+			generate(argv[1], argc, argv);
+		}
+	}
+	else
+	{
+		printf("invalid usage. The proper format is:  kitsunec <file.kit> <C Compile Options> \n");
+	}
+	
+	return 0;
+}
