@@ -10,7 +10,8 @@ SET ( kitsuneLib_SRCS	./runtime/src/array.cpp
 			./runtime/src/integer.cpp
 			./runtime/src/string.cpp)
 
-SET ( kitc_SRCS ./compiler/src/main.c )
+SET ( kitc_SRCS ./compiler/src/main.cpp
+				./compiler/src/expressions.cpp)
 
 ADD_DEFINITIONS ( -Wall )
 

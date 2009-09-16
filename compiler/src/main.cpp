@@ -1,5 +1,5 @@
 /*
- *  lexer.h
+ *  main.c
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,74 +28,77 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "expressions.hpp"
+#include "lexer.hpp"
+// #include "parser.h"
+// #include "generator.h"
+#include <gc/gc.h>
 
-#ifndef _KITSUNE_LEXER_H
-#define	_KITSUNE_LEXER_H
 
-#include <string.h>
-#include <stdio.h>
-#include <stdbool.h>
 
-typedef enum
+void generate(char* filename, int argc, char** argv)
 {
-	kitsune_tok_eof = -1,
-	kitsune_tok_def = -2,
-	kitsune_tok_identifier = -3,
-	kitsune_tok_int = -4,
-	kitsune_tok_float = -5,
-	kitsune_tok_equal = -6,
-	kitsune_tok_string = -7,
-	kitsune_tok_openBrace = -8,
-	kitsune_tok_closeBrace = -9,
-/*	kitsune_tok_pipe = -10,	    */
-	kitsune_tok_comma = -11,
-	kitsune_tok_comment = -12,
-	kitsune_tok_dot = -13,
-	kitsune_tok_openParen = -14,
-	kitsune_tok_closeParen = -15,
-	kitsune_tok_invalid = -16,
-} Kitsune_TokenType;
 
+/*	
+	int		optsSize = 0;
+	int		i;
+	int		j;
+	int		idx;
+	char*	ccOpts;
+	
+	for(i = 2; i < argc; i++)
+	{
+		optsSize += strlen(argv[i]) + 1;
+	}
 
-typedef struct
-{
-    int type;
-    
-    union
-    {
-		char*	identifier;
-        int		intValue;
-        float	floatValue;
-    }data;
-} Kitsune_Token;
+	if(optsSize == 0)
+	{	
+		ccOpts = (char*)GC_MALLOC(sizeof(char));
+		ccOpts[0] = '\0';
+	}
+	else
+	{
+		ccOpts = (char*)GC_MALLOC(sizeof(char) * optsSize);
 
+		idx = 0;
+		for(i = 2; i < argc; i++)
+		{
+			for(j = 0; j < strlen(argv[i]); j++)
+			{
+				ccOpts[idx] = argv[i][j];
+				idx++;
+			}
+			ccOpts[idx] = ' ';
+			idx++;
+		}
+		ccOpts[idx] = '\0';
+	}
 
-typedef struct
-{
-	FILE*			fileHandle;
-    Kitsune_Token*	curToken;
-    int          	lastChar;
-    int          	curLine;
-    int          	curColumn;
+	Kitsune_Generate(filename, ccOpts);
+*/
 
-}Kitsune_LexerData;
+}
 
+int main(int argc, char** argv)
+{	
+	GC_INIT();
 
-
-Kitsune_LexerData* Kitsune_Lex_make();
-
-bool Kitsune_Lex_openFile(Kitsune_LexerData* lexer, char* filename);
-
-Kitsune_Token* Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer);
-
-char* Kitsune_Lex_positionStr(Kitsune_LexerData* lexer);
-
-bool Kitsune_Lex_getNextCharacter(Kitsune_LexerData* lexer);
-
-bool Kitsune_Lex_isReservedCharacter(char character);
-
-char* Kitsune_Token_toString(Kitsune_Token* token);
-
-
-#endif
-
+	if(argc >= 2)
+	{
+		if((strcmp("help", argv[1]) == 0) || (strcmp("HELP", argv[1]) == 0))
+		{
+			printf("Usage is: kitsunec <file.kit> <C Compile Options> \n");
+		}
+		else
+		{
+			printf("Processing %s \n", argv[1]);
+			generate(argv[1], argc, argv);
+		}
+	}
+	else
+	{
+		printf("invalid usage. The proper format is:  kitsunec <file.kit> <C Compile Options> \n");
+	}
+	
+	return 0;
+}
