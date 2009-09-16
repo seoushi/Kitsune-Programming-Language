@@ -205,7 +205,7 @@ ExprType::Type FuncCallExpr::Type()
 
 
 ///////////////////////////////////////////
-/// Returnl Expression
+/// Return Expression
 ///////////////////////////////////////////
 ReturnExpr::ReturnExpr(){}
 
@@ -226,7 +226,7 @@ ExprType::Type ReturnExpr::Type()
 
 
 ///////////////////////////////////////////
-/// Returnl Expression
+/// Line Expression
 ///////////////////////////////////////////
 LineExpr::LineExpr(){}
 
