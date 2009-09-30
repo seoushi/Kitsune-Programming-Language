@@ -33,37 +33,7 @@
 
 namespace kitc
 {
-	
-/*	
-	namespace ExprType
-	{
-		typedef enum
-			{		
-				None,
-				Eof,
-				Def,
-				Function,
-				FuncCall,
-				Literal,
-				Return,
-				Line,
-				Assign,
-			}Type;
-	}
-	
-	
-	namespace LiteralType
-	{
-		typedef enum
-			{
-				None,
-				Identifier,
-				String,
-				Int,
-				Float,
-			}Type;
-	}
-*/
+
 
 ///////////////////////////////////////////
 /// CLASS Expression

@@ -28,13 +28,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "lexer.h"
+#include "lexer.hpp"
 
-#include <gc/gc.h>
 #include <ctype.h>
 #include <stdlib.h>
 
 
+/*
 Kitsune_LexerData* Kitsune_Lex_make()
 {
 	Kitsune_LexerData* result = (Kitsune_LexerData*) GC_MALLOC(sizeof(Kitsune_LexerData));
@@ -83,21 +83,21 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 
 	/* check for comment */
-	if(lexer->lastChar == '#' )
+/*	if(lexer->lastChar == '#' )
 	{
 		/* perhaps the comment should be saved? */
-        while((lexer->lastChar != '\n') && (lexer->lastChar != EOF))
+/*        while((lexer->lastChar != '\n') && (lexer->lastChar != EOF))
         {
 			Kitsune_Lex_getNextCharacter(lexer);
         }
 
 		/* we don't care about the comment, return the next thing */
-		return Kitsune_Lex_parseNextToken(lexer);
+/*		return Kitsune_Lex_parseNextToken(lexer);
     }
 
 
 	/* open paren */
-	if(lexer->lastChar == '(' )
+/*	if(lexer->lastChar == '(' )
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
 		
@@ -107,7 +107,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	
 
 	/* close paren */
-	if(lexer->lastChar == ')')
+/*	if(lexer->lastChar == ')')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeParen);
@@ -116,7 +116,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 
 	/* check for string literal */
-	if(lexer->lastChar == '\"')
+/*	if(lexer->lastChar == '\"')
 	{
 		i = 0;
 		buffer[0] = '\0';
@@ -151,7 +151,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 		i--;
 		
 		/* eat last " */
-		Kitsune_Lex_getNextCharacter(lexer);
+/*		Kitsune_Lex_getNextCharacter(lexer);
 
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_string);
 		lexer->curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
@@ -162,7 +162,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 	
 	/* check for ints and floats */
-	if(isdigit(lexer->lastChar))
+/*	if(isdigit(lexer->lastChar))
 	{
 		i = 0;
 		hasPeriod = false;
@@ -223,7 +223,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	}
 
 	/* open brace */
-	if(lexer->lastChar == '{')
+/*	if(lexer->lastChar == '{')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_openBrace);
@@ -231,7 +231,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	}
 
 	/* close brace */
-	if(lexer->lastChar == '}')
+/*	if(lexer->lastChar == '}')
 	{
 		Kitsune_Lex_getNextCharacter(lexer);
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeBrace);
@@ -239,7 +239,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 	}
 
     /* check for the end of the file */
-	if(lexer->lastChar == EOF)
+/*	if(lexer->lastChar == EOF)
 	{
 		lexer->curToken = Kitsune_Token_make(kitsune_tok_eof);
 		return lexer->curToken;
@@ -248,7 +248,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 
 	/* Check for identifiers and reserved words */
-	{
+/*	{
 		i = 0;
 		buffer[0] = '\0';
 
@@ -285,7 +285,7 @@ Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
 
 
 	/* seems we found something we don't know about just return it */
-	lexer->curToken = Kitsune_Token_make(lexer->lastChar);
+/*	lexer->curToken = Kitsune_Token_make(lexer->lastChar);
 	Kitsune_Lex_getNextCharacter(lexer);
 
 	return lexer->curToken;
@@ -391,7 +391,7 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 /*		case kitsune_tok_pipe:
 			return "PIPE";
 			break;*/
-		case kitsune_tok_comma:
+/*		case kitsune_tok_comma:
 			return "COMMA";
 			break;
 		case kitsune_tok_comment:
@@ -418,3 +418,4 @@ char* Kitsune_Token_toString(Kitsune_Token* token)
 			break;
 	}
 }
+*/

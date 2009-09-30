@@ -11,8 +11,8 @@ SET ( kitsuneLib_SRCS	./runtime/src/array.cpp
 			./runtime/src/string.cpp)
 
 SET ( kitc_SRCS ./compiler/src/main.cpp
-				./compiler/src/expressions.cpp)
-
+				./compiler/src/expressions.cpp
+				./compiler/src/lexer.cpp)
 ADD_DEFINITIONS ( -Wall )
 
 INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ )

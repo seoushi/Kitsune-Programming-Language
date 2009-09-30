@@ -1,5 +1,5 @@
 /*
- *  lexer.h
+ *  lexer.hpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -29,72 +29,84 @@
  */
 
 
-#ifndef _KITSUNE_LEXER_H
-#define	_KITSUNE_LEXER_H
+#ifndef KITC_LEXER_HPP
+#define	KITC_LEXER_HPP
 
-#include <string.h>
+#include <string>
 #include <stdio.h>
 #include <stdbool.h>
 
-typedef enum
+namespace kitc
 {
-	kitsune_tok_eof = -1,
-	kitsune_tok_def = -2,
-	kitsune_tok_identifier = -3,
-	kitsune_tok_int = -4,
-	kitsune_tok_float = -5,
-	kitsune_tok_equal = -6,
-	kitsune_tok_string = -7,
-	kitsune_tok_openBrace = -8,
-	kitsune_tok_closeBrace = -9,
-/*	kitsune_tok_pipe = -10,	    */
-	kitsune_tok_comma = -11,
-	kitsune_tok_comment = -12,
-	kitsune_tok_dot = -13,
-	kitsune_tok_openParen = -14,
-	kitsune_tok_closeParen = -15,
-	kitsune_tok_invalid = -16,
-} Kitsune_TokenType;
+	
 
-
-typedef struct
+namespace TokenType
 {
-    int type;
-    
-    union
-    {
-		char*	identifier;
-        int		intValue;
-        float	floatValue;
-    }data;
-} Kitsune_Token;
+	typedef enum
+	{
+		Eof = -1,
+		Def = -2,
+		Identifer = -3,
+		Int = -4,
+		Float = -5,
+		Equal = -6,
+		String = -7,
+		OpenBrace = -8,
+		CloseBrace = -9,
+		Comment = -10,
+		OpenParen = -11,
+		CloseParen = -12,
+		Invalid = -13,
+	}Type;
+}
 
 
-typedef struct
+class Token
 {
-	FILE*			fileHandle;
-    Kitsune_Token*	curToken;
-    int          	lastChar;
-    int          	curLine;
-    int          	curColumn;
+	public:
+		Token(){};
+		~Token(){};
+	
+		std::string ToString();
+	
+		int type;
+	
+		union
+		{
+			int		intValue;
+			float	floatValue;
+		}
+	
+		std::string identifer;
+}
 
-}Kitsune_LexerData;
 
+class Lexer
+{
+	public:
 
+		Lexer();
+		~Lexer();
 
-Kitsune_LexerData* Kitsune_Lex_make();
+		bool OpenFile(std::string filename);
+	
+		void ParseNextToken();
+	
+		std::string PositionString();
+		
+		bool GetNextChar();
+	
+		static bool IsReservedChar(char character);
+	
+	private:
 
-bool Kitsune_Lex_openFile(Kitsune_LexerData* lexer, char* filename);
+		FILE*	fileHandle;
+		Token	curToken;
+		int		lastChar;
+		int		curLine;
+		int		curColumn;
 
-Kitsune_Token* Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer);
-
-char* Kitsune_Lex_positionStr(Kitsune_LexerData* lexer);
-
-bool Kitsune_Lex_getNextCharacter(Kitsune_LexerData* lexer);
-
-bool Kitsune_Lex_isReservedCharacter(char character);
-
-char* Kitsune_Token_toString(Kitsune_Token* token);
+};
 
 
 #endif
