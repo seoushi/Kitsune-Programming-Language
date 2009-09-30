@@ -15,9 +15,9 @@ SET ( kitc_SRCS ./compiler/src/main.cpp
 				./compiler/src/lexer.cpp)
 ADD_DEFINITIONS ( -Wall )
 
-INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ )
+INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ /usr/include )
 
 ADD_LIBRARY ( kitsune ${kitsuneLib_SRCS} )
 
 ADD_EXECUTABLE ( kitc ${kitc_SRCS} )
-target_link_libraries( kitc gc m)
+target_link_libraries( kitc gc m )

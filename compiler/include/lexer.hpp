@@ -33,19 +33,16 @@
 #define	KITC_LEXER_HPP
 
 #include <string>
-#include <stdio.h>
-#include <stdbool.h>
 
 namespace kitc
 {
-	
 
 namespace TokenType
 {
 	typedef enum
 	{
 		Eof = -1,
-		Def = -2,
+//		Def = -2,
 		Identifer = -3,
 		Int = -4,
 		Float = -5,
@@ -64,8 +61,9 @@ namespace TokenType
 class Token
 {
 	public:
-		Token(){};
-		~Token(){};
+		Token();
+		Token(int type);
+		~Token();
 	
 		std::string ToString();
 	
@@ -75,10 +73,10 @@ class Token
 		{
 			int		intValue;
 			float	floatValue;
-		}
+		};
 	
-		std::string identifer;
-}
+		std::string identifier;
+};
 
 
 class Lexer
@@ -101,12 +99,15 @@ class Lexer
 	private:
 
 		FILE*	fileHandle;
-		Token	curToken;
+		Token*	curToken;
 		int		lastChar;
 		int		curLine;
 		int		curColumn;
 
 };
+
+
+}
 
 
 #endif

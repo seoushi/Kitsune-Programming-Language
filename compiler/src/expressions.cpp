@@ -86,7 +86,7 @@ ExprType::Type DefExpr::Type()
 AssignExpr::AssignExpr(Expression* expr)
 {
 	this->expr = expr;
-	identifer = "default";
+	identifier = "default";
 }
 
 
@@ -110,7 +110,7 @@ ExprType::Type AssignExpr::Type()
 ///////////////////////////////////////////
 FuncExpr::FuncExpr()
 {
-	identifer = "default";
+	identifier = "default";
 }
 
 

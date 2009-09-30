@@ -30,294 +30,138 @@
 
 #include "lexer.hpp"
 
-#include <ctype.h>
-#include <stdlib.h>
+#include <sstream>
 
+using namespace kitc;
 
-/*
-Kitsune_LexerData* Kitsune_Lex_make()
+////////////////////////////////////////////
+// Token
+////////////////////////////////////////////
+
+Token::Token()
 {
-	Kitsune_LexerData* result = (Kitsune_LexerData*) GC_MALLOC(sizeof(Kitsune_LexerData));
-	result->lastChar = ' ';
-	
-	return result;
 }
 
 
-bool Kitsune_Lex_openFile(Kitsune_LexerData* lexer, char* filename)
+Token::Token(int type)
 {
-	lexer->fileHandle = fopen(filename, "r");
-	
-	return (lexer->fileHandle != 0);
+	this->type = type;
 }
 
 
-Kitsune_Token* Kitsune_Token_make(Kitsune_TokenType type)
+Token::~Token()
 {
-	Kitsune_Token* tok = GC_MALLOC(sizeof(Kitsune_Token));
-	tok->type = type;
-	
-	return tok;
 }
 
 
-Kitsune_Token*	Kitsune_Lex_parseNextToken(Kitsune_LexerData* lexer)
+std::string Token::ToString()
 {
-	static char 	buffer[1024];
-	int				i;
-	char			tmpChar;
-	bool			hasPeriod;
-	bool			isValid;
+	std::stringstream ss;
 	
+	switch (type)
+	{
+		case TokenType::Eof:
+			ss << "EOF";
+			break;
+//		case TokenType::Def:
+//			ss << "DEF";
+//			break;
+		case TokenType::Identifer:
+			ss << "IDENTIFER(" << identifier << ")";
+			break;
+		case TokenType::Int:
+			ss << "INT(" << intValue << ")";
+			break;
+		case TokenType::Float:
+			ss << "FLOAT(" << floatValue << ")";
+			break;
+		case TokenType::Equal:
+			ss << "EQUALS";
+			break;
+		case TokenType::String:
+			ss << "STRING(" << identifier << ")";
+			break;
+		case TokenType::OpenBrace:
+			ss << "OPEN_BRACE";
+			break;
+		case TokenType::CloseBrace:
+			ss << "CLOSE_BRACE";
+			break;
+		case TokenType::Comment:
+			ss << "COMMENT";
+			break;
+		case TokenType::OpenParen:
+			ss << "OPEN_PAREN";
+			break;
+		case TokenType::CloseParen:
+			ss << "CLOSE_PAREN";
+			break;
+		case TokenType::Invalid:
+			ss << "INVALID(" << identifier << ")";
+			break;
+		default:
+			ss << "UNKNOWN(" << identifier << ")";
+			break;
+	}
 	
-	while( (lexer->lastChar == ' ') || (lexer->lastChar == '\t') || (lexer->lastChar == '\r') || (lexer->lastChar == '\n') )
-	{
-		if(lexer->lastChar == '\n')
-		{
-			lexer->curColumn = 0;
-			lexer->curLine++;
-		}
-
-		Kitsune_Lex_getNextCharacter(lexer);
-	}
-
-
-	/* check for comment */
-/*	if(lexer->lastChar == '#' )
-	{
-		/* perhaps the comment should be saved? */
-/*        while((lexer->lastChar != '\n') && (lexer->lastChar != EOF))
-        {
-			Kitsune_Lex_getNextCharacter(lexer);
-        }
-
-		/* we don't care about the comment, return the next thing */
-/*		return Kitsune_Lex_parseNextToken(lexer);
-    }
-
-
-	/* open paren */
-/*	if(lexer->lastChar == '(' )
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-		
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_openParen);
-		return lexer->curToken;
-	}
-	
-
-	/* close paren */
-/*	if(lexer->lastChar == ')')
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeParen);
-		return lexer->curToken;
-	}
-
-
-	/* check for string literal */
-/*	if(lexer->lastChar == '\"')
-	{
-		i = 0;
-		buffer[0] = '\0';
-
-		Kitsune_Lex_getNextCharacter(lexer);
-
-		while(true)
-		{
-			if(lexer->lastChar == '\"')
-			{
-				if(i == 0)
-				{
-					buffer[i] = '\0';
-					break;
-				}
-
-				tmpChar = buffer[i - 1];
-
-				if(tmpChar != '\\')
-				{
-					i++;
-					buffer[i] = '\0';
-					break;
-				}
-			}
-
-			buffer[i] = lexer->lastChar;
-			i++;
-			Kitsune_Lex_getNextCharacter(lexer);
-		}
-		buffer[i] = '\0';
-		i--;
-		
-		/* eat last " */
-/*		Kitsune_Lex_getNextCharacter(lexer);
-
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_string);
-		lexer->curToken->data.identifier = (char*)GC_MALLOC(sizeof(char) * (i + 1));
-		strncpy(lexer->curToken->data.identifier, buffer, i);
-
-        return lexer->curToken;
-	}
-
-	
-	/* check for ints and floats */
-/*	if(isdigit(lexer->lastChar))
-	{
-		i = 0;
-		hasPeriod = false;
-		isValid = true;
-
-		while( !Kitsune_Lex_isReservedCharacter(lexer->lastChar) )
-		{
-			if(lexer->lastChar == '.')
-			{
-				if(hasPeriod)
-				{
-					isValid = false;
-				}
-				else
-				{
-					hasPeriod = true;
-				}
-
-				if( !isdigit(lexer->lastChar) && (lexer->lastChar != '.'))
-				{
-					isValid = false;
-				}
-			}
-
-			if(!isValid)
-			{
-				lexer->curToken = Kitsune_Token_make(kitsune_tok_invalid);
-				i++;
-				buffer[i] = '\0';
-				lexer->curToken->data.identifier = GC_MALLOC( sizeof(char) * i);
-				strncpy(lexer->curToken->data.identifier, buffer, i);
-				
-				return lexer->curToken;
-			}
-
-			buffer[i] = lexer->lastChar;
-			buffer[i + 1] = '\0';
-			i++;
-
-			Kitsune_Lex_getNextCharacter(lexer);
-		}
-
-		if(hasPeriod)
-		{
-			i++;
-			buffer[i] = '\0';
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_float);
-			lexer->curToken->data.floatValue = atof(buffer);
-			return lexer->curToken;
-		}
-
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_int);
-		i++;
-		buffer[i] = '\0';
-		lexer->curToken->data.intValue = atoi(buffer);
-
-		return lexer->curToken;
-	}
-
-	/* open brace */
-/*	if(lexer->lastChar == '{')
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_openBrace);
-		return lexer->curToken;
-	}
-
-	/* close brace */
-/*	if(lexer->lastChar == '}')
-	{
-		Kitsune_Lex_getNextCharacter(lexer);
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_closeBrace);
-		return lexer->curToken;
-	}
-
-    /* check for the end of the file */
-/*	if(lexer->lastChar == EOF)
-	{
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_eof);
-		return lexer->curToken;
-	}
-
-
-
-	/* Check for identifiers and reserved words */
-/*	{
-		i = 0;
-		buffer[0] = '\0';
-
-		while( !Kitsune_Lex_isReservedCharacter(lexer->lastChar) )
-		{
-			buffer[i] = lexer->lastChar;
-			i++;
-			Kitsune_Lex_getNextCharacter(lexer);
-		}
-		buffer[i] = '\0';
-
-		if(strcmp(buffer,"def") == 0)
-		{
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_def);
-			return lexer->curToken;
-		}
-		else if(strcmp(buffer,"=") == 0)
-		{
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_equal);
-			return lexer->curToken;
-		}
-		else if(strcmp(buffer,".") == 0)
-		{
-			lexer->curToken = Kitsune_Token_make(kitsune_tok_dot);
-			return lexer->curToken;
-		}
-
-		lexer->curToken = Kitsune_Token_make(kitsune_tok_identifier);
-		lexer->curToken->data.identifier = GC_MALLOC(sizeof(char) * i + 1);
-		strncpy(lexer->curToken->data.identifier, buffer, i);
-
-		return lexer->curToken;
-    }
-
-
-	/* seems we found something we don't know about just return it */
-/*	lexer->curToken = Kitsune_Token_make(lexer->lastChar);
-	Kitsune_Lex_getNextCharacter(lexer);
-
-	return lexer->curToken;
+	return ss.str();
 }
 
 
-char* Kitsune_Lex_positionStr(Kitsune_LexerData* lexer)
+////////////////////////////////////////////
+// Lexer
+////////////////////////////////////////////
+
+Lexer::Lexer()
 {
-	char* buffer = GC_MALLOC(sizeof(char) * 32);
-	
-	sprintf(buffer, "Line: %d Col: %d", lexer->curLine + 1, lexer->curColumn);
-	
-	return buffer;
+	lastChar = ' ';
+	fileHandle = NULL;
 }
 
 
-bool Kitsune_Lex_getNextCharacter(Kitsune_LexerData* lexer)
+Lexer::~Lexer()
 {
-	if(!lexer->fileHandle)
+	if(fileHandle)
 	{
-		lexer->lastChar = EOF;
+		fclose(fileHandle);
+	}
+}
+
+
+bool Lexer::OpenFile(std::string filename)
+{
+	fileHandle = fopen(filename.c_str(), "r");
+	
+	return (fileHandle != 0);
+}
+
+	
+std::string Lexer::PositionString()
+{
+	std::stringstream ss;
+	
+	ss << "[ " << (curLine + 1) << " : " << curColumn << " ]";
+	
+	return ss.str();
+}
+
+
+bool Lexer::GetNextChar()
+{
+	if(!fileHandle)
+	{
+		lastChar = EOF;
 		return false;
 	}
 	
-	lexer->curColumn++;
-	lexer->lastChar = fgetc(lexer->fileHandle);
+	curColumn++;
+	lastChar = fgetc(fileHandle);
 	
 	return true;
 }
 
 
-bool Kitsune_Lex_isReservedCharacter(char character)
+bool Lexer::IsReservedChar(char character)
 {
 	switch(character)
 	{
@@ -343,79 +187,219 @@ bool Kitsune_Lex_isReservedCharacter(char character)
 }
 
 
-char* Kitsune_Token_toString(Kitsune_Token* token)
+void Lexer::ParseNextToken()
 {
-	char* result;
+	static char 	buffer[1024];
+	int				i;
+	char			tmpChar;
+	bool			hasPeriod;
+	bool			isValid;
 	
-	if(!token)
+	
+	while( (lastChar == ' ') || (lastChar == '\t') || (lastChar == '\r') || (lastChar == '\n') )
 	{
-		return "NULL_TOKEN";
+		if(lastChar == '\n')
+		{
+			curColumn = 0;
+			curLine++;
+		}
+
+		GetNextChar();
+	}
+
+
+	// check for comment
+	if(lastChar == '#')
+	{
+		// perhaps the comment should be saved?
+        while((lastChar != '\n') && (lastChar != EOF))
+        {
+			GetNextChar();
+        }
+
+		// we don't care about the comment, return the next thing
+		ParseNextToken();
+		return;
+    }
+
+
+	// open paren
+	if(lastChar == '(')
+	{
+		GetNextChar();
+		curToken = new Token(TokenType::OpenParen);
+		return;
 	}
 	
-	switch(token->type)
+
+	// close paren
+	if(lastChar == ')')
 	{
-		case kitsune_tok_eof:
-			return "EOF";
-			break;
-		case kitsune_tok_def:
-			return "DEF";
-			break;
-		case kitsune_tok_identifier:
-			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
-			sprintf(result, "IDENTIFIER(%s)", token->data.identifier);
-			return result;
-			break;
-		case kitsune_tok_int:
-			result = GC_MALLOC(sizeof(char) * 24);
-			sprintf(result, "INT(%d)", token->data.intValue);
-			return result;
-			break;
-		case kitsune_tok_float:
-			result = GC_MALLOC(sizeof(char) * 24);
-			sprintf(result, "FLOAT(%f)", token->data.floatValue);
-			return result;
-		case kitsune_tok_equal:
-			return "EQUALS";
-			break;
-		case kitsune_tok_string:
-			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
-			sprintf(result, "STRING(%s)", token->data.identifier);
-			return result;
-			break;
-		case kitsune_tok_openBrace:
-			return "OPEN_BRACE";
-			break;
-		case kitsune_tok_closeBrace:
-			return "CLOSE_BRACE";
-			break;
-/*		case kitsune_tok_pipe:
-			return "PIPE";
-			break;*/
-/*		case kitsune_tok_comma:
-			return "COMMA";
-			break;
-		case kitsune_tok_comment:
-			return "COMMENT";
-			break;
-		case kitsune_tok_dot:
-			return "DOT";
-			break;
-		case kitsune_tok_openParen:
-			return "OPEN_PAREN";
-			break;
-		case kitsune_tok_closeParen:
-			return "CLOSE_PAREN";
-			break;
-		case kitsune_tok_invalid:
-			result = GC_MALLOC(sizeof(char) * (strlen(token->data.identifier) + 14) );
-			sprintf(result, "INVALID(%s)", token->data.identifier);
-			return result;
-			break;
-		default:
-			result = GC_MALLOC(sizeof(char) *  12);
-			sprintf(result, "UNKNOWN(%i)", token->type);
-			return result;
-			break;
+		GetNextChar();
+		curToken = new Token(TokenType::CloseParen);
+		return;
 	}
+
+	// check for string literal
+	if(lastChar == '\"')
+	{
+		i = 0;
+		buffer[0] = '\0';
+
+		GetNextChar();
+
+		while(true)
+		{
+			if(lastChar == '\"')
+			{
+				if(i == 0)
+				{
+					buffer[i] = '\0';
+					break;
+				}
+
+				tmpChar = buffer[i - 1];
+
+				if(tmpChar != '\\')
+				{
+					i++;
+					buffer[i] = '\0';
+					break;
+				}
+			}
+
+			buffer[i] = lastChar;
+			i++;
+			GetNextChar();
+		}
+		buffer[i] = '\0';
+		i--;
+		
+		// eat last "
+		GetNextChar();
+
+		curToken = new Token(TokenType::String);
+		curToken->identifier = std::string(buffer);
+
+        return;
+	}
+	
+	// check for ints and floats
+	if(isdigit(lastChar))
+	{
+		i = 0;
+		hasPeriod = false;
+		isValid = true;
+
+		while( !IsReservedChar(lastChar) )
+		{
+			if(lastChar == '.')
+			{
+				if(hasPeriod)
+				{
+					isValid = false;
+				}
+				else
+				{
+					hasPeriod = true;
+				}
+
+				if( !isdigit(lastChar) && (lastChar != '.'))
+				{
+					isValid = false;
+				}
+			}
+
+			if(!isValid)
+			{
+				curToken = new Token(TokenType::Invalid);
+				i++;
+				buffer[i] = '\0';
+				curToken->identifier = std::string(buffer);
+				
+				return;
+			}
+
+			buffer[i] = lastChar;
+			buffer[i + 1] = '\0';
+			i++;
+
+			GetNextChar();
+		}
+
+		if(hasPeriod)
+		{
+			i++;
+			buffer[i] = '\0';
+			curToken = new Token(TokenType::Float);
+			curToken->floatValue = atof(buffer);
+			return;
+		}
+
+		curToken = new Token(TokenType::Int);
+		i++;
+		buffer[i] = '\0';
+		curToken->intValue = atoi(buffer);
+
+		return;
+	}
+
+	// open brace
+	if(lastChar == '{')
+	{
+		GetNextChar();
+		curToken = new Token(TokenType::OpenBrace);
+		return;
+	}
+
+	// close brace
+	if(lastChar == '}')
+	{
+		GetNextChar();
+		curToken = new Token(TokenType::CloseBrace);
+		return;
+	}
+
+    // check for the end of the file
+	if(lastChar == EOF)
+	{
+		GetNextChar();
+		curToken = new Token(TokenType::Eof);
+		return;
+	}
+
+	// Check for identifiers and reserved words
+	{
+		i = 0;
+		buffer[0] = '\0';
+
+		while( !IsReservedChar(lastChar) )
+		{
+			buffer[i] = lastChar;
+			i++;
+			GetNextChar();
+		}
+		buffer[i] = '\0';
+
+		if(strcmp(buffer,"=") == 0)
+		{
+			curToken = new Token(TokenType::Equal);
+			return;
+		}
+
+		curToken = new Token(TokenType::Identifer);
+		curToken->identifier = std::string(buffer);
+
+		return;
+    }
+
+
+	// seems we found something we don't know about just return it
+	curToken = new Token(TokenType::Invalid);
+	curToken->identifier = " ";
+	curToken->identifier[0] = lastChar;
+	GetNextChar();
+
+	return;
 }
-*/
+

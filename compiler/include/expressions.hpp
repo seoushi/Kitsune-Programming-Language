@@ -113,7 +113,7 @@ class AssignExpr : public Expression
 		ExprType::Type Type();
 	
 		Expression* expr;
-		std::string identifer;
+		std::string identifier;
 };
 
 
@@ -131,7 +131,7 @@ class FuncExpr : public Expression
 
 		std::vector< Expression* > bodyExprs;
 		std::vector< std::string > args;
-		std::string identifer;
+		std::string identifier;
 };
 
 

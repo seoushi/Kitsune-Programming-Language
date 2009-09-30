@@ -1,5 +1,5 @@
 /*
- *  main.c
+ *  main.cpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
