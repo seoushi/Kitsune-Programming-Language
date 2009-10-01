@@ -63,11 +63,11 @@ std::string Token::ToString()
 		case TokenType::Eof:
 			ss << "EOF";
 			break;
-//		case TokenType::Def:
-//			ss << "DEF";
-//			break;
-		case TokenType::Identifer:
-			ss << "IDENTIFER(" << identifier << ")";
+		case TokenType::Dot:
+			ss << "DOT";
+			break;
+		case TokenType::Identifier:
+			ss << "IDENTIFIER(" << identifier << ")";
 			break;
 		case TokenType::Int:
 			ss << "INT(" << intValue << ")";
@@ -170,6 +170,7 @@ bool Lexer::IsReservedChar(char character)
 		case '(':
 		case ')':
 		case ' ':
+		case '.':
 		case '\r':
 		case '\t':
 		case '\n':
@@ -222,6 +223,13 @@ void Lexer::ParseNextToken()
 		return;
     }
 
+	// dot
+	if(lastChar == '.')
+	{
+		GetNextChar();
+		curToken = new Token(TokenType::Dot);
+		return;
+	}
 
 	// open paren
 	if(lastChar == '(')
@@ -386,8 +394,13 @@ void Lexer::ParseNextToken()
 			curToken = new Token(TokenType::Equal);
 			return;
 		}
+		if (strcmp(buffer, "def"))
+		{
+			curToken = new Token(TokenType::Def);
+			return;
+		}
 
-		curToken = new Token(TokenType::Identifer);
+		curToken = new Token(TokenType::Identifier);
 		curToken->identifier = std::string(buffer);
 
 		return;
@@ -403,3 +416,8 @@ void Lexer::ParseNextToken()
 	return;
 }
 
+
+Token* Lexer::CurToken()
+{
+	return curToken;
+}

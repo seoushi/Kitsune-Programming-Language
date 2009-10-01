@@ -83,10 +83,10 @@ ExprType::Type DefExpr::Type()
 ///////////////////////////////////////////
 /// Assign Expression
 ///////////////////////////////////////////
-AssignExpr::AssignExpr(Expression* expr)
+AssignExpr::AssignExpr(std::string ident, Expression* expr)
 {
+	this->identifier = ident;
 	this->expr = expr;
-	identifier = "default";
 }
 
 
@@ -198,6 +198,7 @@ ExprType::Type ReturnExpr::Type()
 ///////////////////////////////////////////
 /// Line Expression
 ///////////////////////////////////////////
+
 LineExpr::LineExpr(){}
 
 
@@ -215,5 +216,27 @@ ExprType::Type LineExpr::Type()
 	return ExprType::Line;
 }
 
+
+///////////////////////////////////////////
+/// Eof Expression
+///////////////////////////////////////////
+	
+EofExpr::EofExpr(){}
+
+
+EofExpr::~EofExpr(){}
+	
+
+std::string	EofExpr::toString()
+{
+	return "<Eof Expression>";
+}
+
+
+ExprType::Type EofExpr::Type()
+{
+	return ExprType::Eof;
+}
+	
 
 }

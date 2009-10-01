@@ -105,7 +105,7 @@ class AssignExpr : public Expression
 {
 	public:
 		
-		AssignExpr(Expression* expr);
+		AssignExpr(std::string ident, Expression* expr);
 		virtual ~AssignExpr();
 		
 		virtual std::string	toString();
@@ -199,6 +199,21 @@ class LineExpr : public Expression
 		
 		LineExpr();
 		virtual ~LineExpr();
+		
+		virtual std::string	toString();
+		
+		ExprType::Type Type();
+		
+		Expression*	expr;
+};
+	
+
+class EofExpr : public Expression
+{
+	public:
+		
+		EofExpr();
+		virtual ~EofExpr();
 		
 		virtual std::string	toString();
 		

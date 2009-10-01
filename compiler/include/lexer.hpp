@@ -42,8 +42,8 @@ namespace TokenType
 	typedef enum
 	{
 		Eof = -1,
-//		Def = -2,
-		Identifer = -3,
+		Dot = -2,
+		Identifier = -3,
 		Int = -4,
 		Float = -5,
 		Equal = -6,
@@ -53,7 +53,8 @@ namespace TokenType
 		Comment = -10,
 		OpenParen = -11,
 		CloseParen = -12,
-		Invalid = -13,
+		Def = -13,
+		Invalid = -14,
 	}Type;
 }
 
@@ -95,6 +96,8 @@ class Lexer
 		bool GetNextChar();
 	
 		static bool IsReservedChar(char character);
+	
+		Token* CurToken();
 	
 	private:
 

@@ -1,5 +1,5 @@
 /*
- *  parser.h
+ *  parser.hpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -29,24 +29,38 @@
  */
 
 
-#ifndef _PARSER_H
-#define	_PARSER_H
+#ifndef _PARSER_HPP
+#define	_PARSER_HPP
 
-#include "lexer.h"
-#include "expressions.h"
-#include <stdbool.h>
+#include <string>
+#include <vector>
 
+#include "lexer.hpp"
+#include "expressions.hpp"
 
-typedef struct
+namespace kitc
 {
-    Kitsune_Expression* expr;
-    bool succeeded;
-}Kitsune_ResultTuple;
 
-Kitsune_ResultTuple* Kitsune_ResultTuple_make(Kitsune_Expression* expr, bool succeeded);
+class Parser
+{
+	public:
+		Parser(Lexer* lexer);
+		~Parser();
 
-
-Kitsune_ResultTuple* Kitsune_Parse_topLevel(Kitsune_LexerData* lexer);
+		Expression* Parse();
+	
+		bool EncounteredError();
+	
+	private:
+	
+		void ParseError(Token* token, std::string expected, std::string additional);
+		void StackReduce( std::vector<Expression*> stack);
+		
+		Lexer* lexer;
+		bool encounteredError;
+};
+	
+}
 
 #endif
 
