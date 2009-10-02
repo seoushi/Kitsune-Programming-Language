@@ -79,9 +79,9 @@ class Expression
 		Expression();
 		virtual ~Expression();
 	
-		virtual std::string	toString();
+		virtual std::string	ToString();
 	
-		ExprType::Type Type();
+		virtual ExprType::Type Type() = 0;
 };
 
 
@@ -92,7 +92,7 @@ class DefExpr : public Expression
 		DefExpr(Expression* expr);
 		virtual ~DefExpr();
 			
-		virtual std::string	toString();
+		virtual std::string	ToString();
 			
 		ExprType::Type Type();
 
@@ -108,7 +108,7 @@ class AssignExpr : public Expression
 		AssignExpr(std::string ident, Expression* expr);
 		virtual ~AssignExpr();
 		
-		virtual std::string	toString();
+		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 	
@@ -124,7 +124,7 @@ class FuncExpr : public Expression
 		FuncExpr();
 		virtual ~FuncExpr();
 				
-		virtual std::string	toString();
+		virtual std::string	ToString();
 				
 		ExprType::Type Type();
 
@@ -142,7 +142,7 @@ class LitExpr : public Expression
 		LitExpr();
 		virtual ~LitExpr();
 		
-		virtual std::string	toString();
+		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 		
@@ -168,7 +168,7 @@ class FuncCallExpr : public Expression
 		FuncCallExpr();
 		virtual ~FuncCallExpr();
 
-		virtual std::string	toString();
+		virtual std::string	ToString();
 
 		ExprType::Type Type();
 
@@ -185,7 +185,7 @@ class ReturnExpr : public Expression
 		ReturnExpr();
 		virtual ~ReturnExpr();
 		
-		virtual std::string	toString();
+		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 		
@@ -200,7 +200,7 @@ class LineExpr : public Expression
 		LineExpr();
 		virtual ~LineExpr();
 		
-		virtual std::string	toString();
+		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 		
@@ -215,7 +215,7 @@ class EofExpr : public Expression
 		EofExpr();
 		virtual ~EofExpr();
 		
-		virtual std::string	toString();
+		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 		

@@ -30,53 +30,24 @@
 
 #include "expressions.hpp"
 #include "lexer.hpp"
-// #include "parser.h"
-// #include "generator.h"
+#include "parser.hpp"
+#include "generator.hpp"
 #include <gc/gc.h>
 
 
 
 void generate(char* filename, int argc, char** argv)
 {
-
-/*	
-	int		optsSize = 0;
-	int		i;
-	int		j;
-	int		idx;
-	char*	ccOpts;
+	std::string ccOpts;
 	
-	for(i = 2; i < argc; i++)
+	for(int i = 2; i < argc; i++)
 	{
-		optsSize += strlen(argv[i]) + 1;
+		ccOpts += std::string(argv[i]);
+		ccOpts += " ";
 	}
 
-	if(optsSize == 0)
-	{	
-		ccOpts = (char*)GC_MALLOC(sizeof(char));
-		ccOpts[0] = '\0';
-	}
-	else
-	{
-		ccOpts = (char*)GC_MALLOC(sizeof(char) * optsSize);
-
-		idx = 0;
-		for(i = 2; i < argc; i++)
-		{
-			for(j = 0; j < strlen(argv[i]); j++)
-			{
-				ccOpts[idx] = argv[i][j];
-				idx++;
-			}
-			ccOpts[idx] = ' ';
-			idx++;
-		}
-		ccOpts[idx] = '\0';
-	}
-
-	Kitsune_Generate(filename, ccOpts);
-*/
-
+	kitc::Generator* gen = new kitc::Generator();	
+	gen->Generate(filename, ccOpts);
 }
 
 int main(int argc, char** argv)

@@ -54,7 +54,7 @@ class Parser
 	private:
 	
 		void ParseError(Token* token, std::string expected, std::string additional);
-		void StackReduce( std::vector<Expression*> stack);
+		void StackReduce( std::vector<Expression*>* stack);
 		
 		Lexer* lexer;
 		bool encounteredError;

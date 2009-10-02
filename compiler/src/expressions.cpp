@@ -44,16 +44,16 @@ Expression::Expression(){}
 Expression::~Expression(){}
 
 
-std::string Expression::toString()
+std::string Expression::ToString()
 {
 	return "Base Class Expression";
 }
 
 
-ExprType::Type Expression::Type()
+/*ExprType::Type Expression::Type()
 {
 	return ExprType::None;
-}
+}*/
 
 
 ///////////////////////////////////////////
@@ -68,7 +68,7 @@ DefExpr::DefExpr(Expression* expr)
 DefExpr::~DefExpr(){}
 
 
-std::string DefExpr::toString()
+std::string DefExpr::ToString()
 {
 	return "<Def Expression>";
 }
@@ -93,7 +93,7 @@ AssignExpr::AssignExpr(std::string ident, Expression* expr)
 AssignExpr::~AssignExpr(){}
 
 
-std::string AssignExpr::toString()
+std::string AssignExpr::ToString()
 {
 	return "<Assign Expression>";
 }
@@ -117,7 +117,7 @@ FuncExpr::FuncExpr()
 FuncExpr::~FuncExpr(){}
 
 
-std::string FuncExpr::toString()
+std::string FuncExpr::ToString()
 {
 	return "<Function Expression>";
 }
@@ -141,7 +141,7 @@ LitExpr::LitExpr()
 LitExpr::~LitExpr(){}
 
 
-std::string LitExpr::toString()
+std::string LitExpr::ToString()
 {
 	return "<Literal Expression>";
 }
@@ -162,7 +162,7 @@ FuncCallExpr::FuncCallExpr(){}
 FuncCallExpr::~FuncCallExpr(){}
 
 
-std::string FuncCallExpr::toString()
+std::string FuncCallExpr::ToString()
 {
 	return "<Function Call Expression>";
 }
@@ -183,7 +183,7 @@ ReturnExpr::ReturnExpr(){}
 ReturnExpr::~ReturnExpr(){}
 
 
-std::string ReturnExpr::toString()
+std::string ReturnExpr::ToString()
 {
 	return "<Return Expression>";
 }
@@ -205,7 +205,7 @@ LineExpr::LineExpr(){}
 LineExpr::~LineExpr(){}
 
 
-std::string LineExpr::toString()
+std::string LineExpr::ToString()
 {
 	return "<Line Expression>";
 }
@@ -227,7 +227,7 @@ EofExpr::EofExpr(){}
 EofExpr::~EofExpr(){}
 	
 
-std::string	EofExpr::toString()
+std::string	EofExpr::ToString()
 {
 	return "<Eof Expression>";
 }

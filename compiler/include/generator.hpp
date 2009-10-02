@@ -1,5 +1,5 @@
 /*
- *  generator.h
+ *  generator.hpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,11 +28,48 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _GENERATOR_H
-#define _GENERATOR_H
+#ifndef _GENERATOR_HPP
+#define _GENERATOR_HPP
 
-#include "parser.h"
+#include "parser.hpp"
 
-bool Kitsune_Generate(char* filename, char* copts);
+#include <string>
+#include <vector>
+
+#include <iostream>
+#include <fstream>
+
+namespace kitc
+{
+
+class Generator
+{
+	public:
+	
+		Generator();
+		~Generator();
+	
+		bool Generate(std::string filename, std::string copts);
+	
+	private:
+	
+		bool GenExpr(Expression* expr);
+		bool GenDef(Expression* expr);
+		bool GenFun(Expression* expr);
+		bool GenFunCall(Expression* expr);
+		bool GenLiteral(Expression* expr);
+		bool GenReturn(Expression* expr);
+		void GenHeader(std::string headerName);
+		void GenFooter();
+	
+		Parser* parser;
+
+		std::ofstream cFile;
+		std::ofstream headerFile;
+	
+		std::vector<Expression*> functions;
+};
+
+}
 
 #endif

@@ -394,7 +394,7 @@ void Lexer::ParseNextToken()
 			curToken = new Token(TokenType::Equal);
 			return;
 		}
-		if (strcmp(buffer, "def"))
+		if (strcmp(buffer, "def") == 0)
 		{
 			curToken = new Token(TokenType::Def);
 			return;
