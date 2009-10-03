@@ -40,16 +40,18 @@ namespace kit
 	typedef unsigned int MsgId;
 
 	// function pointer prototype
-	typedef Object* (*FuncPtr)(Object*, MsgId, ... );
+//	typedef Object* (*FuncPtr)(Object*, MsgId, ... );
 
 	// base object type
 	class Object
 	{
 		public:
+
 			Object(){};
 
-			FuncPtr	script;
-			void*	target;
+			virtual Object* script(MsgId, ... ) = 0;
+//			FuncPtr	script;
+//			void*	target;
 	};
 
 }

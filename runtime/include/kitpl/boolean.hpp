@@ -37,14 +37,14 @@
 namespace kit
 {
 
-	class Boolean
+	class Boolean : public Object
 	{
 		public:
 
 			Boolean();
 
 			static Object* make(bool boolean);
-			static Object* script(Object* sender, MsgId message, ...);
+			Object* script(MsgId message, ...);
 
 			Object* equal(Object* value);
 			Object* notEqual(Object* value);

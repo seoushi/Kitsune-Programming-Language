@@ -40,14 +40,14 @@
 namespace kit
 {
 	
-	class Array
+	class Array : public Object
 	{
 		public:
 			
 			Array();
 			
 			static Object* make();
-			static Object* script(Object* sender, MsgId message, ...);
+			Object* script(MsgId message, ...);
 			
 			Object* length();
 			Object* includes(Object* obj);

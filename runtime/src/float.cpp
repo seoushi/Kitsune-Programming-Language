@@ -45,19 +45,13 @@ namespace kit
 
 	Object* Float::make(float value)
 	{
-		Object* floatObj = new Object();
-
-		Float* f = new Float();
-		f->_value = value;
-
-		floatObj->target = (void*)f;
-		floatObj->script = &Float::script;
-
+		Float* floatObj = new Float();
+		floatObj->_value = value;
 		return floatObj;
 	}
 
 
-	Object* Float::script(Object* sender, MsgId message, ...)
+	Object* Float::script(MsgId message, ...)
 	{
 		va_list va;
 		Object* result;
@@ -67,55 +61,55 @@ namespace kit
 		switch(message)
 		{
 			case 1: // ==
-				result = ((Float*)sender)->equals( va_arg(va, Object*) );
+				result = equals( va_arg(va, Object*) );
 				break;
 			case 2: // >
-				result = ((Float*)sender)->greaterThan( va_arg(va, Object*) );
+				result = greaterThan( va_arg(va, Object*) );
 				break;
 			case 3: // >=
-				result = ((Float*)sender)->greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
 			case 4: // <
-				result = ((Float*)sender)->lessThan( va_arg(va, Object*) );
+				result = lessThan( va_arg(va, Object*) );
 				break;
 			case 5: // <=
-				result = ((Float*)sender)->greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
 			case 6: // !=
-				result = ((Float*)sender)->notEqual( va_arg(va, Object*) );
+				result = notEqual( va_arg(va, Object*) );
 				break;
 			case 7: // +
-				result = ((Float*)sender)->add( va_arg(va, Object*) );
+				result = add( va_arg(va, Object*) );
 				break;
 			case 8: // -
-				result = ((Float*)sender)->sub( va_arg(va, Object*) );
+				result = sub( va_arg(va, Object*) );
 				break;
 			case 9: // /
-				result = ((Float*)sender)->div( va_arg(va, Object*) );
+				result = div( va_arg(va, Object*) );
 				break;
 			case 10: // *
-				result = ((Float*)sender)->mul( va_arg(va, Object*) );
+				result = mul( va_arg(va, Object*) );
 				break;
 			case 11: // ^
-				result = ((Float*)sender)->power( va_arg(va, Object*) );
+				result = power( va_arg(va, Object*) );
 				break;
 			case 12: // %
-				result = ((Float*)sender)->mod( va_arg(va, Object*) );
+				result = mod( va_arg(va, Object*) );
 				break;
 			case 13: // sqrt
-				result = ((Float*)sender)->squareRoot();
+				result = squareRoot();
 				break;
 			case 14: // to-float
-				result = sender;
+				result = this;
 				break;
 			case 15: // to-int
-				result = ((Float*)sender)->toInt();
+				result = toInt();
 				break;
 			case 16: // to-str
-				result = ((Float*)sender)->toStr();
+				result = toStr();
 				break;
 			case 20: // to-bool
-				result = ((Float*)sender)->toBool();
+				result = toBool();
 				break;
 			default:
 				throw "Does Not Support Operation";
@@ -129,73 +123,73 @@ namespace kit
 
 	Object* Float::equals(Object* value)
 	{
-		return Boolean::make(_value == ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value == ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::greaterThan(Object* value)
 	{
-		return Boolean::make(_value > ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value > ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::greaterThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value >= ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value >= ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::lessThan(Object* value)
 	{
-		return Boolean::make(_value < ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value < ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::lessThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value <= ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value <= ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Boolean::make(_value != ((Float*)value->script(14/* to-float */))->_value);
 	}
 
 
 	Object* Float::add(Object* value)
 	{
-		return Float::make(_value + ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Float::make(_value + ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::sub(Object* value)
 	{
-		return Float::make(_value - ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Float::make(_value - ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::div(Object* value)
 	{
-		return Float::make(_value / ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Float::make(_value / ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::mul(Object* value)
 	{
-		return Float::make(_value * ((Float*)value->script(value, 14/* to-float */))->_value);
+		return Float::make(_value * ((Float*)value->script(14/* to-float */))->_value);
 	}
 	
 	
 	Object* Float::power(Object* value)
 	{
-		return Float::make((float)pow(_value, ((Float*)value->script(value, 14/* to-float */))->_value));
+		return Float::make((float)pow(_value, ((Float*)value->script(14/* to-float */))->_value));
 	}
 	
 	
 	Object* Float::mod(Object* value)
 	{
-		return Float::make(fmod(_value, ((Float*)value->script(value, 14/* to-float */))->_value));
+		return Float::make(fmod(_value, ((Float*)value->script(14/* to-float */))->_value));
 	}
 	
 	

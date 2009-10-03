@@ -37,14 +37,14 @@
 namespace kit
 {
 
-	class Float
+	class Float : public Object
 	{
 		public:
 
 			Float();
 
 			static Object* make(float value);
-			static Object* script(Object* sender, MsgId message, ...);
+			Object* script(MsgId message, ...);
 
 			Object* equals(Object* value);
 			Object* greaterThan(Object* value);

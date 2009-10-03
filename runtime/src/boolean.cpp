@@ -45,19 +45,14 @@ namespace kit
 
 	Object* Boolean::make(bool boolean)
 	{
-		Object* boolObj = new Object();
-		
-		Boolean* b = new Boolean();
-		b->_value = boolean;
-		
-		boolObj->target = (void*)b;
-		boolObj->script = &Boolean::script;
+		Boolean* boolObj = new Boolean();
+		boolObj->_value = boolean;
 		
 		return boolObj;
 	}
 
 
-	Object* Boolean::script(Object* sender, MsgId message, ...)
+	Object* Boolean::script(MsgId message, ...)
 	{
 		va_list va;
 		Object* result;
@@ -67,25 +62,25 @@ namespace kit
 		switch(message)
 		{
 			case 1: // ==
-				result = ((Boolean*)sender)->equal(va_arg(va, Object*) );
+				result = equal(va_arg(va, Object*) );
 				break;
 			case 6: // !=
-				result = ((Boolean*)sender)->notEqual(va_arg(va, Object*) );
+				result = notEqual(va_arg(va, Object*) );
 				break;
 			case 16: // to-str
-				result = ((Boolean*)sender)->toStr();
+				result = toStr();
 				break;
 			case 17: // &&
-				result = ((Boolean*)sender)->andOp(va_arg(va, Object*));
+				result = andOp(va_arg(va, Object*));
 				break;
 			case 18: // ||
-				result = ((Boolean*)sender)->orOp(va_arg(va, Object*));
+				result = orOp(va_arg(va, Object*));
 				break;
 			case 19: // !
-				result = ((Boolean*)sender)->notOp();
+				result = notOp();
 				break;
 			case 20: // to-bool
-				result = sender;
+				result = this;
 				break;
 			default:
 				throw "Does Not Support Operation";
@@ -98,22 +93,22 @@ namespace kit
 			
 	Object* Boolean::equal(Object* value)
 	{
-		return Boolean::make(_value == ((Boolean*)value->script(value, 20/* to-bool */))->_value);
+		return Boolean::make(_value == ((Boolean*)value->script(20/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Boolean*)value->script(value, 20/* to-bool */))->_value);
+		return Boolean::make(_value != ((Boolean*)value->script(20/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::andOp(Object* value)
 	{
-		return Boolean::make(_value && ((Boolean*)value->script(value, 20/* to-bool */))->_value);
+		return Boolean::make(_value && ((Boolean*)value->script(20/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::orOp(Object* value)
 	{
-		return Boolean::make(_value || ((Boolean*)value->script(value, 20/* to-bool */))->_value);
+		return Boolean::make(_value || ((Boolean*)value->script(20/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::notOp()

@@ -45,19 +45,14 @@ namespace kit
 
 	Object* Integer::make(int integer)
 	{
-		Object* intObj = new Object();
-
-		Integer* i = new Integer();
-		i->_value = integer;
-
-		intObj->target = (void*)i;
-		intObj->script = &Integer::script;
-
+		Integer* intObj = new Integer();
+		intObj->_value = integer;
+		
 		return intObj;
 	}
 
 
-	Object* Integer::script(Object* sender, MsgId message, ...)
+	Object* Integer::script(MsgId message, ...)
 	{
 		va_list va;
 		Object* result;
@@ -67,55 +62,55 @@ namespace kit
 		switch(message)
 		{
 			case 1: // ==
-				result = ((Integer*)sender)->equals( va_arg(va, Object*) );
+				result = equals( va_arg(va, Object*) );
 				break;
 			case 2: // >
-				result = ((Integer*)sender)->greaterThan( va_arg(va, Object*) );
+				result = greaterThan( va_arg(va, Object*) );
 				break;
 			case 3: // >=
-				result = ((Integer*)sender)->greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
 			case 4: // <
-				result = ((Integer*)sender)->lessThan( va_arg(va, Object*) );
+				result = lessThan( va_arg(va, Object*) );
 				break;
 			case 5: // <=
-				result = ((Integer*)sender)->greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
 			case 6: // !=
-				result = ((Integer*)sender)->notEqual( va_arg(va, Object*) );
+				result = notEqual( va_arg(va, Object*) );
 				break;
 			case 7: // +
-				result = ((Integer*)sender)->add( va_arg(va, Object*) );
+				result = add( va_arg(va, Object*) );
 				break;
 			case 8: // -
-				result = ((Integer*)sender)->sub( va_arg(va, Object*) );
+				result = sub( va_arg(va, Object*) );
 				break;
 			case 9: // /
-				result = ((Integer*)sender)->div( va_arg(va, Object*) );
+				result = div( va_arg(va, Object*) );
 				break;
 			case 10: // *
-				result = ((Integer*)sender)->mul( va_arg(va, Object*) );
+				result = mul( va_arg(va, Object*) );
 				break;
 			case 11: // ^
-				result = ((Integer*)sender)->power( va_arg(va, Object*) );
+				result = power( va_arg(va, Object*) );
 				break;
 			case 12: // %
-				result = ((Integer*)sender)->mod( va_arg(va, Object*) );
+				result = mod( va_arg(va, Object*) );
 				break;
 			case 13: // sqrt
-				result = ((Integer*)sender)->squareRoot();
+				result = squareRoot();
 				break;
 			case 14: // to-float
-				result = ((Integer*)sender)->toFloat();
+				result = toFloat();
 				break;
 			case 15: // to-int
-				result = sender;
+				result = this;
 				break;
 			case 16: // to-str
-				result = ((Integer*)sender)->toStr();
+				result = toStr();
 				break;
 			case 20: // to-bool
-				result = ((Float*)sender)->toBool();
+				result = toBool();
 				break;
 			default:
 				throw "Does Not Support Operation";
@@ -129,73 +124,73 @@ namespace kit
 
 	Object* Integer::equals(Object* value)
 	{
-		return Boolean::make(_value == ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value == ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThan(Object* value)
 	{
-		return Boolean::make(_value > ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value > ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value >= ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value >= ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::lessThan(Object* value)
 	{
-		return Boolean::make(_value < ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value < ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::lessThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value <= ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value <= ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Boolean::make(_value != ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 
 
 	Object* Integer::add(Object* value)
 	{
-		return Integer::make(_value + ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Integer::make(_value + ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::sub(Object* value)
 	{
-		return Integer::make(_value - ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Integer::make(_value - ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::div(Object* value)
 	{
-		return Integer::make(_value / ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Integer::make(_value / ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::mul(Object* value)
 	{
-		return Integer::make(_value * ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Integer::make(_value * ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	
 	Object* Integer::power(Object* value)
 	{
-		return Integer::make((int)pow(_value, ((Integer*)(value->script(value, 15/* to-int */)))->_value));
+		return Integer::make((int)pow(_value, ((Integer*)(value->script(15/* to-int */)))->_value));
 	}
 	
 	
 	Object* Integer::mod(Object* value)
 	{
-		return Integer::make(_value % ((Integer*)(value->script(value, 15/* to-int */)))->_value);
+		return Integer::make(_value % ((Integer*)(value->script(15/* to-int */)))->_value);
 	}
 	
 	

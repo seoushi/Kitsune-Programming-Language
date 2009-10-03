@@ -45,18 +45,19 @@ namespace kit
 			
 	Object* Array::make()
 	{
-		Object* arrayObj = new Object();
-		
-		Array* a = new Array();
-		
-		arrayObj->target = (void*)a;
-		arrayObj->script = &Array::script;
-		
-		return arrayObj;
+		return new Array();
+//		Object* arrayObj = new Object();
+//		
+//		Array* a = new Array();
+//		
+//		arrayObj->target = (void*)a;
+//		arrayObj->script = &Array::script;
+//		
+//		return arrayObj;
 	}
 
 	
-	Object* Array::script(Object* sender, MsgId message, ...)
+	Object* Array::script(MsgId message, ...)
 	{
 		va_list va;
 		Object* result;
@@ -66,33 +67,33 @@ namespace kit
 		switch(message)
 		{
 			case 16: // to-str
-				result = ((Array*)sender)->toString();
+				result = toString();
 				break;
 			case 42: // "count"
 			case 21: // "length"
-				result = ((Array*)sender)->length();
+				result = length();
 				break;
 			case 22: // "include?"
-				result = ((Array*)sender)->includes(va_arg(va, Object*));
+				result = includes(va_arg(va, Object*));
 				break;
 			case 35: // "@"
 			case 36: // "at"
-				result = ((Array*)sender)->at(va_arg(va, Object*));
+				result = at(va_arg(va, Object*));
 				break;
 			case 37: // "add!"
-				result = ((Array*)sender)->add(va_arg(va, Object*));
+				result = add(va_arg(va, Object*));
 				break;
 			case 38: // "set!"
-				result = ((Array*)sender)->set(va_arg(va, Object*), va_arg(va, Object*));
+				result = set(va_arg(va, Object*), va_arg(va, Object*));
 				break;
 			case 39: // "clear!"
-				result = ((Array*)sender)->clear();
+				result = clear();
 				break;
 			case 40: // "map"
-				result = ((Array*)sender)->map(va_arg(va, Object*));
+				result = map(va_arg(va, Object*));
 				break;
 			case 41: // "empty?"
-				result = ((Array*)sender)->isEmpty();
+				result = isEmpty();
 				break;
 			default:
 				throw "Does Not Support Operation";
@@ -126,13 +127,13 @@ namespace kit
 	
 	Object* Array::at(Object* obj)
 	{
-		return _value[((Integer*)(obj->script(obj, 15 /* to-int */)))->_value];
+		return _value[((Integer*)(obj->script(15 /* to-int */)))->_value];
 	}
 	
 	
 	Object* Array::set(Object* index, Object* obj)
 	{
-		_value[((Integer*)(obj->script(obj, 15 /* to-int */)))->_value] = obj;
+		_value[((Integer*)(obj->script(15 /* to-int */)))->_value] = obj;
 		
 		return NULL;
 	}
@@ -169,7 +170,7 @@ namespace kit
 	{
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			obj->script(obj, 0, _value[i], Integer::make(i));
+			obj->script(0, _value[i], Integer::make(i));
 		}
 		
 		return NULL;
@@ -183,7 +184,7 @@ namespace kit
 		
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			ss << ((String*)(_value[i]->script(_value[i], 16 /* to-str */)))->_value;
+			ss << ((String*)(_value[i]->script(16 /* to-str */)))->_value;
 			
 			if(i < (_value.size() - 1))
 			{

@@ -37,14 +37,14 @@
 namespace kit
 {
 
-	class Integer
+	class Integer : public Object
 	{
 		public:
 
 			Integer();
 
 			static Object* make(int integer);
-			static Object* script(Object* sender, MsgId message, ...);
+			Object* script(MsgId message, ...);
 
 			Object* equals(Object* value);
 			Object* greaterThan(Object* value);

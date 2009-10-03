@@ -40,14 +40,14 @@
 namespace kit
 {
 	
-	class String
+	class String : Object
 	{
 		public:
 			
 			String();
 			
 			static Object* make(std::string str);
-			static Object* script(Object* sender, MsgId message, ...);
+			Object* script(MsgId message, ...);
 			
 			Object* equals(Object* value);
 			Object* greaterThan(Object* value);

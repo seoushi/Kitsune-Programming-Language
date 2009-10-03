@@ -41,3 +41,4 @@
 40 "map"
 41 "empty?"
 42 "count"
+43 "start"

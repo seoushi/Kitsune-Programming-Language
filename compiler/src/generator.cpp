@@ -100,7 +100,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	GenHeader(cHeaderName);
 	
 	
-	cFile << "Kitsune_Object* kitsune_entry_function(Kitsune_Object* self)" << std::endl;
+	cFile << "kit::Object* kitsune_entry_function(kit::Object* self)" << std::endl;
 	cFile << "{" << std::endl;
 
 	for(unsigned int i = 0; i < exprs.size(); i++)
@@ -116,7 +116,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	// write all loose function
 	for(unsigned int i = 0; i < functions.size(); i++)
 	{
-		cFile << "Kitsune_Object* kit_function_" << (i + 1);
+		cFile << "kit::Object* kit_function_" << (i + 1);
 
 		if(!GenFun(functions[i]))
 		{
@@ -130,14 +130,14 @@ bool Generator::Generate(std::string filename, std::string copts)
 
 	for(unsigned int i = 0; i < functions.size(); i++)
 	{
-		headerFile << "Kitsune_Object* kit_function_" << (i + 1) << "(Kitsune_Object* self";
+		headerFile << "kit::Object* kit_function_" << (i + 1) << "(kit::Object* self";
 
 		// write out args from function expression
 		FuncExpr* func = (FuncExpr*)functions[i];
 
 		for(unsigned int j = 0; j < func->args.size(); j++)
 		{
-			headerFile << ", Kitsune_Object* " << func->args[j];
+			headerFile << ", kit::Object* " << func->args[j];
 		}
 
 		headerFile << ");" << std::endl;
@@ -176,7 +176,7 @@ bool Generator::GenExpr(Expression* expr)
 		case ExprType::Line:
 			{
 				bool tmpResult = GenExpr(((LineExpr*)expr)->expr);
-				cFile << std::endl;
+				cFile << ";" << std::endl;
 				return tmpResult;
 			}
 			break;
@@ -184,7 +184,7 @@ bool Generator::GenExpr(Expression* expr)
 
 			functions.push_back(expr);
 
-			cFile << "(Kitsune_Object*) &kit_function_" << functions.size();
+			cFile << "(kit::Object*) &kit_function_" << functions.size();
 			return true;
 
 			break;
@@ -209,7 +209,7 @@ bool Generator::GenExpr(Expression* expr)
 
 bool Generator::GenDef(Expression* expr)
 {
-	cFile << "Kitsune_Object* ";	
+	cFile << "kit::Object* ";
 	return GenExpr(((DefExpr*)expr)->expr);
 }
 
@@ -220,11 +220,11 @@ bool Generator::GenFun(Expression* expr)
 
 
 	// write args
-	cFile << "(Kitsune_Object* self";
+	cFile << "(kit::Object* self";
 	
 	for(unsigned int i = 0; i < func->args.size(); i++)
 	{
-		cFile << ", Kitsune_Object* " << func->args[i];
+		cFile << ", kit::Object* " << func->args[i];
 	}
 	cFile << " )" << std::endl << "{" << std::endl;
 
@@ -251,14 +251,15 @@ bool Generator::GenFunCall(Expression* expr)
 	FuncCallExpr* funcCall = (FuncCallExpr*)expr;
 
 
-	cFile << "Kitsune_SendMessage(";
+//	cFile << "Kitsune_SendMessage(";
 
 	if(!GenExpr(funcCall->sender))
 	{
 		return false;
 	}
 
-	cFile << ", \"" << funcCall->funcName << "\"";
+//	cFile << ", \"" << funcCall->funcName << "\"";
+	cFile << "->script(" << funcCall->funcName;
 
 	for(unsigned int i = 0; i < funcCall->args.size(); i++)
 	{
@@ -286,13 +287,13 @@ bool Generator::GenLiteral(Expression* expr)
 			cFile << lit->stringValue;
 			break;
 		case LiteralType::String:
-			cFile << "Kitsune_MakeString(\"" << lit->stringValue << "\")";
+			cFile << "kit::String::make(\"" << lit->stringValue << "\")";
 			break;
 		case LiteralType::Int:
-			cFile << "Kitsune_MakeInteger(\"" << lit->intValue << ")";
+			cFile << "kit::Integer::make(" << lit->intValue << ")";
 			break;
 		case LiteralType::Float:
-			cFile << "Kitsune_MakeFloat(\"" << lit->floatValue << ")";
+			cFile << "kit::Float::make(" << lit->floatValue << ")";
 			break;
 		default:
 			return false;
@@ -348,14 +349,28 @@ void Generator::GenHeader(std::string headerName)
 	}
 
 	cFile << "#include <gc/gc.h>" << std::endl;
-	cFile << "#include \"runtime/core.h\"" << std::endl;
-	cFile << "#include \"runtime/array.h\"" << std::endl;
-	cFile << "#include \"runtime/boolean.h\"" << std::endl;
-	cFile << "#include \"runtime/character.h\"" << std::endl;
-	cFile << "#include \"runtime/float.h\"" << std::endl;
-	cFile << "#include \"runtime/integer.h\"" << std::endl;
-	cFile << "#include \"runtime/object.h\"" << std::endl;
-	cFile << "#include \"runtime/string.h\"" << std::endl << std::endl << std::endl;
+	cFile << "#include <kitpl/core.hpp>" << std::endl;
+	cFile << "#include <kitpl/array.hpp>" << std::endl;
+	cFile << "#include <kitpl/boolean.hpp>" << std::endl;
+	cFile << "#include <kitpl/float.hpp>" << std::endl;
+	cFile << "#include <kitpl/integer.hpp>" << std::endl;
+	cFile << "#include <kitpl/string.hpp>" << std::endl << std::endl << std::endl;
+	cFile << std::endl;
+	
+	
+	cFile << "namespace kit" << std::endl;
+	cFile << "{" << std::endl;
+	cFile << "\ttypedef Object* (*EntryFuncPtr)(Object*);" << std::endl;
+	cFile << "\tclass TopLevel : public Object" << std::endl;
+	cFile << "\t{" << std::endl;
+	cFile << "\t\tpublic:" << std::endl;
+	cFile << "\t\t\tstatic Object* make(Object* arguments, EntryFuncPtr entry);" << std::endl;	
+	cFile << "\t\t\t Object* script(MsgId message, ...);" << std::endl;
+	cFile << std::endl;
+	cFile << "\tEntryFuncPtr entryFunc;" << std::endl;
+	cFile << "\t};" << std::endl;
+	cFile << "}" << std::endl;
+	cFile << std::endl;
 }
 
 
@@ -365,40 +380,30 @@ void Generator::GenFooter()
 	cFile << "int main(int argc, char** argv)" << std::endl;
 	cFile << "{" << std::endl;
 
-	cFile << "Kitsune_Object*\targuments;" << std::endl;
-	cFile << "Kitsune_Object**\tarray;" << std::endl;
-	cFile << "Kitsune_Object*\ttopLevel" << std::endl;
-	cFile << "int\t\t\ti;" << std::endl;
-	cFile << std::endl;
-
 	cFile << "GC_INIT();" << std::endl;
 	cFile << std::endl;
 	
-	cFile << "Kitsune_InitObject();" << std::endl;
-	cFile << "Kitsune_InitArray();" << std::endl;
-	cFile << "Kitsune_InitBoolean();" << std::endl;
-	cFile << "Kitsune_InitCharacter();" << std::endl;
-	cFile << "Kitsune_InitFloat();" << std::endl;
-	cFile << "Kitsune_InitInteger();" << std::endl;
-	cFile << "Kitsune_InitString();" << std::endl;
-	cFile << std::endl;
+//	cFile << "Kitsune_InitObject();" << std::endl;
+//	cFile << "Kitsune_InitArray();" << std::endl;
+//	cFile << "Kitsune_InitBoolean();" << std::endl;
+//	cFile << "Kitsune_InitCharacter();" << std::endl;
+//	cFile << "Kitsune_InitFloat();" << std::endl;
+//	cFile << "Kitsune_InitInteger();" << std::endl;
+//	cFile << "Kitsune_InitString();" << std::endl;
+//	cFile << std::endl;
 
 
-	cFile << "array = (Kitsune_Object**)GC_MALLOC( sizeof(Kitsune_Object*) * argc);" << std::endl;
+	cFile << "kit::Object* array = kit::Array::make();" << std::endl;
 	cFile << std::endl;
-	cFile << "for(i = 0; i < argc; i++)" << std::endl;
+	cFile << "for(unsigned i = 0; i < argc; i++)" << std::endl;
 	cFile << "{" << std::endl;
-	cFile << "\tarray[i] = Kitsune_MakeString(argv[i]);" << std::endl;
+	cFile << "\tarray->script(37/*add!*/, kit::String::make(argv[i]));" << std::endl;
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 
-
-	cFile << "arguments = Kitsune_MakeArrayVec(argc, array);" << std::endl;
-	cFile << "topLevel = Kitsune_SendMessage(Kitsune_InitObject(), \"clone\");" << std::endl;
-	cFile << "Kitsune_SendMessage(topLevel, \"set-value\", \"arguments\", arguments);" << std::endl;
-	cFile << "Kitsune_SendMessage(topLevel, \"set-method\", \"entry-point\", &kitsune_entry_function);" << std::endl;
+	cFile << "kit::Object* topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
+	cFile << "topLevel->script(43 /*start*/);" << std::endl;
 	
-	cFile << "Kitsune_SendMessage(topLevel, \"entry-point\");" << std::endl;
 	cFile << "return 0;" << std::endl;
 	cFile << "}" << std::endl;
 	cFile << std::endl;
