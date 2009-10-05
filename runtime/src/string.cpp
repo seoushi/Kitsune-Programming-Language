@@ -129,7 +129,8 @@ namespace kit
 				result = split(va_arg(va, Object*));
 				break;	
 			default:
-				throw "Does Not Support Operation";
+				std::cerr << "String does not support method(" << message << ")" << std::endl;
+				throw 100;
 				break;
 		}
 		
@@ -218,14 +219,15 @@ namespace kit
 	
 	Object* String::reverse()
 	{
-		std::stringstream ss;
-		
-		for(unsigned int i = _value.length() - 1; i >= 0; i--)
+		std::string newValue = _value;
+		unsigned int i = 0;
+	
+		for(int j = _value.length() - 1; j >= 0; j--, i++)
 		{
-			ss << _value[i];
+			newValue[i] = _value[j];
 		}
 		
-		return make(ss.str());
+		return String::make(newValue);
 	}
 	
 	
@@ -331,10 +333,12 @@ namespace kit
 	
 	Object* String::append(Object* str)
 	{
-		std::string newString = _value;
-		newString += ((String*)(str->script(16/* to-str */)))->_value;
+		std::stringstream ss;
 		
-		return make(newString);
+		ss << _value;
+		ss << ((String*)(str->script(16/* to-str */)))->_value;
+		
+		return String::make(ss.str());
 	}
 	
 	

@@ -1,5 +1,5 @@
 /*
- *  generator.hpp
+ *  identifiers.cpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,51 +28,101 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _GENERATOR_HPP
-#define _GENERATOR_HPP
 
-#include "parser.hpp"
 #include "identifiers.hpp"
 
-#include <string>
-#include <vector>
+using namespace kitc;
 
-#include <iostream>
-#include <fstream>
 
-namespace kitc
+Identifiers::Identifiers()
 {
-
-class Generator
-{
-	public:
-	
-		Generator();
-		~Generator();
-	
-		bool Generate(std::string filename, std::string copts);
-	
-	private:
-	
-		bool GenExpr(Expression* expr);
-		bool GenDef(Expression* expr);
-		bool GenFun(Expression* expr);
-		bool GenFunCall(Expression* expr);
-		bool GenLiteral(Expression* expr);
-		bool GenReturn(Expression* expr);
-		void GenHeader(std::string headerName);
-		void GenFooter();
-	
-		Parser* parser;
-
-		std::ofstream cFile;
-		std::ofstream headerFile;
-	
-		std::vector<Expression*> functions;
-	
-		Identifiers* ids;
-};
-
+	nextId = 0;
+	LoadRuntimeIds();
 }
 
-#endif
+
+Identifiers::~Identifiers()
+{
+}
+
+
+Identifiers* Identifiers::Instance()
+{
+	static Identifiers* sharedInstance = NULL;
+	
+	if(sharedInstance == NULL)
+	{
+		sharedInstance = new Identifiers();
+	}
+	
+	return sharedInstance;
+}
+
+
+unsigned int Identifiers::GetId(std::string identString)
+{
+	std::map<std::string, unsigned int>::iterator itr = ids.find(identString);
+	
+	if(itr != ids.end())
+	{
+		return itr->second;
+	}
+	
+	ids[identString] = nextId;
+	nextId++;
+	
+	return nextId - 1;
+}
+
+
+void Identifiers::LoadRuntimeIds()
+{
+	ids["NULL"]			= 0;
+	ids["=="]			= 1;
+	ids[">"]			= 2;
+	ids[">="]			= 3;
+	ids["<"]			= 4;
+	ids["<="]			= 5;
+	ids["!="]			= 6;
+	ids["+"]			= 7;
+	ids["-"]			= 8;
+	ids["/"]			= 9;
+	ids["*"]			= 10;
+	ids["^"]			= 11;
+	ids["%"]			= 12;
+	ids["sqrt"]			= 13;
+	ids["to-float"]		= 14;
+	ids["to-int"]		= 15;
+	ids["to-str"]		= 16;
+	ids["&&"]			= 17;
+	ids["||"]			= 18;
+	ids["!"]			= 19;
+	ids["to-bool"]		= 20;
+	ids["length"]		= 21;
+	ids["includes?"]	= 22;
+	ids["reverse"]		= 23;
+	ids["replace"]		= 24;
+	ids["remove"]		= 25;
+	ids["capitalize"]	= 26;
+	ids["to-upper"]		= 27;
+	ids["to-lower"]		= 28;
+	ids["print"]		= 29;
+	ids["print-line"]	= 30;
+	ids["append"]		= 31;
+	ids["++"]			= 32;
+	ids["sub-string"]	= 33;
+	ids["split"]		= 34;
+	ids["@"]			= 35;
+	ids["at"]			= 36;
+	ids["add!"]			= 37;
+	ids["set!"]			= 38;
+	ids["clear!"]		= 39;
+	ids["map"]			= 40;
+	ids["empty?"]		= 41;
+	ids["count"]		= 42;
+	ids["start"]		= 43;
+
+	nextId = 44;
+}
+
+

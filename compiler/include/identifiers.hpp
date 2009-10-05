@@ -1,5 +1,5 @@
 /*
- *  generator.hpp
+ *  identifiers.hpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -28,51 +28,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _GENERATOR_HPP
-#define _GENERATOR_HPP
-
-#include "parser.hpp"
-#include "identifiers.hpp"
+#ifndef _KITC_IDENTIFIERS_HPP
+#define _KITC_IDENTIFIERS_HPP
 
 #include <string>
-#include <vector>
-
-#include <iostream>
-#include <fstream>
+#include <map>
 
 namespace kitc
 {
-
-class Generator
-{
+	class Identifiers
+	{
 	public:
-	
-		Generator();
-		~Generator();
-	
-		bool Generate(std::string filename, std::string copts);
-	
+		Identifiers();
+		~Identifiers();
+		
+		static Identifiers* Instance();
+		
+		unsigned int GetId(std::string identString);
+		
 	private:
+		
+		void LoadRuntimeIds();
+		
+		std::map<std::string, unsigned int> ids;
+		unsigned int nextId;
+	};
 	
-		bool GenExpr(Expression* expr);
-		bool GenDef(Expression* expr);
-		bool GenFun(Expression* expr);
-		bool GenFunCall(Expression* expr);
-		bool GenLiteral(Expression* expr);
-		bool GenReturn(Expression* expr);
-		void GenHeader(std::string headerName);
-		void GenFooter();
-	
-		Parser* parser;
-
-		std::ofstream cFile;
-		std::ofstream headerFile;
-	
-		std::vector<Expression*> functions;
-	
-		Identifiers* ids;
-};
-
 }
 
 #endif

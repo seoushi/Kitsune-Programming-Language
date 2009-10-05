@@ -1,5 +1,5 @@
 /*
- *  generator.c
+ *  generator.cpp
  *  kitsune runtime
  *
  * Copyright (c) 2009, Seoushi Games
@@ -38,6 +38,7 @@ using namespace kitc;
 
 Generator::Generator()
 {
+	ids = Identifiers::Instance();
 }
 
 
@@ -150,7 +151,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	headerFile.close();
 	
 
-	std::string sysCommand = "gcc " + cFileName + " " + copts + " -lkitsune -lgc -lm";
+	std::string sysCommand = "g++ " + cFileName + " " + copts + " -lkitsune -lgc -lm";
 	std::cout << sysCommand << std::endl;
 
 	system(sysCommand.c_str());
@@ -169,6 +170,7 @@ bool Generator::GenExpr(Expression* expr)
 			break;
 		case ExprType::Def:
 			return GenDef(expr);
+			break;
 		case ExprType::Assign:
 			
 			cFile << ((AssignExpr*)expr)->identifier << " = ";
@@ -209,6 +211,7 @@ bool Generator::GenExpr(Expression* expr)
 
 bool Generator::GenDef(Expression* expr)
 {
+	printf("hi");
 	cFile << "kit::Object* ";
 	return GenExpr(((DefExpr*)expr)->expr);
 }
@@ -251,15 +254,13 @@ bool Generator::GenFunCall(Expression* expr)
 	FuncCallExpr* funcCall = (FuncCallExpr*)expr;
 
 
-//	cFile << "Kitsune_SendMessage(";
-
 	if(!GenExpr(funcCall->sender))
 	{
 		return false;
 	}
 
-//	cFile << ", \"" << funcCall->funcName << "\"";
-	cFile << "->script(" << funcCall->funcName;
+
+	cFile << "->script(" << ids->GetId(funcCall->funcName) << "/* " << funcCall->funcName << " */";
 
 	for(unsigned int i = 0; i < funcCall->args.size(); i++)
 	{
@@ -365,10 +366,29 @@ void Generator::GenHeader(std::string headerName)
 	cFile << "\t{" << std::endl;
 	cFile << "\t\tpublic:" << std::endl;
 	cFile << "\t\t\tstatic Object* make(Object* arguments, EntryFuncPtr entry);" << std::endl;	
-	cFile << "\t\t\t Object* script(MsgId message, ...);" << std::endl;
+	cFile << "\t\t\tObject* script(MsgId message, ...);" << std::endl;
 	cFile << std::endl;
+	cFile << "\t\tprivate:" << std::endl;
+	cFile << "\t\t\tObject* args;" << std::endl;
 	cFile << "\tEntryFuncPtr entryFunc;" << std::endl;
 	cFile << "\t};" << std::endl;
+	cFile << std::endl;
+	
+	cFile << "\tObject* TopLevel::script(MsgId message, ...)" << std::endl;
+	cFile << "\t{" << std::endl;
+	cFile << "\t\tentryFunc(this);" << std::endl;
+	cFile << "\t}" << std::endl;
+	cFile << std::endl;
+	
+	cFile << "\tObject* TopLevel::make(Object* arguments, EntryFuncPtr entry)" << std::endl;
+	cFile << "\t{" << std::endl;
+	cFile << "\tTopLevel* top = new TopLevel();" << std::endl;
+	cFile << "\t\ttop->args = arguments;" << std::endl;
+	cFile << "\t\ttop->entryFunc = entry;" << std::endl;
+	cFile << "\treturn top;" << std::endl;
+	cFile << "\t}" << std::endl;
+	cFile << std::endl;
+	
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 }
@@ -405,6 +425,7 @@ void Generator::GenFooter()
 	cFile << "topLevel->script(43 /*start*/);" << std::endl;
 	
 	cFile << "return 0;" << std::endl;
+	
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 }

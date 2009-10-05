@@ -14,7 +14,8 @@ SET ( kitc_SRCS ./compiler/src/main.cpp
 				./compiler/src/expressions.cpp
 				./compiler/src/lexer.cpp
 				./compiler/src/parser.cpp
-				./compiler/src/generator.cpp)
+				./compiler/src/generator.cpp
+				./compiler/src/identifiers.cpp)
 
 ADD_DEFINITIONS ( -Wall )
 

@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <sstream>
 #include <math.h>
+#include <iostream>
 
 #include <kitpl/boolean.hpp>
 #include <kitpl/string.hpp>
@@ -83,7 +84,8 @@ namespace kit
 				result = this;
 				break;
 			default:
-				throw "Does Not Support Operation";
+				std::cerr << "Boolean does not support method(" << message << ")" << std::endl;
+				throw 100;
 				break;
 		}
 		

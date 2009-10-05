@@ -30,6 +30,7 @@
 
 #include <stdarg.h>
 #include <sstream>
+#include <iostream>
 #include <math.h>
 
 #include <kitpl/integer.hpp>
@@ -113,7 +114,8 @@ namespace kit
 				result = toBool();
 				break;
 			default:
-				throw "Does Not Support Operation";
+				std::cerr << "Integer does not support method(" << message << ")" << std::endl;
+				throw 100;
 				break;
 		}
 		

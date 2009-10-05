@@ -35,6 +35,7 @@
 #include <kitpl/boolean.hpp>
 
 #include <sstream>
+#include <iostream>
 
 namespace kit
 {
@@ -96,7 +97,8 @@ namespace kit
 				result = isEmpty();
 				break;
 			default:
-				throw "Does Not Support Operation";
+				std::cerr << "Array does not support method(" << message << ")" << std::endl;
+				throw 100;
 				break;
 		}
 		

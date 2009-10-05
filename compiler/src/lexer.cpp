@@ -29,7 +29,7 @@
  */
 
 #include "lexer.hpp"
-
+#include <iostream>
 #include <sstream>
 
 using namespace kitc;
@@ -170,7 +170,6 @@ bool Lexer::IsReservedChar(char character)
 		case '(':
 		case ')':
 		case ' ':
-		case '.':
 		case '\r':
 		case '\t':
 		case '\n':
@@ -270,7 +269,6 @@ void Lexer::ParseNextToken()
 
 				if(tmpChar != '\\')
 				{
-					i++;
 					buffer[i] = '\0';
 					break;
 				}
@@ -341,6 +339,7 @@ void Lexer::ParseNextToken()
 			buffer[i] = '\0';
 			curToken = new Token(TokenType::Float);
 			curToken->floatValue = atof(buffer);
+			
 			return;
 		}
 

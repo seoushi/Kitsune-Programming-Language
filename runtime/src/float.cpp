@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <sstream>
 #include <math.h>
+#include <iostream>
 
 #include <kitpl/float.hpp>
 #include <kitpl/integer.hpp>
@@ -112,8 +113,8 @@ namespace kit
 				result = toBool();
 				break;
 			default:
-				throw "Does Not Support Operation";
-				break;
+				std::cerr << "Float does not support method(" << message << ")" << std::endl;
+				throw 100;
 		}
 		
 		va_end(va);

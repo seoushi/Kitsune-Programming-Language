@@ -51,11 +51,6 @@ Expression* Parser::Parse()
 	
 	lexer->ParseNextToken();
 	Token* token = lexer->CurToken();
-	
-	if(token == NULL)
-	{
-		fprintf(stderr, "a\n");
-	}
 
 parse_next:
 	
@@ -63,7 +58,6 @@ parse_next:
 	{
 		// end of file
 		case TokenType::Eof:
-fprintf(stderr, "1\n");
 			if(stack.size() > 0)
 			{
 				ParseError(token, "Dot", "Unexpected end of file");
@@ -73,8 +67,7 @@ fprintf(stderr, "1\n");
 			return new EofExpr();
 			
 		// end line marker
-		case TokenType::Dot:
-fprintf(stderr, "2\n");			
+		case TokenType::Dot:			
 			switch(stack.size())
 			{
 				case 0:
@@ -96,7 +89,6 @@ fprintf(stderr, "2\n");
 			break;
 		// assignment
 		case TokenType::Equal:
-fprintf(stderr, "3\n");
 			if(stack.size() == 0)
 			{
 				ParseError(token, "an identifer", "assignment statement without something to assign it to");
@@ -145,7 +137,6 @@ fprintf(stderr, "3\n");
 			break;
 		// defining
 		case TokenType::Def:
-fprintf(stderr, "4\n");
 			if(stack.size() == 0)
 			{
 				Expression* result = Parse();
@@ -162,7 +153,7 @@ fprintf(stderr, "4\n");
 				
 				newLine->expr = new DefExpr(line->expr);
 
-				return line;
+				return newLine;
 			}
 			else
 			{
@@ -174,7 +165,6 @@ fprintf(stderr, "4\n");
 		case TokenType::String:
 		case TokenType::Int:
 		case TokenType::Float:
-fprintf(stderr, "5\n");
 			{
 				LitExpr* tmpExpr = new LitExpr();
 			
@@ -194,7 +184,7 @@ fprintf(stderr, "5\n");
 						break;
 					case TokenType::Float:
 						tmpExpr->literalType = LiteralType::Float;
-						tmpExpr->intValue = token->floatValue;
+						tmpExpr->floatValue = token->floatValue;
 						break;
 				}
 				
@@ -203,13 +193,11 @@ fprintf(stderr, "5\n");
 			break;
 			
 		default:
-fprintf(stderr, "6\n");
 			ParseError(token, "?", "unknown or used token type");
 			return NULL;
 			break;
 	}
-	
-fprintf(stderr, "7\n");	
+
 	// try and reduce statement
 	StackReduce(&stack);
 	
