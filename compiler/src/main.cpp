@@ -33,6 +33,7 @@
 #include "parser.hpp"
 #include "generator.hpp"
 #include <gc/gc.h>
+#include <string.h>
 
 
 

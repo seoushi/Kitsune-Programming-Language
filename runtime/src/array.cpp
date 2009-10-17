@@ -36,6 +36,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <stdarg.h>
 
 namespace kit
 {

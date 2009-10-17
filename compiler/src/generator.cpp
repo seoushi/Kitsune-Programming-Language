@@ -31,6 +31,7 @@
 
 #include "generator.hpp"
 #include "lexer.hpp"
+#include <stdlib.h>
 
 
 using namespace kitc;

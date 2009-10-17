@@ -31,6 +31,8 @@
 #include "lexer.hpp"
 #include <iostream>
 #include <sstream>
+#include <string.h>
+#include <stdlib.h>
 
 using namespace kitc;
 
