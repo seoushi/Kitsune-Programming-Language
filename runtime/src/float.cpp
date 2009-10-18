@@ -97,19 +97,19 @@ namespace kit
 			case 177536: // %
 				result = mod( va_arg(va, Object*) );
 				break;
-			case 2088322081: // sqrt
+			case 6383289377: // sqrt
 				result = squareRoot();
 				break;
-			case 1353689091: // to-float
+			case 7569653579622403: // to-float
 				result = this;
 				break;
-			case 1756306272: // to-int
+			case 6951013391200: // to-int
 				result = toInt();
 				break;
-			case 1756282918: // to-str
+			case 6951013367846: // to-str
 				result = toStr();
 				break;
-			case 2123293021: // to-bool
+			case 229383441670493: // to-bool
 				result = toBool();
 				break;
 			default:
@@ -124,73 +124,73 @@ namespace kit
 
 	Object* Float::equals(Object* value)
 	{
-		return Boolean::make(_value == ((Float*)value->script(1353689091/* to-float */))->_value);
+		return Boolean::make(_value == ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::greaterThan(Object* value)
 	{
-		return Boolean::make(_value > ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Boolean::make(_value > ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::greaterThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value >= ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Boolean::make(_value >= ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::lessThan(Object* value)
 	{
-		return Boolean::make(_value < ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Boolean::make(_value < ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::lessThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value <= ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Boolean::make(_value <= ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Boolean::make(_value != ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 
 
 	Object* Float::add(Object* value)
 	{
-		return Float::make(_value + ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Float::make(_value + ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::sub(Object* value)
 	{
-		return Float::make(_value - ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Float::make(_value - ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::div(Object* value)
 	{
-		return Float::make(_value / ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Float::make(_value / ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::mul(Object* value)
 	{
-		return Float::make(_value * ((Float*)value->script(1353689091 /* to-float */))->_value);
+		return Float::make(_value * ((Float*)value->script(7569653579622403 /* to-float */))->_value);
 	}
 	
 	
 	Object* Float::power(Object* value)
 	{
-		return Float::make((float)pow(_value, ((Float*)value->script(1353689091 /* to-float */))->_value));
+		return Float::make((float)pow(_value, ((Float*)value->script(7569653579622403 /* to-float */))->_value));
 	}
 	
 	
 	Object* Float::mod(Object* value)
 	{
-		return Float::make(fmod(_value, ((Float*)value->script(1353689091 /* to-float */))->_value));
+		return Float::make(fmod(_value, ((Float*)value->script(7569653579622403 /* to-float */))->_value));
 	}
 	
 	

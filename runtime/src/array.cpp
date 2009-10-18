@@ -60,33 +60,33 @@ namespace kit
 		
 		switch(message)
 		{
-			case 1756282918: // to-str
+			case 6951013367846: // to-str
 				result = toString();
 				break;
-			case 176967078: // count
-			case 1433765721: // length
+			case 210630364582: // count
+			case 6950690850649: // length
 				result = length();
 				break;
-			case 4183265798: // "include?"
+			case 7569488905474566: // "include?"
 				result = includes(va_arg(va, Object*));
 				break;
 			case 177637: // "@"
 			case 5860912: // "at"
 				result = at(va_arg(va, Object*));
 				break;
-			case 2087549669: // "add!"
+			case 6382516965: // "add!"
 				result = add(va_arg(va, Object*));
 				break;
-			case 2088334374: // "set!"
+			case 6383301670: // "set!"
 				result = set(va_arg(va, Object*), va_arg(va, Object*));
 				break;
-			case 1543483357: // "clear!"
+			case 6950800568285: // "clear!"
 				result = clear();
 				break;
-			case 2087697144: // "map!"
+			case 6382664440: // "map!"
 				result = map(va_arg(va, Object*));
 				break;
-			case 1165546895: // "empty?"
+			case 6950422631823: // "empty?"
 				result = isEmpty();
 				break;
 			default:
@@ -122,13 +122,13 @@ namespace kit
 	
 	Object* Array::at(Object* obj)
 	{
-		return _value[((Integer*)(obj->script(1756306272 /* to-int */)))->_value];
+		return _value[((Integer*)(obj->script(6951013391200 /* to-int */)))->_value];
 	}
 	
 	
 	Object* Array::set(Object* index, Object* obj)
 	{
-		_value[((Integer*)(obj->script(1756306272 /* to-int */)))->_value] = obj;
+		_value[((Integer*)(obj->script(6951013391200 /* to-int */)))->_value] = obj;
 		
 		return NULL;
 	}
@@ -179,7 +179,7 @@ namespace kit
 		
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			ss << ((String*)(_value[i]->script(1756282918 /* to-str */)))->_value;
+			ss << ((String*)(_value[i]->script(6951013367846 /* to-str */)))->_value;
 			
 			if(i < (_value.size() - 1))
 			{

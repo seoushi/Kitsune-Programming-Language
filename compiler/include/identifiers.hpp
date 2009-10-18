@@ -33,25 +33,14 @@
 
 #include <string>
 #include <map>
+#include <kitpl/core.hpp>
 
 namespace kitc
 {
 	class Identifiers
 	{
-	public:
-		Identifiers();
-		~Identifiers();
-		
-		static Identifiers* Instance();
-		
-		unsigned int GetId(std::string identString);
-		
-	private:
-		
-		void LoadRuntimeIds();
-		
-		std::map<std::string, unsigned int> ids;
-		unsigned int nextId;
+		public:
+			static kit::MsgId GetId(std::string identString);		
 	};
 	
 }

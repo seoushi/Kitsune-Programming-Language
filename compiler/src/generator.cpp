@@ -31,6 +31,7 @@
 
 #include "generator.hpp"
 #include "lexer.hpp"
+#include "identifiers.hpp"
 #include <stdlib.h>
 
 
@@ -39,7 +40,6 @@ using namespace kitc;
 
 Generator::Generator()
 {
-	ids = Identifiers::Instance();
 }
 
 
@@ -212,7 +212,6 @@ bool Generator::GenExpr(Expression* expr)
 
 bool Generator::GenDef(Expression* expr)
 {
-	printf("hi");
 	cFile << "kit::Object* ";
 	return GenExpr(((DefExpr*)expr)->expr);
 }
@@ -261,7 +260,7 @@ bool Generator::GenFunCall(Expression* expr)
 	}
 
 
-	cFile << "->script(" << ids->GetId(funcCall->funcName) << "/* " << funcCall->funcName << " */";
+	cFile << "->script(" << Identifiers::GetId(funcCall->funcName) << "/* " << funcCall->funcName << " */";
 
 	for(unsigned int i = 0; i < funcCall->args.size(); i++)
 	{
@@ -404,26 +403,16 @@ void Generator::GenFooter()
 	cFile << "GC_INIT();" << std::endl;
 	cFile << std::endl;
 	
-//	cFile << "Kitsune_InitObject();" << std::endl;
-//	cFile << "Kitsune_InitArray();" << std::endl;
-//	cFile << "Kitsune_InitBoolean();" << std::endl;
-//	cFile << "Kitsune_InitCharacter();" << std::endl;
-//	cFile << "Kitsune_InitFloat();" << std::endl;
-//	cFile << "Kitsune_InitInteger();" << std::endl;
-//	cFile << "Kitsune_InitString();" << std::endl;
-//	cFile << std::endl;
-
-
 	cFile << "kit::Object* array = kit::Array::make();" << std::endl;
 	cFile << std::endl;
 	cFile << "for(unsigned i = 0; i < argc; i++)" << std::endl;
 	cFile << "{" << std::endl;
-	cFile << "\tarray->script(37/*add!*/, kit::String::make(argv[i]));" << std::endl;
+	cFile << "\tarray->script(6382516965 /*add!*/, kit::String::make(argv[i]));" << std::endl;
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 
 	cFile << "kit::Object* topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
-	cFile << "topLevel->script(43 /*start*/);" << std::endl;
+	cFile << "topLevel->script(210648428421 /*start*/);" << std::endl;
 	
 	cFile << "return 0;" << std::endl;
 	

@@ -80,55 +80,55 @@ namespace kit
 			case 5858873: // !=
 				result = notEqual(va_arg(va, Object*));
 				break;
-			case 1353689091: // to-float
+			case 7569653579622403: // to-float
 				result = toFloat();
 				break;
-			case 1756306272: // to-int
+			case 6951013391200: // to-int
 				result = toInteger();
 				break;
-			case 1756282918: // to-str
+			case 6951013367846: // to-str
 				result = this;
 				break;
-			case 1433765721: // length
+			case 6950690850649: // length
 				result = length();
 				break;
-			case 608820149: // includes?
+			case 249793133880662965: // includes?
 				result = includes(va_arg(va, Object*));
 				break;
-			case 1362176549: // reverse
+			case 229395565455909: // reverse
 				result = reverse();
 				break;
-			case 1364993353: // replace
+			case 229395568272713: // replace
 				result = replace(va_arg(va, Object*), va_arg(va, Object*));
 				break;
-			case 2124712547: // remove
+			case 6951381797475: // remove
 				result = remove(va_arg(va, Object*));
 				break;
-			case 898217777: // capitalize
+			case 8243093972038825777: // capitalize
 				result = capitalize();
 				break;
-			case 1334017297: // to-upper
+			case 7569653559950609: // to-upper
 				result = toUpper();
 				break;
-			case 1369389104: // to-lower
+			case 7569653595322416: // to-lower
 				result = toLower();
 				break;
-			case 187024980: // print
+			case 210640422484: // print
 				result = print();
 				break;
-			case 1853128887: // print-line
+			case 8243495715644670135: // print-line
 				result = printLine();
 				break;
-			case 1326815083: // append
+			case 6950583900011: // append
 				result = append(va_arg(va, Object*));
 				break;
 			case 5859173: // ++
 				result = append(va_arg(va, Object*));
 				break;
-			case 3597576089: // sub-string
+			case 8243807579259447193: // sub-string
 				result = subString(va_arg(va, Object*), va_arg(va, Object*));
 				break;
-			case 195179447: // split
+			case 210648576951: // split
 				result = split(va_arg(va, Object*));
 				break;	
 			default:
@@ -143,7 +143,7 @@ namespace kit
 			
 	Object* String::equals(Object* value)
 	{
-		if(_value == ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value == ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -153,7 +153,7 @@ namespace kit
 	
 	Object* String::greaterThan(Object* value)
 	{
-		if(_value > ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value > ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -163,7 +163,7 @@ namespace kit
 	
 	Object* String::greaterThanOrEqual(Object* value)
 	{
-		if(_value >= ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value >= ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -173,7 +173,7 @@ namespace kit
 	
 	Object* String::lessThan(Object* value)
 	{
-		if(_value < ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value < ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -183,7 +183,7 @@ namespace kit
 	
 	Object* String::lessThanOrEqual(Object* value)
 	{
-		if(_value <= ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value <= ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -194,7 +194,7 @@ namespace kit
 	
 	Object* String::notEqual(Object* value)
 	{
-		if(_value != ((String*)(value->script(1756282918/* to-str */)))->_value)
+		if(_value != ((String*)(value->script(6951013367846 /* to-str */)))->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -211,7 +211,7 @@ namespace kit
 	
 	Object* String::includes(Object* str)
 	{
-		if(strstr(_value.c_str(), (((String*)(str->script(1756282918/* to-str */)))->_value).c_str()))
+		if(strstr(_value.c_str(), (((String*)(str->script(6951013367846 /* to-str */)))->_value).c_str()))
 		{
 			return Boolean::make(false);
 		}
@@ -237,12 +237,12 @@ namespace kit
 	Object* String::replace(Object* search, Object* replace)
 	{
 		std::string newString = _value;
-		std::string* searchStr = &((String*)(search->script(1756282918/* to-str */)))->_value;
+		std::string* searchStr = &((String*)(search->script(6951013367846 /* to-str */)))->_value;
 
 		std::string::size_type pos = newString.find((*searchStr));
 		while( pos != std::string::npos )
 		{
-			newString.replace(pos, searchStr->length(), ((String*)(replace->script(1756282918/* to-str */)))->_value);
+			newString.replace(pos, searchStr->length(), ((String*)(replace->script(6951013367846 /* to-str */)))->_value);
 			
 			pos = newString.find((*searchStr));
 		}
@@ -339,7 +339,7 @@ namespace kit
 		std::stringstream ss;
 		
 		ss << _value;
-		ss << ((String*)(str->script(1756282918/* to-str */)))->_value;
+		ss << ((String*)(str->script(6951013367846 /* to-str */)))->_value;
 		
 		return String::make(ss.str());
 	}
@@ -347,8 +347,8 @@ namespace kit
 	
 	Object* String::subString(Object* startIndex, Object* endIndex)
 	{
-		std::string newString = _value.substr(((Integer*)(startIndex->script(1756306272/* to-int */)))->_value,
-											  ((Integer*)(endIndex->script(1756306272/* to-int */)))->_value);
+		std::string newString = _value.substr(((Integer*)(startIndex->script(6951013391200 /* to-int */)))->_value,
+											  ((Integer*)(endIndex->script(6951013391200 /* to-int */)))->_value);
 		
 		return make(newString);
 	}

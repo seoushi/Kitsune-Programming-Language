@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include <iostream>
 
 // this is a slightly modified version of djb2
 // orignal source from http://www.cse.yorku.ca/~oz/hash.html
@@ -28,7 +30,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			printf("%u\n", hash(argv[1]));
+			std::cout << std::string(argv[1]) << ": " << hash(argv[1]) << std::endl;
 		}
 	}
 	else

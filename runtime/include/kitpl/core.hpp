@@ -33,14 +33,8 @@
 
 namespace kit
 {
-	// forward declaration
-	class Object;
-
 	// message id
 	typedef unsigned long MsgId;
-
-	// function pointer prototype
-//	typedef Object* (*FuncPtr)(Object*, MsgId, ... );
 
 	// base object type
 	class Object
@@ -50,8 +44,6 @@ namespace kit
 			Object(){};
 
 			virtual Object* script(MsgId, ... ) = 0;
-//			FuncPtr	script;
-//			void*	target;
 	};
 
 }

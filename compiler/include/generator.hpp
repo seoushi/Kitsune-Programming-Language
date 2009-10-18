@@ -32,7 +32,6 @@
 #define _GENERATOR_HPP
 
 #include "parser.hpp"
-#include "identifiers.hpp"
 
 #include <string>
 #include <vector>
@@ -69,8 +68,6 @@ class Generator
 		std::ofstream headerFile;
 	
 		std::vector<Expression*> functions;
-	
-		Identifiers* ids;
 };
 
 }

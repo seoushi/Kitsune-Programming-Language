@@ -44,6 +44,7 @@ namespace kit
 			Float();
 
 			static Object* make(float value);
+
 			Object* script(MsgId message, ...);
 
 			Object* equals(Object* value);
