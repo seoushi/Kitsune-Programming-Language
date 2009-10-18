@@ -37,7 +37,7 @@ namespace kit
 	class Object;
 
 	// message id
-	typedef unsigned int MsgId;
+	typedef unsigned long MsgId;
 
 	// function pointer prototype
 //	typedef Object* (*FuncPtr)(Object*, MsgId, ... );

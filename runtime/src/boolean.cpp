@@ -62,25 +62,25 @@ namespace kit
 		
 		switch(message)
 		{
-			case 1: // ==
+			case 5859493: // ==
 				result = equal(va_arg(va, Object*) );
 				break;
-			case 6: // !=
+			case 5858873: // !=
 				result = notEqual(va_arg(va, Object*) );
 				break;
-			case 16: // to-str
+			case 1756282918: // to-str
 				result = toStr();
 				break;
-			case 17: // &&
+			case 177539: // &
 				result = andOp(va_arg(va, Object*));
 				break;
-			case 18: // ||
+			case 177625: // |
 				result = orOp(va_arg(va, Object*));
 				break;
-			case 19: // !
+			case 177540: // !
 				result = notOp();
 				break;
-			case 20: // to-bool
+			case 2123293021: // to-bool
 				result = this;
 				break;
 			default:
@@ -95,22 +95,22 @@ namespace kit
 			
 	Object* Boolean::equal(Object* value)
 	{
-		return Boolean::make(_value == ((Boolean*)value->script(20/* to-bool */))->_value);
+		return Boolean::make(_value == ((Boolean*)value->script(2123293021/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Boolean*)value->script(20/* to-bool */))->_value);
+		return Boolean::make(_value != ((Boolean*)value->script(2123293021/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::andOp(Object* value)
 	{
-		return Boolean::make(_value && ((Boolean*)value->script(20/* to-bool */))->_value);
+		return Boolean::make(_value && ((Boolean*)value->script(2123293021/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::orOp(Object* value)
 	{
-		return Boolean::make(_value || ((Boolean*)value->script(20/* to-bool */))->_value);
+		return Boolean::make(_value || ((Boolean*)value->script(2123293021/* to-bool */))->_value);
 	}
 	
 	Object* Boolean::notOp()

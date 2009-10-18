@@ -48,14 +48,6 @@ namespace kit
 	Object* Array::make()
 	{
 		return new Array();
-//		Object* arrayObj = new Object();
-//		
-//		Array* a = new Array();
-//		
-//		arrayObj->target = (void*)a;
-//		arrayObj->script = &Array::script;
-//		
-//		return arrayObj;
 	}
 
 	
@@ -68,33 +60,33 @@ namespace kit
 		
 		switch(message)
 		{
-			case 16: // to-str
+			case 1756282918: // to-str
 				result = toString();
 				break;
-			case 42: // "count"
-			case 21: // "length"
+			case 176967078: // count
+			case 1433765721: // length
 				result = length();
 				break;
-			case 22: // "include?"
+			case 4183265798: // "include?"
 				result = includes(va_arg(va, Object*));
 				break;
-			case 35: // "@"
-			case 36: // "at"
+			case 177637: // "@"
+			case 5860912: // "at"
 				result = at(va_arg(va, Object*));
 				break;
-			case 37: // "add!"
+			case 2087549669: // "add!"
 				result = add(va_arg(va, Object*));
 				break;
-			case 38: // "set!"
+			case 2088334374: // "set!"
 				result = set(va_arg(va, Object*), va_arg(va, Object*));
 				break;
-			case 39: // "clear!"
+			case 1543483357: // "clear!"
 				result = clear();
 				break;
-			case 40: // "map"
+			case 2087697144: // "map!"
 				result = map(va_arg(va, Object*));
 				break;
-			case 41: // "empty?"
+			case 1165546895: // "empty?"
 				result = isEmpty();
 				break;
 			default:
@@ -130,13 +122,13 @@ namespace kit
 	
 	Object* Array::at(Object* obj)
 	{
-		return _value[((Integer*)(obj->script(15 /* to-int */)))->_value];
+		return _value[((Integer*)(obj->script(1756306272 /* to-int */)))->_value];
 	}
 	
 	
 	Object* Array::set(Object* index, Object* obj)
 	{
-		_value[((Integer*)(obj->script(15 /* to-int */)))->_value] = obj;
+		_value[((Integer*)(obj->script(1756306272 /* to-int */)))->_value] = obj;
 		
 		return NULL;
 	}
@@ -173,7 +165,7 @@ namespace kit
 	{
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			obj->script(0, _value[i], Integer::make(i));
+			_value[i] = obj->script(0, _value[i]);
 		}
 		
 		return NULL;
@@ -187,7 +179,7 @@ namespace kit
 		
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			ss << ((String*)(_value[i]->script(16 /* to-str */)))->_value;
+			ss << ((String*)(_value[i]->script(1756282918 /* to-str */)))->_value;
 			
 			if(i < (_value.size() - 1))
 			{

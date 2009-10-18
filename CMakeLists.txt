@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT ( kitsuneLib )
 PROJECT ( kitc )
+PROJECT ( kit-hash )
 
 SET ( kitsuneLib_SRCS	./runtime/src/array.cpp
 			./runtime/src/boolean.cpp
@@ -17,6 +18,8 @@ SET ( kitc_SRCS ./compiler/src/main.cpp
 				./compiler/src/generator.cpp
 				./compiler/src/identifiers.cpp)
 
+SET ( kitHash_SRCS ./utils/src/kit-hash.cpp )
+
 ADD_DEFINITIONS ( -Wall )
 
 INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ /usr/include )
@@ -25,3 +28,5 @@ ADD_LIBRARY ( kitsune ${kitsuneLib_SRCS} )
 
 ADD_EXECUTABLE ( kitc ${kitc_SRCS} )
 target_link_libraries( kitc gc m )
+
+ADD_EXECUTABLE ( kit-hash ${kitHash_SRCS} )

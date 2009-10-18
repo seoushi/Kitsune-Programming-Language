@@ -62,55 +62,55 @@ namespace kit
 
 		switch(message)
 		{
-			case 1: // ==
+			case 5859493: // ==
 				result = equals( va_arg(va, Object*) );
 				break;
-			case 2: // >
+			case 177563: // >
 				result = greaterThan( va_arg(va, Object*) );
 				break;
-			case 3: // >=
+			case 5859526: // >=
 				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
-			case 4: // <
+			case 177561: // <
 				result = lessThan( va_arg(va, Object*) );
 				break;
-			case 5: // <=
+			case 5859460: // <=
 				result = greaterThanOrEqual( va_arg(va, Object*) );
 				break;
-			case 6: // !=
+			case 5858873: // !=
 				result = notEqual( va_arg(va, Object*) );
 				break;
-			case 7: // +
+			case 177550: // +
 				result = add( va_arg(va, Object*) );
 				break;
-			case 8: // -
+			case 177544: // -
 				result = sub( va_arg(va, Object*) );
 				break;
-			case 9: // /
+			case 177546: // /
 				result = div( va_arg(va, Object*) );
 				break;
-			case 10: // *
+			case 177551: // *
 				result = mul( va_arg(va, Object*) );
 				break;
-			case 11: // ^
+			case 177659 : // ^
 				result = power( va_arg(va, Object*) );
 				break;
-			case 12: // %
+			case 177536: // %
 				result = mod( va_arg(va, Object*) );
 				break;
-			case 13: // sqrt
+			case 2088322081: // sqrt
 				result = squareRoot();
 				break;
-			case 14: // to-float
+			case 1353689091: // to-float
 				result = toFloat();
 				break;
-			case 15: // to-int
+			case 1756306272: // to-int
 				result = this;
 				break;
-			case 16: // to-str
+			case 1756282918: // to-str
 				result = toStr();
 				break;
-			case 20: // to-bool
+			case 2123293021: // to-bool
 				result = toBool();
 				break;
 			default:
@@ -126,73 +126,73 @@ namespace kit
 
 	Object* Integer::equals(Object* value)
 	{
-		return Boolean::make(_value == ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value == ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThan(Object* value)
 	{
-		return Boolean::make(_value > ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value > ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::greaterThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value >= ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value >= ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::lessThan(Object* value)
 	{
-		return Boolean::make(_value < ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value < ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::lessThanOrEqual(Object* value)
 	{
-		return Boolean::make(_value <= ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value <= ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::notEqual(Object* value)
 	{
-		return Boolean::make(_value != ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Boolean::make(_value != ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 
 
 	Object* Integer::add(Object* value)
 	{
-		return Integer::make(_value + ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Integer::make(_value + ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::sub(Object* value)
 	{
-		return Integer::make(_value - ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Integer::make(_value - ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::div(Object* value)
 	{
-		return Integer::make(_value / ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Integer::make(_value / ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::mul(Object* value)
 	{
-		return Integer::make(_value * ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Integer::make(_value * ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
 	Object* Integer::power(Object* value)
 	{
-		return Integer::make((int)pow(_value, ((Integer*)(value->script(15/* to-int */)))->_value));
+		return Integer::make((int)pow(_value, ((Integer*)(value->script(1756306272 /* to-int*/)))->_value));
 	}
 	
 	
 	Object* Integer::mod(Object* value)
 	{
-		return Integer::make(_value % ((Integer*)(value->script(15/* to-int */)))->_value);
+		return Integer::make(_value % ((Integer*)(value->script(1756306272 /* to-int*/)))->_value);
 	}
 	
 	
