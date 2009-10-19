@@ -296,6 +296,9 @@ bool Generator::GenLiteral(Expression* expr)
 		case LiteralType::Float:
 			cFile << "kit::Float::make(" << lit->floatValue << ")";
 			break;
+		case LiteralType::Quoted:
+			cFile << lit->stringValue;
+			break;
 		default:
 			return false;
 			break;

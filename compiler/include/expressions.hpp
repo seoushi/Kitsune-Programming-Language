@@ -67,6 +67,7 @@ namespace LiteralType
 		String,
 		Int,
 		Float,
+		Quoted,
 	}Type;
 }
 

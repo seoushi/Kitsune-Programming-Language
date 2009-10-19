@@ -171,8 +171,16 @@ parse_next:
 				switch(token->type)
 				{
 					case TokenType::Identifier:
-						tmpExpr->literalType = LiteralType::Identifier;
-						tmpExpr->stringValue = token->identifier;
+						if(token->identifier[0] == '\'')
+						{
+							tmpExpr->literalType = LiteralType::Quoted;
+							tmpExpr->stringValue = token->identifier.substr(1); //drop the quote
+						}
+						else
+						{
+							tmpExpr->literalType = LiteralType::Identifier;
+							tmpExpr->stringValue = token->identifier;
+						}
 						break;
 					case TokenType::String:
 						tmpExpr->literalType = LiteralType::String;
