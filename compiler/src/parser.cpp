@@ -228,6 +228,79 @@ parse_next:
 			}
 			return new EndExpr();
 			break;
+		case TokenType::Else:
+			{
+				if(stack.size() == 0)
+				{
+					CondExpr* condExpr = new CondExpr();
+					condExpr->condType = CondType::Else;
+					
+					return condExpr;
+				}
+				if(stack.size() > 1)
+				{
+					ParseError(token, "one cond expression", "too many expressions before else statement, expected right after elif or if");
+					return NULL;
+				}
+				
+				//get the last child
+				Expression* tmpExpr = stack[0];
+				
+				if(tmpExpr->Type() != ExprType::Cond)
+				{
+					ParseError(token, "cond expression", "expected previous statement to be if or elif");
+					return NULL;
+				}
+				
+				CondExpr* cond = (CondExpr*)tmpExpr;
+				
+				while(true)
+				{
+					if(cond->child)
+					{
+						cond = (CondExpr*)cond->child;
+					}
+					else
+					{
+						break;
+					}
+				}
+				
+				//make sure that the previous statement is an elif or if
+				if((cond->condType != CondType::If) || (cond->condType != CondType::Elif))
+				{
+					ParseError(token, "cond expression", "expected previous statement to be if or elif");
+					return NULL;
+				}
+				
+				// make the cond else expr
+				CondExpr* elseCond = new CondExpr();
+				elseCond->condType = CondType::Else;
+				
+				
+				// parse the body of the else statement
+				tmpExpr = Parse();
+				
+				while (tmpExpr)
+				{
+					if(tmpExpr->Type() == ExprType::End)
+					{
+						cond->child = elseCond;
+						return stack[0];
+					}
+					if(tmpExpr->Type() == ExprType::Cond)
+					{
+						cond->child = elseCond;
+						goto parse_next;
+					}
+					
+					elseCond->body.push_back(tmpExpr);
+					
+					tmpExpr = Parse();
+				}
+				
+			}
+			break;
 		case TokenType::If:
 			{
 				if(stack.size() > 0)
@@ -265,6 +338,12 @@ parse_next:
 					if(bodyExpr->Type() == ExprType::End)
 					{
 						return tmpExpr;
+					}
+					if(bodyExpr->Type() == ExprType::Cond)
+					{
+						stack.push_back(tmpExpr);
+						
+						goto parse_next;
 					}
 					
 					tmpExpr->body.push_back(bodyExpr);

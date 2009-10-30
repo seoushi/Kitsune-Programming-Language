@@ -332,26 +332,47 @@ bool Generator::GenCond(Expression* expr)
 {
 	CondExpr* cond = (CondExpr*)expr;
 	
-	cFile << "if(((kit::Boolean*)";
 	
-	if(!GenExpr(cond->conditional))
+	cFile << std::endl;
+	
+	if(cond->condType == CondType::If)
 	{
-		return false;
-	}
+		cFile << "if(((kit::Boolean*)";
 	
-	cFile << ")->_value )" << std::endl << "{" << std::endl;
+		if(!GenExpr(cond->conditional))
+		{
+			return false;
+		}
+	
+		cFile << ")->_value )" << std::endl << "{" << std::endl;
+	}
+	else if(cond->condType == CondType::Else)
+	{
+		cFile << "else" << std::endl << "{" << std::endl;
+	}
+
 	
 	for(unsigned int i = 0; i < cond->body.size(); i++)
 	{
+		cFile << "\t";
+		
 		if(!GenExpr(cond->body[i]))
 		{
 			return false;
 		}
 	}
 	
-	cFile << "}" << std::endl;
+	cFile << "}" << std::endl << std::endl;;
+
+
+	if(cond->child)
+	{
+		if(!GenExpr(cond->child))
+		{
+			return false;
+		}
+	}
 	
-	//TODO: check childern
 	
 	return true;
 }
