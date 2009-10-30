@@ -332,7 +332,7 @@ bool Generator::GenCond(Expression* expr)
 {
 	CondExpr* cond = (CondExpr*)expr;
 	
-	cFile << "if(((kit:Boolean*)";
+	cFile << "if(((kit::Boolean*)";
 	
 	if(!GenExpr(cond->conditional))
 	{
