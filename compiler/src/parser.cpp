@@ -268,6 +268,8 @@ parse_next:
 					}
 					
 					tmpExpr->body.push_back(bodyExpr);
+
+					bodyExpr = Parse();
 				}
 				
 			}
