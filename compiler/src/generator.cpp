@@ -332,14 +332,14 @@ bool Generator::GenCond(Expression* expr)
 {
 	CondExpr* cond = (CondExpr*)expr;
 	
-	cFile << "if(";
+	cFile << "if(((kit:Boolean*)";
 	
 	if(!GenExpr(cond->conditional))
 	{
 		return false;
 	}
 	
-	cFile << ")" << std::endl << "{" << std::endl;
+	cFile << ")->_value )" << std::endl << "{" << std::endl;
 	
 	for(unsigned int i = 0; i < cond->body.size(); i++)
 	{
