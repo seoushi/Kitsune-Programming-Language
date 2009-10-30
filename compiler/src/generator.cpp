@@ -335,6 +335,11 @@ bool Generator::GenCond(Expression* expr)
 	
 	cFile << std::endl;
 	
+	if(cond->condType == CondType::Elif)
+	{
+		cFile << "else ";
+	}
+	
 	if(cond->condType == CondType::If)
 	{
 		cFile << "if(((kit::Boolean*)";

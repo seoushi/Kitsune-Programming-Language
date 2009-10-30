@@ -229,11 +229,21 @@ parse_next:
 			return new EndExpr();
 			break;
 		case TokenType::Else:
+		case TokenType::Elif:
 			{
 				if(stack.size() == 0)
 				{
 					CondExpr* condExpr = new CondExpr();
-					condExpr->condType = CondType::Else;
+					
+					if (token->type == TokenType::Else)
+					{
+						condExpr->condType = CondType::Else;
+					}
+					else if (token->type == TokenType::Elif)
+					{
+						condExpr->condType = CondType::Elif;
+					}
+					
 					
 					return condExpr;
 				}
