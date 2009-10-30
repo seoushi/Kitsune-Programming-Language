@@ -277,7 +277,7 @@ parse_next:
 				}
 				
 				//make sure that the previous statement is an elif or if
-				if((cond->condType != CondType::If) || (cond->condType != CondType::Elif))
+				if((cond->condType != CondType::If) && (cond->condType != CondType::Elif))
 				{
 					ParseError(token, "cond expression", "expected previous statement to be if or elif");
 					return NULL;
@@ -301,6 +301,10 @@ parse_next:
 					if(tmpExpr->Type() == ExprType::Cond)
 					{
 						cond->child = elseCond;
+						token = lexer->CurToken();
+						
+						std::cout << std::endl << token->ToString();
+						
 						goto parse_next;
 					}
 					
@@ -352,6 +356,7 @@ parse_next:
 					if(bodyExpr->Type() == ExprType::Cond)
 					{
 						stack.push_back(tmpExpr);
+						token = lexer->CurToken();
 						
 						goto parse_next;
 					}
