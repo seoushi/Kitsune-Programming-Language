@@ -39,7 +39,7 @@ kit::MsgId Identifiers::GetId(std::string identString)
 	unsigned long hash = 5381;
 	int c;
 
-	for(int i = 0; i < identString.size(); i++)
+	for(unsigned int i = 0; i < identString.size(); i++)
 	{
 		c = identString[i];
 		hash = ((hash << 5) + hash) ^ c; // hash * 33 ^ c

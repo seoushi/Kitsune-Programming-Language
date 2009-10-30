@@ -59,6 +59,7 @@ class Generator
 		bool GenFunCall(Expression* expr);
 		bool GenLiteral(Expression* expr);
 		bool GenReturn(Expression* expr);
+		bool GenCond(Expression* expr);
 		void GenHeader(std::string headerName);
 		void GenFooter();
 	

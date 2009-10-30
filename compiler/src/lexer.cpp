@@ -98,6 +98,15 @@ std::string Token::ToString()
 		case TokenType::CloseParen:
 			ss << "CLOSE_PAREN";
 			break;
+		case TokenType::If:
+			ss << "IF";
+			break;
+		case TokenType::Elif:
+			ss << "ELIF";
+			break;
+		case TokenType::Else:
+			ss << "ELSE";
+			break;
 		case TokenType::Invalid:
 			ss << "INVALID(" << identifier << ")";
 			break;
@@ -398,6 +407,31 @@ void Lexer::ParseNextToken()
 		if (strcmp(buffer, "def") == 0)
 		{
 			curToken = new Token(TokenType::Def);
+			return;
+		}
+		if (strcmp(buffer, "if") == 0)
+		{
+			curToken = new Token(TokenType::If);
+			return;
+		}
+		if (strcmp(buffer, "elif") == 0)
+		{
+			curToken = new Token(TokenType::Elif);
+			return;
+		}
+		if (strcmp(buffer, "else") == 0)
+		{
+			curToken = new Token(TokenType::Else);
+			return;
+		}
+		if (strcmp(buffer, "then") == 0)
+		{
+			curToken = new Token(TokenType::Then);
+			return;
+		}
+		if (strcmp(buffer, "end") == 0)
+		{
+			curToken = new Token(TokenType::End);
 			return;
 		}
 

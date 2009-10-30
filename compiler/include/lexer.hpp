@@ -54,7 +54,13 @@ namespace TokenType
 		OpenParen = -11,
 		CloseParen = -12,
 		Def = -13,
-		Invalid = -14,
+		If = -14,
+		Elif = -15,
+		Else = -16,
+		Then = -17,
+		End	= -18,
+		
+		Invalid = -99,
 	}Type;
 }
 

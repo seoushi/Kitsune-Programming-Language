@@ -67,7 +67,7 @@ parse_next:
 			return new EofExpr();
 			
 		// end line marker
-		case TokenType::Dot:			
+		case TokenType::Dot:
 			switch(stack.size())
 			{
 				case 0:
@@ -86,6 +86,27 @@ parse_next:
 					return NULL;
 					break;
 			}
+			break;
+		// then
+		case TokenType::Then:
+			switch(stack.size())
+			{
+				case 0:
+					ParseError(token, "one expression", "No expression before 'then'");
+					return NULL;
+					break;
+				case 1:
+					{
+						ThenExpr* tmpExpr = new ThenExpr();
+						tmpExpr->expr = stack[0];
+						return tmpExpr;
+					}
+				break;
+			default:
+				ParseError(token, "one expression", "too many expressions before 'then'");
+				return NULL;
+				break;
+		}
 			break;
 		// assignment
 		case TokenType::Equal:
@@ -199,7 +220,59 @@ parse_next:
 				stack.push_back(tmpExpr);
 			}
 			break;
-			
+		case TokenType::End:
+			if(stack.size() > 0)
+			{
+				ParseError(token, "not end", "end can only be used to start a statement");
+				return NULL;
+			}
+			return new EndExpr();
+			break;
+		case TokenType::If:
+			{
+				if(stack.size() > 0)
+				{
+					ParseError(token, "not if", "if can only be used to start a statement");
+					return NULL;
+				}
+				
+				CondExpr* tmpExpr = new CondExpr();
+				tmpExpr->condType = CondType::If;
+				
+				//get conditional, this should return a then expression
+				Expression* thenExpr = Parse();
+
+				
+				if(thenExpr == NULL)
+				{
+					ParseError(token, "boolean expression", "missing conditional in if statement");
+					return NULL;
+				}
+				else if(thenExpr->Type() != ExprType::Then)
+				{
+					ParseError(token, "then", "missing 'then' in if statement");
+					return NULL;
+				}
+
+				tmpExpr->conditional = ((ThenExpr*)thenExpr)->expr;
+				
+				
+				// parse the body till end
+				Expression* bodyExpr = Parse();
+				
+				while (bodyExpr)
+				{
+					if(bodyExpr->Type() == ExprType::End)
+					{
+						return tmpExpr;
+					}
+					
+					tmpExpr->body.push_back(bodyExpr);
+				}
+				
+			}
+			break;
+
 		default:
 			ParseError(token, "?", "unknown or used token type");
 			return NULL;

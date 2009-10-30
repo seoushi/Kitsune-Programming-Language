@@ -200,6 +200,9 @@ bool Generator::GenExpr(Expression* expr)
 		case ExprType::Return:
 			return GenReturn(expr);
 			break;
+		case ExprType::Cond:
+			return GenCond(expr);
+			break;
 		default:
 			std::cerr << "ERROR: Unknown expression type " << expr->ToString() << "(" << expr->Type() << ")" << std::endl;
 			return false;
@@ -320,6 +323,35 @@ bool Generator::GenReturn(Expression* expr)
 	}
 	
 	cFile << ";" << std::endl;
+	
+	return true;
+}
+
+
+bool Generator::GenCond(Expression* expr)
+{
+	CondExpr* cond = (CondExpr*)expr;
+	
+	cFile << "if(";
+	
+	if(!GenExpr(cond->conditional))
+	{
+		return false;
+	}
+	
+	cFile << ")" << std::endl << "{" << std::endl;
+	
+	for(unsigned int i = 0; i < cond->body.size(); i++)
+	{
+		if(!GenExpr(cond->body[i]))
+		{
+			return false;
+		}
+	}
+	
+	cFile << "}" << std::endl;
+	
+	//TODO: check childern
 	
 	return true;
 }

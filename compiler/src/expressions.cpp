@@ -54,6 +54,52 @@ std::string Expression::ToString()
 {
 	return ExprType::None;
 }*/
+	
+
+///////////////////////////////////////////
+/// End Expression
+///////////////////////////////////////////
+
+EndExpr::EndExpr(){}
+	
+EndExpr::~EndExpr(){}
+
+
+std::string EndExpr::ToString()
+{
+	return "<EndExpr>";
+}
+
+
+ExprType::Type EndExpr::Type()
+{
+	return ExprType::End;
+}
+
+
+///////////////////////////////////////////
+/// Conditional Expression
+///////////////////////////////////////////
+
+CondExpr::CondExpr()
+{
+	condType = CondType::None;
+	child = NULL;
+	conditional = NULL;
+	blockIsTerminated = false;
+}
+
+CondExpr::~CondExpr(){}
+		
+std::string CondExpr::ToString()
+{
+	return "<Conditional Expression>";
+}
+		
+ExprType::Type CondExpr::Type()
+{
+	return ExprType::Cond;
+}
 
 
 ///////////////////////////////////////////
@@ -214,6 +260,28 @@ std::string LineExpr::ToString()
 ExprType::Type LineExpr::Type()
 {
 	return ExprType::Line;
+}
+
+	
+///////////////////////////////////////////
+/// Line Expression
+///////////////////////////////////////////
+
+ThenExpr::ThenExpr(){}
+
+
+ThenExpr::~ThenExpr(){}
+
+
+std::string ThenExpr::ToString()
+{
+	return "<Then Expression>";
+}
+
+
+ExprType::Type ThenExpr::Type()
+{
+	return ExprType::Then;
 }
 
 

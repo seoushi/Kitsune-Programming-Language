@@ -54,6 +54,9 @@ namespace ExprType
 		Return,
 		Line,
 		Assign,
+		Cond,
+		Then,
+		End,
 	}Type;
 }
 
@@ -71,6 +74,16 @@ namespace LiteralType
 	}Type;
 }
 
+namespace CondType
+{
+	typedef enum
+	{
+		None,
+		If,
+		Elif,
+		Else,
+	}Type;
+}
 
 
 class Expression
@@ -85,6 +98,44 @@ class Expression
 		virtual ExprType::Type Type() = 0;
 };
 
+	
+class EndExpr : public Expression
+{
+	public:
+		
+		EndExpr();
+		virtual ~EndExpr();
+		
+		virtual std::string	ToString();
+		
+		virtual ExprType::Type Type();
+};
+	
+	
+class CondExpr : public Expression
+{
+	public:
+		
+		CondExpr();
+		virtual ~CondExpr();
+		
+		virtual std::string	ToString();
+		
+		ExprType::Type Type();
+	
+
+		CondType::Type condType;
+	
+
+		Expression* conditional; // the expression to evaluate
+	
+		std::vector<Expression*> body;
+	
+		Expression* child; // a child is an else or elif block
+	
+		bool blockIsTerminated;
+};
+	
 
 class DefExpr : public Expression
 {
@@ -121,7 +172,7 @@ class AssignExpr : public Expression
 class FuncExpr : public Expression
 {
 	public:
-			
+
 		FuncExpr();
 		virtual ~FuncExpr();
 				
@@ -200,6 +251,21 @@ class LineExpr : public Expression
 		
 		LineExpr();
 		virtual ~LineExpr();
+		
+		virtual std::string	ToString();
+		
+		ExprType::Type Type();
+		
+		Expression*	expr;
+};
+
+
+class ThenExpr : public Expression
+{
+	public:
+		
+		ThenExpr();
+		virtual ~ThenExpr();
 		
 		virtual std::string	ToString();
 		
