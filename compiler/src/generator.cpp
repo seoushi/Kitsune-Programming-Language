@@ -333,15 +333,14 @@ bool Generator::GenCond(Expression* expr)
 	CondExpr* cond = (CondExpr*)expr;
 	
 	
-	cFile << std::endl;
-	
 	if(cond->condType == CondType::Elif)
 	{
 		cFile << "else ";
 	}
 	
-	if(cond->condType == CondType::If)
+	if((cond->condType == CondType::If) || (cond->condType == CondType::Elif))
 	{
+		cFile << std::endl;
 		cFile << "if(((kit::Boolean*)";
 	
 		if(!GenExpr(cond->conditional))
@@ -367,8 +366,12 @@ bool Generator::GenCond(Expression* expr)
 		}
 	}
 	
-	cFile << "}" << std::endl << std::endl;;
-
+	cFile << "}" << std::endl;
+	
+	if(cond->condType == CondType::If)
+	{
+		cFile << std::endl;
+	}
 
 	if(cond->child)
 	{

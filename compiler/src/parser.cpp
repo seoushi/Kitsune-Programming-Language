@@ -106,7 +106,7 @@ parse_next:
 				ParseError(token, "one expression", "too many expressions before 'then'");
 				return NULL;
 				break;
-		}
+			}
 			break;
 		// assignment
 		case TokenType::Equal:
@@ -235,11 +235,11 @@ parse_next:
 				{
 					CondExpr* condExpr = new CondExpr();
 					
-					if (token->type == TokenType::Else)
+					if(token->type == TokenType::Else)
 					{
 						condExpr->condType = CondType::Else;
 					}
-					else if (token->type == TokenType::Elif)
+					else if(token->type == TokenType::Elif)
 					{
 						condExpr->condType = CondType::Elif;
 					}
@@ -277,7 +277,7 @@ parse_next:
 				}
 				
 				//make sure that the previous statement is an elif or if
-				if((cond->condType != CondType::If) && (cond->condType != CondType::Elif))
+				if(cond->condType == CondType::Else)
 				{
 					ParseError(token, "cond expression", "expected previous statement to be if or elif");
 					return NULL;
@@ -285,7 +285,32 @@ parse_next:
 				
 				// make the cond else expr
 				CondExpr* elseCond = new CondExpr();
-				elseCond->condType = CondType::Else;
+				
+				if(token->type == TokenType::Else)
+				{
+					elseCond->condType = CondType::Else;
+				}
+				else if(token->type == TokenType::Elif)
+				{
+					elseCond->condType = CondType::Elif;
+					
+					//get conditional, this should return a then expression
+					Expression* thenExpr = Parse();
+
+				
+					if(thenExpr == NULL)
+					{
+						ParseError(token, "boolean expression", "missing conditional in if statement");
+						return NULL;
+					}
+					else if(thenExpr->Type() != ExprType::Then)
+					{
+						ParseError(token, "then", "missing 'then' in if statement");
+						return NULL;
+					}
+
+					elseCond->conditional = ((ThenExpr*)thenExpr)->expr;
+				}
 				
 				
 				// parse the body of the else statement
@@ -302,8 +327,6 @@ parse_next:
 					{
 						cond->child = elseCond;
 						token = lexer->CurToken();
-						
-						std::cout << std::endl << token->ToString();
 						
 						goto parse_next;
 					}
