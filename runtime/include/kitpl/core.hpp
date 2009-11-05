@@ -31,11 +31,13 @@
 #ifndef _KIT_CORE_HPP_
 #define _KIT_CORE_HPP_
 
+#include <boost/shared_ptr.hpp>
+
 namespace kit
 {
 	// message id
 	typedef unsigned long MsgId;
-
+	
 	// base object type
 	class Object
 	{
@@ -46,6 +48,7 @@ namespace kit
 			virtual Object* script(MsgId, ... ) = 0;
 	};
 
+	typedef boost::shared_ptr<Object> ObjPtr;
 }
 
 #endif

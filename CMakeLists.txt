@@ -22,7 +22,7 @@ SET ( kitHash_SRCS ./utils/src/kit-hash.cpp )
 
 ADD_DEFINITIONS ( -Wall )
 
-INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ /usr/include )
+INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/ ./common/shared_ptr )
 
 ADD_LIBRARY ( kitsune ${kitsuneLib_SRCS} )
 
