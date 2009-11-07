@@ -44,7 +44,7 @@ namespace kit
 	{
 	}
 
-	Object* Integer::make(int integer)
+	ObjPtr Integer::make(int integer)
 	{
 		Integer* intObj = new Integer();
 		intObj->_value = integer;
@@ -53,50 +53,50 @@ namespace kit
 	}
 
 
-	Object* Integer::script(MsgId message, ...)
+	ObjPtr Integer::script(MsgId message, ...)
 	{
 		va_list va;
-		Object* result;
+		ObjPtr result;
 		
 		va_start(va, message);
 
 		switch(message)
 		{
 			case 5859493UL: // ==
-				result = equals( va_arg(va, Object*) );
+				result = equals( va_arg(va, ObjPtr) );
 				break;
 			case 177563UL: // >
-				result = greaterThan( va_arg(va, Object*) );
+				result = greaterThan( va_arg(va, ObjPtr) );
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
 				break;
 			case 177561UL: // <
-				result = lessThan( va_arg(va, Object*) );
+				result = lessThan( va_arg(va, ObjPtr) );
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
 				break;
 			case 5858873UL: // !=
-				result = notEqual( va_arg(va, Object*) );
+				result = notEqual( va_arg(va, ObjPtr) );
 				break;
 			case 177550UL: // +
-				result = add( va_arg(va, Object*) );
+				result = add( va_arg(va, ObjPtr) );
 				break;
 			case 177544UL: // -
-				result = sub( va_arg(va, Object*) );
+				result = sub( va_arg(va, ObjPtr) );
 				break;
 			case 177546UL: // /
-				result = div( va_arg(va, Object*) );
+				result = div( va_arg(va, ObjPtr) );
 				break;
 			case 177551UL: // *
-				result = mul( va_arg(va, Object*) );
+				result = mul( va_arg(va, ObjPtr) );
 				break;
 			case 177659UL: // ^
-				result = power( va_arg(va, Object*) );
+				result = power( va_arg(va, ObjPtr) );
 				break;
 			case 177536UL: // %
-				result = mod( va_arg(va, Object*) );
+				result = mod( va_arg(va, ObjPtr) );
 				break;
 			case 2088322081UL: // sqrt
 				result = squareRoot();
@@ -124,90 +124,90 @@ namespace kit
 	}
 
 
-	Object* Integer::equals(Object* value)
+	ObjPtr Integer::equals(ObjPtr value)
 	{
 		return Boolean::make(_value == ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::greaterThan(Object* value)
+	ObjPtr Integer::greaterThan(ObjPtr value)
 	{
 		return Boolean::make(_value > ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::greaterThanOrEqual(Object* value)
+	ObjPtr Integer::greaterThanOrEqual(ObjPtr value)
 	{
 		return Boolean::make(_value >= ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::lessThan(Object* value)
+	ObjPtr Integer::lessThan(ObjPtr value)
 	{
 		return Boolean::make(_value < ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::lessThanOrEqual(Object* value)
+	ObjPtr Integer::lessThanOrEqual(ObjPtr value)
 	{
 		return Boolean::make(_value <= ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::notEqual(Object* value)
+	ObjPtr Integer::notEqual(ObjPtr value)
 	{
 		return Boolean::make(_value != ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 
 
-	Object* Integer::add(Object* value)
+	ObjPtr Integer::add(ObjPtr value)
 	{
 		return Integer::make(_value + ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::sub(Object* value)
+	ObjPtr Integer::sub(ObjPtr value)
 	{
 		return Integer::make(_value - ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::div(Object* value)
+	ObjPtr Integer::div(ObjPtr value)
 	{
 		return Integer::make(_value / ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::mul(Object* value)
+	ObjPtr Integer::mul(ObjPtr value)
 	{
 		return Integer::make(_value * ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::power(Object* value)
+	ObjPtr Integer::power(ObjPtr value)
 	{
 		return Integer::make((int)pow(_value, ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value));
 	}
 	
 	
-	Object* Integer::mod(Object* value)
+	ObjPtr Integer::mod(ObjPtr value)
 	{
 		return Integer::make(_value % ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
 	}
 	
 	
-	Object* Integer::squareRoot()
+	ObjPtr Integer::squareRoot()
 	{
 		return Float::make(sqrt(_value));
 	}
 	
 	
-	Object* Integer::toFloat()
+	ObjPtr Integer::toFloat()
 	{
 		return Float::make((float)_value);
 	}
 	
-	Object* Integer::toStr()
+	ObjPtr Integer::toStr()
 	{
 		std::stringstream ss;
 		ss << _value;
@@ -215,7 +215,7 @@ namespace kit
 		return String::make(ss.str());
 	}
 
-	Object* Integer::toBool()
+	ObjPtr Integer::toBool()
 	{
 		if(_value == 0.0f)
 		{

@@ -45,16 +45,16 @@ namespace kit
 	}
 	
 			
-	Object* Array::make()
+	ObjPtr Array::make()
 	{
 		return new Array();
 	}
 
 	
-	Object* Array::script(MsgId message, ...)
+	ObjPtr Array::script(MsgId message, ...)
 	{
 		va_list va;
-		Object* result;
+		ObjPtr result;
 		
 		va_start(va, message);
 		
@@ -68,23 +68,23 @@ namespace kit
 				result = length();
 				break;
 			case 4183265798UL: // "include?"
-				result = includes(va_arg(va, Object*));
+				result = includes(va_arg(va, ObjPtr));
 				break;
 			case 177637UL: // "@"
 			case 5860912UL: // "at"
-				result = at(va_arg(va, Object*));
+				result = at(va_arg(va, ObjPtr));
 				break;
 			case 2087549669UL: // "add!"
-				result = add(va_arg(va, Object*));
+				result = add(va_arg(va, ObjPtr));
 				break;
 			case 2088334374UL: // "set!"
-				result = set(va_arg(va, Object*), va_arg(va, Object*));
+				result = set(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
 				break;
 			case 1543483357UL: // "clear!"
 				result = clear();
 				break;
 			case 2087697144UL: // "map!"
-				result = map(va_arg(va, Object*));
+				result = map(va_arg(va, ObjPtr));
 				break;
 			case 1165546895UL: // "empty?"
 				result = isEmpty();
@@ -100,15 +100,15 @@ namespace kit
 	}
 	
 	
-	Object* Array::length()
+	ObjPtr Array::length()
 	{
 		return Integer::make(_value.size());
 	}
 	
 	
-	Object* Array::includes(Object* obj)
+	ObjPtr Array::includes(ObjPtr obj)
 	{
-		for(std::vector<Object*>::iterator itr = _value.begin(); itr != _value.end(); itr++)
+		for(std::vector<ObjPtr>::iterator itr = _value.begin(); itr != _value.end(); itr++)
 		{
 			if( (*itr) == obj )
 			{
@@ -120,13 +120,13 @@ namespace kit
 	}
 	
 	
-	Object* Array::at(Object* obj)
+	ObjPtr Array::at(ObjPtr obj)
 	{
 		return _value[((Integer*)(obj->script(1756306272UL /* to-int */)))->_value];
 	}
 	
 	
-	Object* Array::set(Object* index, Object* obj)
+	ObjPtr Array::set(ObjPtr index, ObjPtr obj)
 	{
 		_value[((Integer*)(obj->script(1756306272UL /* to-int */)))->_value] = obj;
 		
@@ -134,7 +134,7 @@ namespace kit
 	}
 	
 	
-	Object* Array::add(Object* obj)
+	ObjPtr Array::add(ObjPtr obj)
 	{
 		_value.push_back(obj);
 		
@@ -142,7 +142,7 @@ namespace kit
 	}
 	
 	
-	Object* Array::clear()
+	ObjPtr Array::clear()
 	{
 		_value.clear();
 		
@@ -150,7 +150,7 @@ namespace kit
 	}
 	
 	
-	Object* Array::isEmpty()
+	ObjPtr Array::isEmpty()
 	{
 		if(_value.size() == 0)
 		{
@@ -161,7 +161,7 @@ namespace kit
 	}
 	
 	
-	Object* Array::map(Object* obj)
+	ObjPtr Array::map(ObjPtr obj)
 	{
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
@@ -172,7 +172,7 @@ namespace kit
 	}
 	
 	
-	Object* Array::toString()
+	ObjPtr Array::toString()
 	{
 		std::stringstream ss;
 		ss << "Array [ ";

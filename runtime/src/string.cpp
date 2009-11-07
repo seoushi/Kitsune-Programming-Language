@@ -45,7 +45,7 @@ namespace kit
 	{
 	}
 			
-	Object* String::make(std::string str)
+	ObjPtr String::make(std::string str)
 	{
 		String* strObj = new String();
 		strObj->_value = str;
@@ -53,32 +53,32 @@ namespace kit
 		return strObj;
 	}
 	
-	Object* String::script(MsgId message, ...)
+	ObjPtr String::script(MsgId message, ...)
 	{
 		va_list va;
-		Object* result;
+		ObjPtr result;
 		
 		va_start(va, message);
 		
 		switch(message)
 		{
 			case 5859493UL: // ==
-				result = equals(va_arg(va, Object*));
+				result = equals(va_arg(va, ObjPtr));
 				break;
 			case 177563UL: // >
-				result = greaterThan(va_arg(va, Object*));
+				result = greaterThan(va_arg(va, ObjPtr));
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual(va_arg(va, Object*));
+				result = greaterThanOrEqual(va_arg(va, ObjPtr));
 				break;
 			case 177561UL: // <
-				result = lessThan(va_arg(va, Object*));
+				result = lessThan(va_arg(va, ObjPtr));
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual(va_arg(va, Object*));
+				result = greaterThanOrEqual(va_arg(va, ObjPtr));
 				break;
 			case 5858873UL: // !=
-				result = notEqual(va_arg(va, Object*));
+				result = notEqual(va_arg(va, ObjPtr));
 				break;
 			case 1353689091UL: // to-float
 				result = toFloat();
@@ -93,16 +93,16 @@ namespace kit
 				result = length();
 				break;
 			case 608820149UL: // includes?
-				result = includes(va_arg(va, Object*));
+				result = includes(va_arg(va, ObjPtr));
 				break;
 			case 1362176549UL: // reverse
 				result = reverse();
 				break;
 			case 1364993353UL: // replace
-				result = replace(va_arg(va, Object*), va_arg(va, Object*));
+				result = replace(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
 				break;
 			case 2124712547UL: // remove
-				result = remove(va_arg(va, Object*));
+				result = remove(va_arg(va, ObjPtr));
 				break;
 			case 898217777UL: // capitalize
 				result = capitalize();
@@ -120,16 +120,16 @@ namespace kit
 				result = printLine();
 				break;
 			case 1326815083UL: // append
-				result = append(va_arg(va, Object*));
+				result = append(va_arg(va, ObjPtr));
 				break;
 			case 5859173UL: // ++
-				result = append(va_arg(va, Object*));
+				result = append(va_arg(va, ObjPtr));
 				break;
 			case 3597576089UL: // sub-string
-				result = subString(va_arg(va, Object*), va_arg(va, Object*));
+				result = subString(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
 				break;
 			case 195179447UL: // split
-				result = split(va_arg(va, Object*));
+				result = split(va_arg(va, ObjPtr));
 				break;	
 			default:
 				std::cerr << "String does not support method(" << message << ")" << std::endl;
@@ -141,7 +141,7 @@ namespace kit
 		return result;
 	}
 			
-	Object* String::equals(Object* value)
+	ObjPtr String::equals(ObjPtr value)
 	{
 		if(_value == ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -151,7 +151,7 @@ namespace kit
 		return Boolean::make(false);
 	}
 	
-	Object* String::greaterThan(Object* value)
+	ObjPtr String::greaterThan(ObjPtr value)
 	{
 		if(_value > ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -161,7 +161,7 @@ namespace kit
 		return Boolean::make(false);
 	}
 	
-	Object* String::greaterThanOrEqual(Object* value)
+	ObjPtr String::greaterThanOrEqual(ObjPtr value)
 	{
 		if(_value >= ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -171,7 +171,7 @@ namespace kit
 		return Boolean::make(false);
 	}
 	
-	Object* String::lessThan(Object* value)
+	ObjPtr String::lessThan(ObjPtr value)
 	{
 		if(_value < ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -181,7 +181,7 @@ namespace kit
 		return Boolean::make(false);
 	}
 	
-	Object* String::lessThanOrEqual(Object* value)
+	ObjPtr String::lessThanOrEqual(ObjPtr value)
 	{
 		if(_value <= ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -192,7 +192,7 @@ namespace kit
 	}
 	
 	
-	Object* String::notEqual(Object* value)
+	ObjPtr String::notEqual(ObjPtr value)
 	{
 		if(_value != ((String*)(value->script(1756282918UL /* to-str */)))->_value)
 		{
@@ -203,13 +203,13 @@ namespace kit
 	}
 	
 			
-	Object* String::length()
+	ObjPtr String::length()
 	{
 		return Integer::make(_value.length());
 	}
 	
 	
-	Object* String::includes(Object* str)
+	ObjPtr String::includes(ObjPtr str)
 	{
 		if(strstr(_value.c_str(), (((String*)(str->script(1756282918UL /* to-str */)))->_value).c_str()))
 		{
@@ -220,7 +220,7 @@ namespace kit
 	}
 	
 	
-	Object* String::reverse()
+	ObjPtr String::reverse()
 	{
 		std::string newValue = _value;
 		unsigned int i = 0;
@@ -234,7 +234,7 @@ namespace kit
 	}
 	
 	
-	Object* String::replace(Object* search, Object* replace)
+	ObjPtr String::replace(ObjPtr search, ObjPtr replace)
 	{
 		std::string newString = _value;
 		std::string* searchStr = &((String*)(search->script(1756282918UL /* to-str */)))->_value;
@@ -251,25 +251,25 @@ namespace kit
 	}
 	
 	
-	Object* String::remove(Object* str)
+	ObjPtr String::remove(ObjPtr str)
 	{
 		return replace(str, make(""));
 	}
 	
 	
-	Object* String::toInteger()
+	ObjPtr String::toInteger()
 	{
 		return Integer::make(atoi(_value.c_str()));
 	}
 	
 	
-	Object* String::toFloat()
+	ObjPtr String::toFloat()
 	{
 		return Float::make(atof(_value.c_str()));
 	}
 	
 	
-	Object* String::capitalize()
+	ObjPtr String::capitalize()
 	{
 		std::string newString = _value;
 		
@@ -288,7 +288,7 @@ namespace kit
 	}
 	
 	
-	Object* String::toUpper()
+	ObjPtr String::toUpper()
 	{
 		std::string newString = _value;
 		
@@ -304,7 +304,7 @@ namespace kit
 	}
 	
 	
-	Object* String::toLower()
+	ObjPtr String::toLower()
 	{
 		std::string newString = _value;
 		
@@ -320,21 +320,21 @@ namespace kit
 	}
 	
 	
-	Object* String::print()
+	ObjPtr String::print()
 	{
 		std::cout << _value;
 		return NULL;
 	}
 	
 	
-	Object* String::printLine()
+	ObjPtr String::printLine()
 	{
 		std::cout << _value << std::endl;
 		return NULL;
 	}
 	
 	
-	Object* String::append(Object* str)
+	ObjPtr String::append(ObjPtr str)
 	{
 		std::stringstream ss;
 		
@@ -345,7 +345,7 @@ namespace kit
 	}
 	
 	
-	Object* String::subString(Object* startIndex, Object* endIndex)
+	ObjPtr String::subString(ObjPtr startIndex, ObjPtr endIndex)
 	{
 		std::string newString = _value.substr(((Integer*)(startIndex->script(1756306272UL /* to-int */)))->_value,
 											  ((Integer*)(endIndex->script(1756306272UL /* to-int */)))->_value);
@@ -354,7 +354,7 @@ namespace kit
 	}
 	
 	
-	Object* String::split(Object* delimiter)
+	ObjPtr String::split(ObjPtr delimiter)
 	{
 		return NULL;
 	}

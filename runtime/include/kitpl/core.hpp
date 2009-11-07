@@ -47,8 +47,8 @@ namespace kit
 
 			virtual Object* script(MsgId, ... ) = 0;
 	};
-
-	typedef boost::shared_ptr<Object> ObjPtr;
+	
+	typedef Object* ObjPtr;
 }
 
 #endif

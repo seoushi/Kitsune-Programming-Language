@@ -44,7 +44,7 @@ namespace kit
 	}
 
 
-	Object* Boolean::make(bool boolean)
+	ObjPtr Boolean::make(bool boolean)
 	{
 		Boolean* boolObj = new Boolean();
 		boolObj->_value = boolean;
@@ -53,29 +53,29 @@ namespace kit
 	}
 
 
-	Object* Boolean::script(MsgId message, ...)
+	ObjPtr Boolean::script(MsgId message, ...)
 	{
 		va_list va;
-		Object* result;
+		ObjPtr result;
 		
 		va_start(va, message);
 		
 		switch(message)
 		{
 			case 5859493UL: // ==
-				result = equal(va_arg(va, Object*) );
+				result = equal(va_arg(va, ObjPtr) );
 				break;
 			case 5858873UL: // !=
-				result = notEqual(va_arg(va, Object*) );
+				result = notEqual(va_arg(va, ObjPtr) );
 				break;
 			case 1756282918UL: // to-str
 				result = toStr();
 				break;
 			case 177539UL: // &
-				result = andOp(va_arg(va, Object*));
+				result = andOp(va_arg(va, ObjPtr));
 				break;
 			case 177625UL: // |
-				result = orOp(va_arg(va, Object*));
+				result = orOp(va_arg(va, ObjPtr));
 				break;
 			case 177540UL: // !
 				result = notOp();
@@ -93,32 +93,32 @@ namespace kit
 		return result;
 	}
 			
-	Object* Boolean::equal(Object* value)
+	ObjPtr Boolean::equal(ObjPtr value)
 	{
 		return Boolean::make(_value == ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
 	}
 	
-	Object* Boolean::notEqual(Object* value)
+	ObjPtr Boolean::notEqual(ObjPtr value)
 	{
 		return Boolean::make(_value != ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
 	}
 	
-	Object* Boolean::andOp(Object* value)
+	ObjPtr Boolean::andOp(ObjPtr value)
 	{
 		return Boolean::make(_value && ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
 	}
 	
-	Object* Boolean::orOp(Object* value)
+	ObjPtr Boolean::orOp(ObjPtr value)
 	{
 		return Boolean::make(_value || ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
 	}
 	
-	Object* Boolean::notOp()
+	ObjPtr Boolean::notOp()
 	{
 		return Boolean::make(!_value);
 	}
 	
-	Object* Boolean::toStr()
+	ObjPtr Boolean::toStr()
 	{
 		if(_value)
 		{

@@ -43,15 +43,15 @@ namespace kit
 
 			Boolean();
 
-			static Object* make(bool boolean);
-			Object* script(MsgId message, ...);
+			static ObjPtr make(bool boolean);
+			ObjPtr script(MsgId message, ...);
 
-			Object* equal(Object* value);
-			Object* notEqual(Object* value);
-			Object* andOp(Object* value);
-			Object* orOp(Object* value);
-			Object* notOp();
-			Object* toStr();
+			ObjPtr equal(ObjPtr value);
+			ObjPtr notEqual(ObjPtr value);
+			ObjPtr andOp(ObjPtr value);
+			ObjPtr orOp(ObjPtr value);
+			ObjPtr notOp();
+			ObjPtr toStr();
 
 			bool _value;
 	};

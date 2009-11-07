@@ -44,7 +44,7 @@ namespace kit
 	{
 	}
 
-	Object* Float::make(float value)
+	ObjPtr Float::make(float value)
 	{
 		Float* floatObj = new Float();
 		floatObj->_value = value;
@@ -52,50 +52,50 @@ namespace kit
 	}
 
 
-	Object* Float::script(MsgId message, ...)
+	ObjPtr Float::script(MsgId message, ...)
 	{
 		va_list va;
-		Object* result;
+		ObjPtr result;
 		
 		va_start(va, message);
 
 		switch(message)
 		{
 			case 5859493UL: // ==
-				result = equals( va_arg(va, Object*) );
+				result = equals( va_arg(va, ObjPtr) );
 				break;
 			case 177563UL: // >
-				result = greaterThan( va_arg(va, Object*) );
+				result = greaterThan( va_arg(va, ObjPtr) );
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
 				break;
 			case 177561UL: // <
-				result = lessThan( va_arg(va, Object*) );
+				result = lessThan( va_arg(va, ObjPtr) );
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual( va_arg(va, Object*) );
+				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
 				break;
 			case 5858873UL: // !=
-				result = notEqual( va_arg(va, Object*) );
+				result = notEqual( va_arg(va, ObjPtr) );
 				break;
 			case 177550UL: // +
-				result = add( va_arg(va, Object*) );
+				result = add( va_arg(va, ObjPtr) );
 				break;
 			case 177544UL: // -
-				result = sub( va_arg(va, Object*) );
+				result = sub( va_arg(va, ObjPtr) );
 				break;
 			case 177546UL: // /
-				result = div( va_arg(va, Object*) );
+				result = div( va_arg(va, ObjPtr) );
 				break;
 			case 177551UL: // *
-				result = mul( va_arg(va, Object*) );
+				result = mul( va_arg(va, ObjPtr) );
 				break;
 			case 177659UL: // ^
-				result = power( va_arg(va, Object*) );
+				result = power( va_arg(va, ObjPtr) );
 				break;
 			case 177536: // %
-				result = mod( va_arg(va, Object*) );
+				result = mod( va_arg(va, ObjPtr) );
 				break;
 			case 2088322081UL: // sqrt
 				result = squareRoot();
@@ -122,90 +122,90 @@ namespace kit
 	}
 
 
-	Object* Float::equals(Object* value)
+	ObjPtr Float::equals(ObjPtr value)
 	{
 		return Boolean::make(_value == ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::greaterThan(Object* value)
+	ObjPtr Float::greaterThan(ObjPtr value)
 	{
 		return Boolean::make(_value > ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::greaterThanOrEqual(Object* value)
+	ObjPtr Float::greaterThanOrEqual(ObjPtr value)
 	{
 		return Boolean::make(_value >= ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::lessThan(Object* value)
+	ObjPtr Float::lessThan(ObjPtr value)
 	{
 		return Boolean::make(_value < ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::lessThanOrEqual(Object* value)
+	ObjPtr Float::lessThanOrEqual(ObjPtr value)
 	{
 		return Boolean::make(_value <= ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::notEqual(Object* value)
+	ObjPtr Float::notEqual(ObjPtr value)
 	{
 		return Boolean::make(_value != ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 
 
-	Object* Float::add(Object* value)
+	ObjPtr Float::add(ObjPtr value)
 	{
 		return Float::make(_value + ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::sub(Object* value)
+	ObjPtr Float::sub(ObjPtr value)
 	{
 		return Float::make(_value - ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::div(Object* value)
+	ObjPtr Float::div(ObjPtr value)
 	{
 		return Float::make(_value / ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::mul(Object* value)
+	ObjPtr Float::mul(ObjPtr value)
 	{
 		return Float::make(_value * ((Float*)value->script(1353689091UL /* to-float */))->_value);
 	}
 	
 	
-	Object* Float::power(Object* value)
+	ObjPtr Float::power(ObjPtr value)
 	{
 		return Float::make((float)pow(_value, ((Float*)value->script(1353689091UL /* to-float */))->_value));
 	}
 	
 	
-	Object* Float::mod(Object* value)
+	ObjPtr Float::mod(ObjPtr value)
 	{
 		return Float::make(fmod(_value, ((Float*)value->script(1353689091UL /* to-float */))->_value));
 	}
 	
 	
-	Object* Float::squareRoot()
+	ObjPtr Float::squareRoot()
 	{
 		return Float::make(sqrt(_value));
 	}
 	
 	
-	Object* Float::toInt()
+	ObjPtr Float::toInt()
 	{
 		return Integer::make((int)(_value + 0.5f));
 	}
 	
-	Object* Float::toStr()
+	ObjPtr Float::toStr()
 	{
 		std::stringstream ss;
 		ss << _value;
@@ -213,7 +213,7 @@ namespace kit
 		return String::make(ss.str());
 	}
 
-	Object* Float::toBool()
+	ObjPtr Float::toBool()
 	{
 		if(_value == 0.0f)
 		{

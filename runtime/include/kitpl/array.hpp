@@ -46,20 +46,20 @@ namespace kit
 			
 			Array();
 			
-			static Object* make();
-			Object* script(MsgId message, ...);
+			static ObjPtr make();
+			ObjPtr script(MsgId message, ...);
 			
-			Object* length();
-			Object* includes(Object* obj);
-			Object* at(Object* obj);
-			Object* set(Object* index, Object* obj);
-			Object* add(Object* obj);
-			Object* clear();
-			Object* isEmpty();
-			Object* map(Object* obj);
-			Object* toString();
+			ObjPtr length();
+			ObjPtr includes(ObjPtr obj);
+			ObjPtr at(ObjPtr obj);
+			ObjPtr set(ObjPtr index, ObjPtr obj);
+			ObjPtr add(ObjPtr obj);
+			ObjPtr clear();
+			ObjPtr isEmpty();
+			ObjPtr map(ObjPtr obj);
+			ObjPtr toString();
 			
-			std::vector<Object*> _value;
+			std::vector<ObjPtr> _value;
 	};
 }
 

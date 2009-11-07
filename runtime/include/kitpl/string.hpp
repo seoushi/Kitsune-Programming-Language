@@ -46,31 +46,31 @@ namespace kit
 			
 			String();
 			
-			static Object* make(std::string str);
-			Object* script(MsgId message, ...);
+			static ObjPtr make(std::string str);
+			ObjPtr script(MsgId message, ...);
 			
-			Object* equals(Object* value);
-			Object* greaterThan(Object* value);
-			Object* greaterThanOrEqual(Object* value);
-			Object* lessThan(Object* value);
-			Object* lessThanOrEqual(Object* value);
-			Object* notEqual(Object* value);
+			ObjPtr equals(ObjPtr value);
+			ObjPtr greaterThan(ObjPtr value);
+			ObjPtr greaterThanOrEqual(ObjPtr value);
+			ObjPtr lessThan(ObjPtr value);
+			ObjPtr lessThanOrEqual(ObjPtr value);
+			ObjPtr notEqual(ObjPtr value);
 			
-			Object* length();
-			Object* includes(Object* str);
-			Object* reverse();
-			Object* replace(Object* search, Object* replace);
-			Object* remove(Object* str);
-			Object* toInteger();
-			Object* toFloat();
-			Object* capitalize();
-			Object* toUpper();
-			Object* toLower();
-			Object* print();
-			Object* printLine();
-			Object* append(Object* str);
-			Object* subString(Object* startIndex, Object* endIndex);
-			Object* split(Object* delimiter);
+			ObjPtr length();
+			ObjPtr includes(ObjPtr str);
+			ObjPtr reverse();
+			ObjPtr replace(ObjPtr search, ObjPtr replace);
+			ObjPtr remove(ObjPtr str);
+			ObjPtr toInteger();
+			ObjPtr toFloat();
+			ObjPtr capitalize();
+			ObjPtr toUpper();
+			ObjPtr toLower();
+			ObjPtr print();
+			ObjPtr printLine();
+			ObjPtr append(ObjPtr str);
+			ObjPtr subString(ObjPtr startIndex, ObjPtr endIndex);
+			ObjPtr split(ObjPtr delimiter);
 			
 			
 			std::string _value;
