@@ -35,6 +35,7 @@
 
 #include <string>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 
 namespace kitc
@@ -93,10 +94,11 @@ class Expression
 		Expression();
 		virtual ~Expression();
 	
-		virtual std::string	ToString();
+		virtual std::string ToString();
 	
 		virtual ExprType::Type Type() = 0;
 };
+typedef boost::shared_ptr<Expression> ExprPtr;
 
 	
 class EndExpr : public Expression
@@ -106,10 +108,11 @@ class EndExpr : public Expression
 		EndExpr();
 		virtual ~EndExpr();
 		
-		virtual std::string	ToString();
+		virtual std::string ToString();
 		
 		virtual ExprType::Type Type();
 };
+typedef boost::shared_ptr<EndExpr> EndExprPtr;
 	
 	
 class CondExpr : public Expression
@@ -127,46 +130,48 @@ class CondExpr : public Expression
 		CondType::Type condType;
 	
 
-		Expression* conditional; // the expression to evaluate
+		ExprPtr conditional; // the expression to evaluate
 	
-		std::vector<Expression*> body;
+		std::vector<ExprPtr> body;
 	
-		Expression* child; // a child is an else or elif block
+		ExprPtr child; // a child is an else or elif block
 	
 		bool blockIsTerminated;
 };
-	
+typedef boost::shared_ptr<CondExpr> CondExprPtr;
+
 
 class DefExpr : public Expression
 {
 	public:
 
-		DefExpr(Expression* expr);
+		DefExpr(ExprPtr expr);
 		virtual ~DefExpr();
 			
 		virtual std::string	ToString();
 			
 		ExprType::Type Type();
 
-
-		Expression* expr;
+		ExprPtr expr;
 };
+typedef boost::shared_ptr<DefExpr> DefExprPtr;
 
 
 class AssignExpr : public Expression
 {
 	public:
 		
-		AssignExpr(std::string ident, Expression* expr);
+		AssignExpr(std::string ident, ExprPtr expr);
 		virtual ~AssignExpr();
 		
 		virtual std::string	ToString();
 		
 		ExprType::Type Type();
 	
-		Expression* expr;
+		ExprPtr expr;
 		std::string identifier;
 };
+typedef boost::shared_ptr<AssignExpr> AssignExprPtr;
 
 
 class FuncExpr : public Expression
@@ -181,10 +186,11 @@ class FuncExpr : public Expression
 		ExprType::Type Type();
 
 
-		std::vector< Expression* > bodyExprs;
+		std::vector< ExprPtr > bodyExprs;
 		std::vector< std::string > args;
 		std::string identifier;
 };
+typedef boost::shared_ptr<FuncExpr> FuncExprPtr;
 
 
 class LitExpr : public Expression
@@ -198,11 +204,8 @@ class LitExpr : public Expression
 		
 		ExprType::Type Type();
 		
-	
 		LiteralType::Type literalType;
 	
-	
-
 		std::string	stringValue;
 
 		union
@@ -211,6 +214,7 @@ class LitExpr : public Expression
 			float		floatValue;
 		};
 };
+typedef boost::shared_ptr<LitExpr> LitExprPtr;
 
 
 class FuncCallExpr : public Expression
@@ -224,10 +228,11 @@ class FuncCallExpr : public Expression
 
 		ExprType::Type Type();
 
-		std::string					funcName;
-		Expression*					sender;
-		std::vector<Expression*>	args;
+		std::string				funcName;
+		ExprPtr					sender;
+		std::vector<ExprPtr>	args;
 };
+typedef boost::shared_ptr<FuncExpr> FuncExprPtr;
 
 
 class ReturnExpr : public Expression
@@ -241,8 +246,9 @@ class ReturnExpr : public Expression
 		
 		ExprType::Type Type();
 		
-		Expression* expr;
+		ExprPtr expr;
 };
+typedef boost::shared_ptr<ReturnExpr> ReturnExprPtr;
 
 
 class LineExpr : public Expression
@@ -256,8 +262,9 @@ class LineExpr : public Expression
 		
 		ExprType::Type Type();
 		
-		Expression*	expr;
+		ExprPtr expr;
 };
+typedef boost::shared_ptr<LineExpr> LineExprPtr;
 
 
 class ThenExpr : public Expression
@@ -271,8 +278,9 @@ class ThenExpr : public Expression
 		
 		ExprType::Type Type();
 		
-		Expression*	expr;
+		ExprPtr	expr;
 };
+typedef boost::shared_ptr<ThenExpr> ThenExprPtr;
 	
 
 class EofExpr : public Expression
@@ -286,8 +294,9 @@ class EofExpr : public Expression
 		
 		ExprType::Type Type();
 		
-		Expression*	expr;
+		ExprPtr	expr;
 };
+typedef boost::shared_ptr<EofExpr> EofExprPtr;
 
 
 }

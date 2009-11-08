@@ -27,6 +27,6 @@ INCLUDE_DIRECTORIES ( ${CMAKE_BINARY_DIR} ./runtime/include/ ./compiler/include/
 ADD_LIBRARY ( kitsune ${kitsuneLib_SRCS} )
 
 ADD_EXECUTABLE ( kitc ${kitc_SRCS} )
-target_link_libraries( kitc gc m )
+target_link_libraries( kitc m )
 
 ADD_EXECUTABLE ( kit-hash ${kitHash_SRCS} )

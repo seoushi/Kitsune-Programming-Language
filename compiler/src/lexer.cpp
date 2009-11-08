@@ -201,7 +201,7 @@ bool Lexer::IsReservedChar(char character)
 
 void Lexer::ParseNextToken()
 {
-	static char 	buffer[1024];
+	static char 	buffer[512];
 	int				i;
 	char			tmpChar;
 	bool			hasPeriod;
@@ -238,7 +238,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == '.')
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::Dot);
+		curToken = TokenPtr(new Token(TokenType::Dot));
 		return;
 	}
 
@@ -246,7 +246,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == '(')
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::OpenParen);
+		curToken = TokenPtr(new Token(TokenType::OpenParen));
 		return;
 	}
 	
@@ -255,7 +255,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == ')')
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::CloseParen);
+		curToken = TokenPtr(new Token(TokenType::CloseParen));
 		return;
 	}
 
@@ -296,7 +296,7 @@ void Lexer::ParseNextToken()
 		// eat last "
 		GetNextChar();
 
-		curToken = new Token(TokenType::String);
+		curToken = TokenPtr(new Token(TokenType::String));
 		curToken->identifier = std::string(buffer);
 
         return;
@@ -330,7 +330,7 @@ void Lexer::ParseNextToken()
 
 			if(!isValid)
 			{
-				curToken = new Token(TokenType::Invalid);
+				curToken = TokenPtr(new Token(TokenType::Invalid));
 				i++;
 				buffer[i] = '\0';
 				curToken->identifier = std::string(buffer);
@@ -349,13 +349,13 @@ void Lexer::ParseNextToken()
 		{
 			i++;
 			buffer[i] = '\0';
-			curToken = new Token(TokenType::Float);
+			curToken = TokenPtr(new Token(TokenType::Float));
 			curToken->floatValue = atof(buffer);
 			
 			return;
 		}
 
-		curToken = new Token(TokenType::Int);
+		curToken = TokenPtr(new Token(TokenType::Int));
 		i++;
 		buffer[i] = '\0';
 		curToken->intValue = atoi(buffer);
@@ -367,7 +367,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == '{')
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::OpenBrace);
+		curToken = TokenPtr(new Token(TokenType::OpenBrace));
 		return;
 	}
 
@@ -375,7 +375,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == '}')
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::CloseBrace);
+		curToken = TokenPtr(new Token(TokenType::CloseBrace));
 		return;
 	}
 
@@ -383,7 +383,7 @@ void Lexer::ParseNextToken()
 	if(lastChar == EOF)
 	{
 		GetNextChar();
-		curToken = new Token(TokenType::Eof);
+		curToken = TokenPtr(new Token(TokenType::Eof));
 		return;
 	}
 
@@ -402,41 +402,41 @@ void Lexer::ParseNextToken()
 
 		if(strcmp(buffer,"=") == 0)
 		{
-			curToken = new Token(TokenType::Equal);
+			curToken = TokenPtr(new Token(TokenType::Equal));
 			return;
 		}
 		if (strcmp(buffer, "def") == 0)
 		{
-			curToken = new Token(TokenType::Def);
+			curToken = TokenPtr(new Token(TokenType::Def));
 			return;
 		}
 		if (strcmp(buffer, "if") == 0)
 		{
-			curToken = new Token(TokenType::If);
+			curToken = TokenPtr(new Token(TokenType::If));
 			return;
 		}
 		if (strcmp(buffer, "elif") == 0)
 		{
-			curToken = new Token(TokenType::Elif);
+			curToken = TokenPtr(new Token(TokenType::Elif));
 			return;
 		}
 		if (strcmp(buffer, "else") == 0)
 		{
-			curToken = new Token(TokenType::Else);
+			curToken = TokenPtr(new Token(TokenType::Else));
 			return;
 		}
 		if (strcmp(buffer, "then") == 0)
 		{
-			curToken = new Token(TokenType::Then);
+			curToken = TokenPtr(new Token(TokenType::Then));
 			return;
 		}
 		if (strcmp(buffer, "end") == 0)
 		{
-			curToken = new Token(TokenType::End);
+			curToken = TokenPtr(new Token(TokenType::End));
 			return;
 		}
 
-		curToken = new Token(TokenType::Identifier);
+		curToken = TokenPtr(new Token(TokenType::Identifier));
 		curToken->identifier = std::string(buffer);
 
 		return;
@@ -444,7 +444,7 @@ void Lexer::ParseNextToken()
 
 
 	// seems we found something we don't know about just return it
-	curToken = new Token(TokenType::Invalid);
+	curToken = TokenPtr(new Token(TokenType::Invalid));
 	curToken->identifier = " ";
 	curToken->identifier[0] = lastChar;
 	GetNextChar();
@@ -453,7 +453,7 @@ void Lexer::ParseNextToken()
 }
 
 
-Token* Lexer::CurToken()
+TokenPtr Lexer::CurToken()
 {
 	return curToken;
 }

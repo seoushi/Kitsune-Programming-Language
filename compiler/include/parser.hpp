@@ -37,6 +37,7 @@
 
 #include "lexer.hpp"
 #include "expressions.hpp"
+#include <boost/shared_ptr.hpp>
 
 namespace kitc
 {
@@ -44,21 +45,23 @@ namespace kitc
 class Parser
 {
 	public:
-		Parser(Lexer* lexer);
+		Parser(LexerPtr lexer);
 		~Parser();
 
-		Expression* Parse();
+		ExprPtr Parse();
 	
 		bool EncounteredError();
 	
 	private:
 	
-		void ParseError(Token* token, std::string expected, std::string additional);
-		void StackReduce( std::vector<Expression*>* stack);
+		void ParseError(TokenPtr token, std::string expected, std::string additional);
+		void StackReduce( std::vector<ExprPtr>* stack);
 		
-		Lexer* lexer;
+		LexerPtr lexer;
 		bool encounteredError;
 };
+typedef boost::shared_ptr<Parser> ParserPtr;
+
 	
 }
 

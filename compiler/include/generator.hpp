@@ -38,6 +38,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <boost/shared_ptr.hpp>
 
 namespace kitc
 {
@@ -53,22 +54,22 @@ class Generator
 	
 	private:
 	
-		bool GenExpr(Expression* expr);
-		bool GenDef(Expression* expr);
-		bool GenFun(Expression* expr);
-		bool GenFunCall(Expression* expr);
-		bool GenLiteral(Expression* expr);
-		bool GenReturn(Expression* expr);
-		bool GenCond(Expression* expr);
+		bool GenExpr(ExprPtr expr);
+		bool GenDef(ExprPtr expr);
+		bool GenFun(ExprPtr expr);
+		bool GenFunCall(ExprPtr expr);
+		bool GenLiteral(ExprPtr expr);
+		bool GenReturn(ExprPtr expr);
+		bool GenCond(ExprPtr expr);
 		void GenHeader(std::string headerName);
 		void GenFooter();
 	
-		Parser* parser;
+		ParserPtr parser;
 
 		std::ofstream cFile;
 		std::ofstream headerFile;
 	
-		std::vector<Expression*> functions;
+		std::vector<ExprPtr> functions;
 };
 
 }

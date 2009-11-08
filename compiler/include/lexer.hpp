@@ -33,6 +33,7 @@
 #define	KITC_LEXER_HPP
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 namespace kitc
 {
@@ -84,6 +85,7 @@ class Token
 	
 		std::string identifier;
 };
+typedef boost::shared_ptr<Token> TokenPtr;
 
 
 class Lexer
@@ -103,17 +105,18 @@ class Lexer
 	
 		static bool IsReservedChar(char character);
 	
-		Token* CurToken();
+		TokenPtr CurToken();
 	
 	private:
 
-		FILE*	fileHandle;
-		Token*	curToken;
-		int		lastChar;
-		int		curLine;
-		int		curColumn;
+		FILE*		fileHandle;
+		TokenPtr	curToken;
+		int			lastChar;
+		int			curLine;
+		int			curColumn;
 
 };
+typedef boost::shared_ptr<Lexer> LexerPtr;
 
 
 }

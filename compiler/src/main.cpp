@@ -32,7 +32,6 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include "generator.hpp"
-#include <gc/gc.h>
 #include <string.h>
 
 
@@ -52,9 +51,7 @@ void generate(char* filename, int argc, char** argv)
 }
 
 int main(int argc, char** argv)
-{	
-	GC_INIT();
-
+{
 	if(argc >= 2)
 	{
 		if((strcmp("help", argv[1]) == 0) || (strcmp("HELP", argv[1]) == 0))

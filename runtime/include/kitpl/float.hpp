@@ -43,27 +43,27 @@ namespace kit
 
 			Float();
 
-			static Object* make(float value);
+			static ObjPtr make(float value);
 
-			Object* script(MsgId message, ...);
+			ObjPtr script(MsgId message, ...);
 
-			Object* equals(Object* value);
-			Object* greaterThan(Object* value);
-			Object* greaterThanOrEqual(Object* value);
-			Object* lessThan(Object* value);
-			Object* lessThanOrEqual(Object* value);
-			Object* notEqual(Object* value);
+			ObjPtr equals(ObjPtr value);
+			ObjPtr greaterThan(ObjPtr value);
+			ObjPtr greaterThanOrEqual(ObjPtr value);
+			ObjPtr lessThan(ObjPtr value);
+			ObjPtr lessThanOrEqual(ObjPtr value);
+			ObjPtr notEqual(ObjPtr value);
 
-			Object* add(Object* value);
-			Object* sub(Object* value);
-			Object* div(Object* value);
-			Object* mul(Object* value);
-			Object* power(Object* value);
-			Object* mod(Object* value);
-			Object* squareRoot();
-			Object* toInt();
-			Object* toStr();
-			Object* toBool();
+			ObjPtr add(ObjPtr value);
+			ObjPtr sub(ObjPtr value);
+			ObjPtr div(ObjPtr value);
+			ObjPtr mul(ObjPtr value);
+			ObjPtr power(ObjPtr value);
+			ObjPtr mod(ObjPtr value);
+			ObjPtr squareRoot();
+			ObjPtr toInt();
+			ObjPtr toStr();
+			ObjPtr toBool();
 
 			float _value;
 	};

@@ -84,8 +84,8 @@ ExprType::Type EndExpr::Type()
 CondExpr::CondExpr()
 {
 	condType = CondType::None;
-	child = NULL;
-	conditional = NULL;
+	child = ExprPtr();
+	conditional = ExprPtr();
 	blockIsTerminated = false;
 }
 
@@ -105,7 +105,7 @@ ExprType::Type CondExpr::Type()
 ///////////////////////////////////////////
 /// Def Expression
 ///////////////////////////////////////////
-DefExpr::DefExpr(Expression* expr)
+DefExpr::DefExpr(ExprPtr expr)
 {
 	this->expr = expr;
 }
@@ -129,7 +129,7 @@ ExprType::Type DefExpr::Type()
 ///////////////////////////////////////////
 /// Assign Expression
 ///////////////////////////////////////////
-AssignExpr::AssignExpr(std::string ident, Expression* expr)
+AssignExpr::AssignExpr(std::string ident, ExprPtr expr)
 {
 	this->identifier = ident;
 	this->expr = expr;

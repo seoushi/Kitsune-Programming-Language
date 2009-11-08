@@ -50,20 +50,20 @@ Generator::~Generator()
 
 bool Generator::Generate(std::string filename, std::string copts)
 {
-	Lexer* lexer = new Lexer();
-	std::vector<Expression*> exprs;
+	LexerPtr lexer = LexerPtr(new Lexer());
+	std::vector<ExprPtr> exprs;
 	
 	if(!lexer->OpenFile(filename))
 	{
 		return false;
 	}
 
-	parser = new Parser(lexer);
+	parser = ParserPtr(new Parser(lexer));
 
 	// parse the code
 	while(true)
 	{
-		Expression* result = parser->Parse();
+		ExprPtr result = parser->Parse();
 
 		if(parser->EncounteredError())
 		{
@@ -135,7 +135,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 		headerFile << "kit::Object* kit_function_" << (i + 1) << "(kit::Object* self";
 
 		// write out args from function expression
-		FuncExpr* func = (FuncExpr*)functions[i];
+		FuncExpr* func = (FuncExpr*)functions[i].get();
 
 		for(unsigned int j = 0; j < func->args.size(); j++)
 		{
@@ -162,7 +162,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 
 
 
-bool Generator::GenExpr(Expression* expr)
+bool Generator::GenExpr(ExprPtr expr)
 {
 	switch(expr->Type())
 	{
@@ -174,11 +174,11 @@ bool Generator::GenExpr(Expression* expr)
 			break;
 		case ExprType::Assign:
 			
-			cFile << ((AssignExpr*)expr)->identifier << " = ";
-			return GenExpr( ((AssignExpr*)expr)->expr );
+			cFile << ((AssignExpr*)expr.get())->identifier << " = ";
+			return GenExpr( ((AssignExpr*)expr.get())->expr );
 		case ExprType::Line:
 			{
-				bool tmpResult = GenExpr(((LineExpr*)expr)->expr);
+				bool tmpResult = GenExpr(((LineExpr*)expr.get())->expr);
 				cFile << ";" << std::endl;
 				return tmpResult;
 			}
@@ -213,16 +213,16 @@ bool Generator::GenExpr(Expression* expr)
 }
 
 
-bool Generator::GenDef(Expression* expr)
+bool Generator::GenDef(ExprPtr expr)
 {
 	cFile << "kit::Object* ";
-	return GenExpr(((DefExpr*)expr)->expr);
+	return GenExpr(((DefExpr*)expr.get())->expr);
 }
 
 
-bool Generator::GenFun(Expression* expr)
+bool Generator::GenFun(ExprPtr expr)
 {
-	FuncExpr* func = (FuncExpr*)expr;
+	FuncExpr* func = (FuncExpr*)expr.get();
 
 
 	// write args
@@ -252,9 +252,9 @@ bool Generator::GenFun(Expression* expr)
 }
 
 
-bool Generator::GenFunCall(Expression* expr)
+bool Generator::GenFunCall(ExprPtr expr)
 {
-	FuncCallExpr* funcCall = (FuncCallExpr*)expr;
+	FuncCallExpr* funcCall = (FuncCallExpr*)expr.get();
 
 
 	if(!GenExpr(funcCall->sender))
@@ -281,9 +281,9 @@ bool Generator::GenFunCall(Expression* expr)
 }
 
 
-bool Generator::GenLiteral(Expression* expr)
+bool Generator::GenLiteral(ExprPtr expr)
 {
-	LitExpr* lit = (LitExpr*)expr;
+	LitExpr* lit = (LitExpr*)expr.get();
 	
 	switch(lit->literalType)
 	{
@@ -311,9 +311,9 @@ bool Generator::GenLiteral(Expression* expr)
 }
 
 
-bool Generator::GenReturn(Expression* expr)
+bool Generator::GenReturn(ExprPtr expr)
 {
-	ReturnExpr* ret = (ReturnExpr*)expr;
+	ReturnExpr* ret = (ReturnExpr*)expr.get();
 
 	cFile << "return ";
 	
@@ -328,9 +328,9 @@ bool Generator::GenReturn(Expression* expr)
 }
 
 
-bool Generator::GenCond(Expression* expr)
+bool Generator::GenCond(ExprPtr expr)
 {
-	CondExpr* cond = (CondExpr*)expr;
+	CondExpr* cond = (CondExpr*)expr.get();
 	
 	
 	if(cond->condType == CondType::Elif)

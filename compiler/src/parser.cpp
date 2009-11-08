@@ -35,7 +35,7 @@
 
 using namespace kitc;
 
-Parser::Parser(Lexer* lexer)
+Parser::Parser(LexerPtr lexer)
 {
 	encounteredError = false;
 	this->lexer = lexer;
@@ -45,12 +45,12 @@ Parser::~Parser()
 {
 }
 
-Expression* Parser::Parse()
+ExprPtr Parser::Parse()
 {
-	std::vector<Expression*> stack;
+	std::vector<ExprPtr> stack;
 	
 	lexer->ParseNextToken();
-	Token* token = lexer->CurToken();
+	TokenPtr token = lexer->CurToken();
 
 parse_next:
 	
@@ -61,10 +61,10 @@ parse_next:
 			if(stack.size() > 0)
 			{
 				ParseError(token, "Dot", "Unexpected end of file");
-				return NULL;
+				return ExprPtr();
 			}
 
-			return new EofExpr();
+			return ExprPtr(new EofExpr());
 			
 		// end line marker
 		case TokenType::Dot:
@@ -72,18 +72,18 @@ parse_next:
 			{
 				case 0:
 					ParseError(token, "one expression", "No expression before the dot");
-					return NULL;
+					return ExprPtr();
 					break;
 				case 1:
 					{
 						LineExpr* tmpExpr = new LineExpr();
 						tmpExpr->expr = stack[0];
-						return tmpExpr;
+						return ExprPtr(tmpExpr);
 					}
 					break;
 				default:
 					ParseError(token, "one expression", "too many expressions before the dot");
-					return NULL;
+					return ExprPtr();
 					break;
 			}
 			break;
@@ -93,18 +93,18 @@ parse_next:
 			{
 				case 0:
 					ParseError(token, "one expression", "No expression before 'then'");
-					return NULL;
+					return ExprPtr();
 					break;
 				case 1:
 					{
 						ThenExpr* tmpExpr = new ThenExpr();
 						tmpExpr->expr = stack[0];
-						return tmpExpr;
+						return ExprPtr(tmpExpr);
 					}
 				break;
 			default:
 				ParseError(token, "one expression", "too many expressions before 'then'");
-				return NULL;
+				return ExprPtr();
 				break;
 			}
 			break;
@@ -113,45 +113,44 @@ parse_next:
 			if(stack.size() == 0)
 			{
 				ParseError(token, "an identifer", "assignment statement without something to assign it to");
-				return NULL;
+				return ExprPtr();
 			}
 			if(stack.size() > 1)
 			{
 				ParseError(token, "an identifer", "assignment statement should only have one identifier to assign to");
-				return NULL;
+				return ExprPtr();
 			}
 			else
 			{
 				// we can only assign to an identifier
 				if(	(stack[0]->Type() == ExprType::Literal) &&
-				   (((LitExpr*)stack[0])->literalType == LiteralType::Identifier))
+				   (((LitExpr*)stack[0].get())->literalType == LiteralType::Identifier))
 				{
+					LitExpr* lit = (LitExpr*)stack[0].get();
 					
-					LitExpr* lit = (LitExpr*) stack[0];
-					
-					Expression* result = Parse();
+					ExprPtr result = Parse();
 					if(encounteredError || (result->Type() != ExprType::Line))
 					{
-						return NULL;
+						return ExprPtr();
 					}
 					
-					LineExpr* line = (LineExpr*)result;
+					LineExpr* line = (LineExpr*)result.get();
 					
 					if(line->expr->Type() == ExprType::Def)
 					{
 						ParseError(token, "not def", "def can only be used to start a statement");
-						return NULL;
+						return ExprPtr();
 					}
 					
 					LineExpr* newLine = new LineExpr();
-					newLine->expr = new AssignExpr(lit->stringValue, line->expr);
+					newLine->expr = ExprPtr(new AssignExpr(lit->stringValue, line->expr));
 
-					return newLine;
+					return ExprPtr(newLine);
 				}
 				else
 				{
 					ParseError(token, "an identifer", "assignment statement should have an identifier on the left side of the equals");
-					return NULL;
+					return ExprPtr();
 				}
 			}
 			
@@ -160,26 +159,25 @@ parse_next:
 		case TokenType::Def:
 			if(stack.size() == 0)
 			{
-				Expression* result = Parse();
+				ExprPtr result = Parse();
 
 				if(encounteredError || (result->Type() != ExprType::Line))
 				{
-					return NULL;
+					return ExprPtr();
 				}
 				
-				LineExpr* line = (LineExpr*)result;
+				LineExpr* line = (LineExpr*)result.get();
 
 				
-				LineExpr* newLine = new LineExpr;
-				
-				newLine->expr = new DefExpr(line->expr);
+				LineExpr* newLine = new LineExpr();
+				newLine->expr = ExprPtr(new DefExpr(line->expr));
 
-				return newLine;
+				return ExprPtr(newLine);
 			}
 			else
 			{
 				ParseError(token, "not def", "def can only be used to start a statement");
-				return NULL;
+				return ExprPtr();
 			}
 			// add literals to the stack
 		case TokenType::Identifier:
@@ -217,16 +215,16 @@ parse_next:
 						break;
 				}
 				
-				stack.push_back(tmpExpr);
+				stack.push_back(ExprPtr(tmpExpr));
 			}
 			break;
 		case TokenType::End:
 			if(stack.size() > 0)
 			{
 				ParseError(token, "not end", "end can only be used to start a statement");
-				return NULL;
+				return ExprPtr();
 			}
-			return new EndExpr();
+			return ExprPtr(new EndExpr());
 			break;
 		case TokenType::Else:
 		case TokenType::Elif:
@@ -245,30 +243,30 @@ parse_next:
 					}
 					
 					
-					return condExpr;
+					return ExprPtr(condExpr);
 				}
 				if(stack.size() > 1)
 				{
 					ParseError(token, "one cond expression", "too many expressions before else statement, expected right after elif or if");
-					return NULL;
+					return ExprPtr();
 				}
 				
 				//get the last child
-				Expression* tmpExpr = stack[0];
+				ExprPtr tmpExpr = stack[0];
 				
 				if(tmpExpr->Type() != ExprType::Cond)
 				{
 					ParseError(token, "cond expression", "expected previous statement to be if or elif");
-					return NULL;
+					return ExprPtr();
 				}
 				
-				CondExpr* cond = (CondExpr*)tmpExpr;
+				CondExpr* cond = (CondExpr*)tmpExpr.get();
 				
 				while(true)
 				{
 					if(cond->child)
 					{
-						cond = (CondExpr*)cond->child;
+						cond = (CondExpr*)cond->child.get();
 					}
 					else
 					{
@@ -280,7 +278,7 @@ parse_next:
 				if(cond->condType == CondType::Else)
 				{
 					ParseError(token, "cond expression", "expected previous statement to be if or elif");
-					return NULL;
+					return ExprPtr();
 				}
 				
 				// make the cond else expr
@@ -295,21 +293,21 @@ parse_next:
 					elseCond->condType = CondType::Elif;
 					
 					//get conditional, this should return a then expression
-					Expression* thenExpr = Parse();
+					ExprPtr thenExpr = Parse();
 
 				
-					if(thenExpr == NULL)
+					if(thenExpr.get() == NULL)
 					{
 						ParseError(token, "boolean expression", "missing conditional in if statement");
-						return NULL;
+						return ExprPtr();
 					}
 					else if(thenExpr->Type() != ExprType::Then)
 					{
 						ParseError(token, "then", "missing 'then' in if statement");
-						return NULL;
+						return ExprPtr();
 					}
 
-					elseCond->conditional = ((ThenExpr*)thenExpr)->expr;
+					elseCond->conditional = ExprPtr(((ThenExpr*)thenExpr.get())->expr);
 				}
 				
 				
@@ -320,12 +318,12 @@ parse_next:
 				{
 					if(tmpExpr->Type() == ExprType::End)
 					{
-						cond->child = elseCond;
+						cond->child = ExprPtr(elseCond);
 						return stack[0];
 					}
 					if(tmpExpr->Type() == ExprType::Cond)
 					{
-						cond->child = elseCond;
+						cond->child = ExprPtr(elseCond);
 						token = lexer->CurToken();
 						
 						goto parse_next;
@@ -343,42 +341,42 @@ parse_next:
 				if(stack.size() > 0)
 				{
 					ParseError(token, "not if", "if can only be used to start a statement");
-					return NULL;
+					return ExprPtr();
 				}
 				
 				CondExpr* tmpExpr = new CondExpr();
 				tmpExpr->condType = CondType::If;
 				
 				//get conditional, this should return a then expression
-				Expression* thenExpr = Parse();
+				ExprPtr thenExpr = Parse();
 
 				
-				if(thenExpr == NULL)
+				if(thenExpr.get() == NULL)
 				{
 					ParseError(token, "boolean expression", "missing conditional in if statement");
-					return NULL;
+					return ExprPtr();
 				}
 				else if(thenExpr->Type() != ExprType::Then)
 				{
 					ParseError(token, "then", "missing 'then' in if statement");
-					return NULL;
+					return ExprPtr();
 				}
 
-				tmpExpr->conditional = ((ThenExpr*)thenExpr)->expr;
+				tmpExpr->conditional = ((ThenExpr*)thenExpr.get())->expr;
 				
 				
 				// parse the body till end
-				Expression* bodyExpr = Parse();
+				ExprPtr bodyExpr = Parse();
 				
 				while (bodyExpr)
 				{
 					if(bodyExpr->Type() == ExprType::End)
 					{
-						return tmpExpr;
+						return ExprPtr(tmpExpr);
 					}
 					if(bodyExpr->Type() == ExprType::Cond)
 					{
-						stack.push_back(tmpExpr);
+						stack.push_back(ExprPtr(tmpExpr));
 						token = lexer->CurToken();
 						
 						goto parse_next;
@@ -394,7 +392,7 @@ parse_next:
 
 		default:
 			ParseError(token, "?", "unknown or used token type");
-			return NULL;
+			return ExprPtr();
 			break;
 	}
 
@@ -408,7 +406,7 @@ parse_next:
 	
 	
 	// this will never happen but I want to make the compiler happy anyways
-	return NULL;
+	return ExprPtr();
 }
 
 
@@ -418,7 +416,7 @@ bool Parser::EncounteredError()
 }
 
 
-void Parser::ParseError(Token* token, std::string expected, std::string additional)
+void Parser::ParseError(TokenPtr token, std::string expected, std::string additional)
 {
 	encounteredError = true;
 	
@@ -436,7 +434,7 @@ void Parser::ParseError(Token* token, std::string expected, std::string addition
 
 
 
-void Parser::StackReduce(std::vector<Expression*>* stack)
+void Parser::StackReduce(std::vector<ExprPtr>* stack)
 {
 	if(stack->size() < 2)
 	{
@@ -446,39 +444,38 @@ void Parser::StackReduce(std::vector<Expression*>* stack)
 	// <lit> <lit-id>
 	if(((*stack)[0]->Type() == ExprType::Literal) &&
 	   ((*stack)[1]->Type() == ExprType::Literal) &&
-	   (((LitExpr*)(*stack)[1])->literalType == LiteralType::Identifier))
+	   (((LitExpr*)((*stack)[1].get()))->literalType == LiteralType::Identifier))
 	{
 		FuncCallExpr* tmpExpr = new FuncCallExpr();
 		tmpExpr->sender = (*stack)[0];
-		tmpExpr->funcName = ((LitExpr*)(*stack)[1])->stringValue;
+		tmpExpr->funcName = ((LitExpr*)((*stack)[1]).get())->stringValue;
 		
 		// remove both items on the stack
 		stack->pop_back();
 		stack->pop_back();
 		
-		stack->push_back(tmpExpr);
+		stack->push_back(ExprPtr(tmpExpr));
 		return;
 	}
 	// <funCall> <lit>
 	else if(((*stack)[0]->Type() == ExprType::FuncCall) &&
 			((*stack)[1]->Type() == ExprType::Literal))
 	{
-		FuncCallExpr* funcCall = (FuncCallExpr*)(*stack)[0];
-		LitExpr* literal = (LitExpr*)(*stack)[1];
+		FuncCallExpr* funcCall = (FuncCallExpr*)((*stack)[0].get());
+		LitExpr* literal = (LitExpr*)((*stack)[1].get());
 		
 		// <funCall> <lit-id>
 		if(literal->literalType == LiteralType::Identifier)
 		{
 			FuncCallExpr* tmpExpr = new FuncCallExpr();
 			tmpExpr->sender = (*stack)[0];
-			tmpExpr->funcName = ((LitExpr*)(*stack)[1])->stringValue;
-			
+			tmpExpr->funcName = ((LitExpr*)((*stack)[1].get()))->stringValue;
 
 			// remove both items on the stack
 			stack->pop_back();
 			stack->pop_back();
 			
-			stack->push_back(tmpExpr);
+			stack->push_back(ExprPtr(tmpExpr));
 			
 			return;
 		}
