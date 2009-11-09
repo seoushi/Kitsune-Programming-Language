@@ -28,7 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
 #include <sstream>
 #include <iostream>
 #include <math.h>
@@ -49,150 +48,144 @@ namespace kit
 		Integer* intObj = new Integer();
 		intObj->_value = integer;
 		
-		return intObj;
+		return ObjPtr(intObj);
 	}
 
 
-	ObjPtr Integer::script(MsgId message, ...)
+	ObjPtr Integer::sendMsg(MsgPtr message)
 	{
-		va_list va;
-		ObjPtr result;
-		
-		va_start(va, message);
-
-		switch(message)
+		switch(message->id)
 		{
 			case 5859493UL: // ==
-				result = equals( va_arg(va, ObjPtr) );
+				return equals( message->args.front() );
 				break;
 			case 177563UL: // >
-				result = greaterThan( va_arg(va, ObjPtr) );
+				return greaterThan( message->args.front() );
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
+				return greaterThanOrEqual( message->args.front() );
 				break;
 			case 177561UL: // <
-				result = lessThan( va_arg(va, ObjPtr) );
+				return lessThan( message->args.front() );
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
+				return greaterThanOrEqual( message->args.front() );
 				break;
 			case 5858873UL: // !=
-				result = notEqual( va_arg(va, ObjPtr) );
+				return notEqual( message->args.front() );
 				break;
 			case 177550UL: // +
-				result = add( va_arg(va, ObjPtr) );
+				return add( message->args.front() );
 				break;
 			case 177544UL: // -
-				result = sub( va_arg(va, ObjPtr) );
+				return sub( message->args.front() );
 				break;
 			case 177546UL: // /
-				result = div( va_arg(va, ObjPtr) );
+				return div( message->args.front() );
 				break;
 			case 177551UL: // *
-				result = mul( va_arg(va, ObjPtr) );
+				return mul( message->args.front() );
 				break;
 			case 177659UL: // ^
-				result = power( va_arg(va, ObjPtr) );
+				return power( message->args.front() );
 				break;
 			case 177536UL: // %
-				result = mod( va_arg(va, ObjPtr) );
+				return mod( message->args.front() );
 				break;
 			case 2088322081UL: // sqrt
-				result = squareRoot();
+				return squareRoot();
 				break;
 			case 1353689091UL: // to-float
-				result = toFloat();
+				return toFloat();
 				break;
 			case 1756306272UL: // to-int
-				result = this;
+				return make(_value);
 				break;
 			case 1756282918UL: // to-str
-				result = toStr();
+				return toStr();
 				break;
 			case 2123293021UL: // to-bool
-				result = toBool();
+				return toBool();
 				break;
 			default:
-				std::cerr << "Integer does not support method(" << message << ")" << std::endl;
+				std::cerr << "Integer does not support method(" << message->id << ")" << std::endl;
 				throw 100;
 				break;
 		}
 		
-		va_end(va);
-		return result;
+		return ObjPtr();
 	}
 
 
 	ObjPtr Integer::equals(ObjPtr value)
 	{
-		return Boolean::make(_value == ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value == ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::greaterThan(ObjPtr value)
 	{
-		return Boolean::make(_value > ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value > ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::greaterThanOrEqual(ObjPtr value)
 	{
-		return Boolean::make(_value >= ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value >= ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::lessThan(ObjPtr value)
 	{
-		return Boolean::make(_value < ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value < ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::lessThanOrEqual(ObjPtr value)
 	{
-		return Boolean::make(_value <= ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value <= ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::notEqual(ObjPtr value)
 	{
-		return Boolean::make(_value != ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Boolean::make(_value != ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 
 
 	ObjPtr Integer::add(ObjPtr value)
 	{
-		return Integer::make(_value + ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Integer::make(_value + ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::sub(ObjPtr value)
 	{
-		return Integer::make(_value - ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Integer::make(_value - ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::div(ObjPtr value)
 	{
-		return Integer::make(_value / ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Integer::make(_value / ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::mul(ObjPtr value)
 	{
-		return Integer::make(_value * ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Integer::make(_value * ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	
 	ObjPtr Integer::power(ObjPtr value)
 	{
-		return Integer::make((int)pow(_value, ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value));
+		return Integer::make((int)pow(_value, ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value));
 	}
 	
 	
 	ObjPtr Integer::mod(ObjPtr value)
 	{
-		return Integer::make(_value % ((Integer*)(value->script(1756306272UL /* to-int*/)))->_value);
+		return Integer::make(_value % ((Integer*)value->sendMsg(MsgPtr( new Message(1756306272UL /* to-int*/))).get())->_value);
 	}
 	
 	

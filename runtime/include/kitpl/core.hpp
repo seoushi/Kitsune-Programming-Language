@@ -32,12 +32,37 @@
 #define _KIT_CORE_HPP_
 
 #include <boost/shared_ptr.hpp>
+#include <list>
 
 namespace kit
 {
 	// message id
 	typedef unsigned long MsgId;
+
+	class Object;
+	typedef boost::shared_ptr<Object> ObjPtr;
 	
+	
+	//message structure
+	class Message
+	{
+		public:
+		
+			Message(MsgId id){ this->id = id; };
+			~Message(){};
+		
+			Message* add(ObjPtr obj)
+			{
+				args.push_back(obj);
+				return this;
+			}
+		
+			MsgId id;
+			std::list<ObjPtr> args;
+	};
+	typedef boost::shared_ptr<Message> MsgPtr;
+
+
 	// base object type
 	class Object
 	{
@@ -45,10 +70,10 @@ namespace kit
 
 			Object(){};
 
-			virtual Object* script(MsgId, ... ) = 0;
+			virtual ObjPtr sendMsg(MsgPtr msg) = 0;
 	};
 	
-	typedef Object* ObjPtr;
+
 }
 
 #endif

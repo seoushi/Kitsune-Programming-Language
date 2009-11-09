@@ -33,7 +33,6 @@
 #define _KIT_ARRAY_H_
 
 #include <kitpl/core.hpp>
-
 #include <vector>
 
 
@@ -46,8 +45,7 @@ namespace kit
 			
 			Array();
 			
-			static ObjPtr make();
-			ObjPtr script(MsgId message, ...);
+			ObjPtr sendMsg(MsgPtr msg);
 			
 			ObjPtr length();
 			ObjPtr includes(ObjPtr obj);

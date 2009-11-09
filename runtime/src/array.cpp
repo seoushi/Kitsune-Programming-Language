@@ -33,10 +33,11 @@
 #include <kitpl/string.hpp>
 #include <kitpl/integer.hpp>
 #include <kitpl/boolean.hpp>
+#include <kitpl/core.hpp>
 
 #include <sstream>
 #include <iostream>
-#include <stdarg.h>
+
 
 namespace kit
 {
@@ -44,59 +45,54 @@ namespace kit
 	{
 	}
 	
-			
-	ObjPtr Array::make()
-	{
-		return new Array();
-	}
-
-	
-	ObjPtr Array::script(MsgId message, ...)
-	{
-		va_list va;
-		ObjPtr result;
-		
-		va_start(va, message);
-		
-		switch(message)
+	ObjPtr Array::sendMsg(MsgPtr msg)
+	{		
+		switch(msg->id)
 		{
+			case 2087696263UL: //make
+				return ObjPtr(new Array());
+				break;
 			case 1756282918UL: // to-str
-				result = toString();
+				return toString();
 				break;
 			case 176967078UL: // count
 			case 1433765721UL: // length
-				result = length();
+				return length();
 				break;
 			case 4183265798UL: // "include?"
-				result = includes(va_arg(va, ObjPtr));
+				return includes(msg->args.front());
 				break;
 			case 177637UL: // "@"
 			case 5860912UL: // "at"
-				result = at(va_arg(va, ObjPtr));
+				return at(msg->args.front());
 				break;
 			case 2087549669UL: // "add!"
-				result = add(va_arg(va, ObjPtr));
+				return add(msg->args.front());
 				break;
 			case 2088334374UL: // "set!"
-				result = set(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
+			{
+				ObjPtr arg1 = msg->args.front();
+				msg->args.pop_front();
+				
+				return set(arg1, msg->args.front());
+			}
 				break;
 			case 1543483357UL: // "clear!"
-				result = clear();
+				return clear();
 				break;
 			case 2087697144UL: // "map!"
-				result = map(va_arg(va, ObjPtr));
+				return map(msg->args.front());
 				break;
 			case 1165546895UL: // "empty?"
-				result = isEmpty();
+				return isEmpty();
 				break;
 			default:
-				std::cerr << "Array does not support method(" << message << ")" << std::endl;
+				std::cerr << "Array does not support method(" << msg->id << ")" << std::endl;
 				throw 100;
 				break;
 		}
 		
-		va_end(va);
-		return result;
+		return ObjPtr();
 	}
 	
 	
@@ -122,15 +118,17 @@ namespace kit
 	
 	ObjPtr Array::at(ObjPtr obj)
 	{
-		return _value[((Integer*)(obj->script(1756306272UL /* to-int */)))->_value];
+		ObjPtr tmpObj = obj->sendMsg(MsgPtr(new Message(1756306272UL /* to-int */)));
+		
+		return _value[((Integer*)tmpObj.get())->_value];
 	}
 	
 	
 	ObjPtr Array::set(ObjPtr index, ObjPtr obj)
 	{
-		_value[((Integer*)(obj->script(1756306272UL /* to-int */)))->_value] = obj;
+		_value[((Integer*)(obj->sendMsg(MsgPtr(new Message(1756306272UL /* to-int */)))).get())->_value] = obj;
 		
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
@@ -138,7 +136,7 @@ namespace kit
 	{
 		_value.push_back(obj);
 		
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
@@ -146,7 +144,7 @@ namespace kit
 	{
 		_value.clear();
 		
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
@@ -165,10 +163,10 @@ namespace kit
 	{
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			_value[i] = obj->script(0, _value[i]);
+			_value[i] = obj->sendMsg( MsgPtr((new Message(0))->add(_value[i])));
 		}
 		
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
@@ -179,7 +177,7 @@ namespace kit
 		
 		for(unsigned int i = 0; i < _value.size(); i++)
 		{
-			ss << ((String*)(_value[i]->script(1756282918UL /* to-str */)))->_value;
+			ss << ((String*)_value[i]->sendMsg(MsgPtr(new Message(1756282918UL/*to-str*/))).get())->_value;
 			
 			if(i < (_value.size() - 1))
 			{

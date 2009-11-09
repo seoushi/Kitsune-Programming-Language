@@ -35,7 +35,6 @@
 
 #include <sstream>
 #include <iostream>
-#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -50,100 +49,104 @@ namespace kit
 		String* strObj = new String();
 		strObj->_value = str;
 
-		return strObj;
+		return ObjPtr(strObj);
 	}
 	
-	ObjPtr String::script(MsgId message, ...)
-	{
-		va_list va;
-		ObjPtr result;
-		
-		va_start(va, message);
-		
-		switch(message)
+	ObjPtr String::sendMsg(MsgPtr message)
+	{		
+		switch(message->id)
 		{
 			case 5859493UL: // ==
-				result = equals(va_arg(va, ObjPtr));
+				return equals(message->args.front());
 				break;
 			case 177563UL: // >
-				result = greaterThan(va_arg(va, ObjPtr));
+				return greaterThan(message->args.front());
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual(va_arg(va, ObjPtr));
+				return greaterThanOrEqual(message->args.front());
 				break;
 			case 177561UL: // <
-				result = lessThan(va_arg(va, ObjPtr));
+				return lessThan(message->args.front());
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual(va_arg(va, ObjPtr));
+				return greaterThanOrEqual(message->args.front());
 				break;
 			case 5858873UL: // !=
-				result = notEqual(va_arg(va, ObjPtr));
+				return notEqual(message->args.front());
 				break;
 			case 1353689091UL: // to-float
-				result = toFloat();
+				return toFloat();
 				break;
 			case 1756306272UL: // to-int
-				result = toInteger();
+				return toInteger();
 				break;
 			case 1756282918UL: // to-str
-				result = this;
+				return make(_value);
 				break;
 			case 1433765721UL: // length
-				result = length();
+				return length();
 				break;
 			case 608820149UL: // includes?
-				result = includes(va_arg(va, ObjPtr));
+				return includes(message->args.front());
 				break;
 			case 1362176549UL: // reverse
-				result = reverse();
+				return reverse();
 				break;
 			case 1364993353UL: // replace
-				result = replace(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
+			{
+				ObjPtr tmpObj = message->args.front();
+				message->args.pop_front();
+				
+				return replace(tmpObj, message->args.front());
+			}
 				break;
 			case 2124712547UL: // remove
-				result = remove(va_arg(va, ObjPtr));
+				return remove(message->args.front());
 				break;
 			case 898217777UL: // capitalize
-				result = capitalize();
+				return capitalize();
 				break;
 			case 1334017297UL: // to-upper
-				result = toUpper();
+				return toUpper();
 				break;
 			case 1369389104UL: // to-lower
-				result = toLower();
+				return toLower();
 				break;
 			case 187024980UL: // print
-				result = print();
+				return print();
 				break;
 			case 1853128887UL: // print-line
-				result = printLine();
+				return printLine();
 				break;
 			case 1326815083UL: // append
-				result = append(va_arg(va, ObjPtr));
+				return append(message->args.front());
 				break;
 			case 5859173UL: // ++
-				result = append(va_arg(va, ObjPtr));
+				return append(message->args.front());
 				break;
 			case 3597576089UL: // sub-string
-				result = subString(va_arg(va, ObjPtr), va_arg(va, ObjPtr));
+			{
+				ObjPtr tmpObj = message->args.front();
+				message->args.pop_front();
+				
+				return subString(tmpObj, message->args.front());
+			}
 				break;
 			case 195179447UL: // split
-				result = split(va_arg(va, ObjPtr));
+				return split(message->args.front());
 				break;	
 			default:
-				std::cerr << "String does not support method(" << message << ")" << std::endl;
+				std::cerr << "String does not support method(" << message->id << ")" << std::endl;
 				throw 100;
 				break;
 		}
 		
-		va_end(va);
-		return result;
+		return ObjPtr();
 	}
 			
 	ObjPtr String::equals(ObjPtr value)
 	{
-		if(_value == ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value == ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -153,7 +156,7 @@ namespace kit
 	
 	ObjPtr String::greaterThan(ObjPtr value)
 	{
-		if(_value > ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value > ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -163,7 +166,7 @@ namespace kit
 	
 	ObjPtr String::greaterThanOrEqual(ObjPtr value)
 	{
-		if(_value >= ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value >= ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -173,7 +176,7 @@ namespace kit
 	
 	ObjPtr String::lessThan(ObjPtr value)
 	{
-		if(_value < ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value < ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -183,7 +186,7 @@ namespace kit
 	
 	ObjPtr String::lessThanOrEqual(ObjPtr value)
 	{
-		if(_value <= ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value <= ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -194,7 +197,7 @@ namespace kit
 	
 	ObjPtr String::notEqual(ObjPtr value)
 	{
-		if(_value != ((String*)(value->script(1756282918UL /* to-str */)))->_value)
+		if(_value != ((String*)value->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value)
 		{
 			return Boolean::make(true);
 		}
@@ -211,7 +214,7 @@ namespace kit
 	
 	ObjPtr String::includes(ObjPtr str)
 	{
-		if(strstr(_value.c_str(), (((String*)(str->script(1756282918UL /* to-str */)))->_value).c_str()))
+		if(strstr(_value.c_str(), ((String*)str->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value.c_str()))
 		{
 			return Boolean::make(false);
 		}
@@ -237,12 +240,13 @@ namespace kit
 	ObjPtr String::replace(ObjPtr search, ObjPtr replace)
 	{
 		std::string newString = _value;
-		std::string* searchStr = &((String*)(search->script(1756282918UL /* to-str */)))->_value;
+		
+		std::string* searchStr = &((String*)search->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value;
 
 		std::string::size_type pos = newString.find((*searchStr));
 		while( pos != std::string::npos )
 		{
-			newString.replace(pos, searchStr->length(), ((String*)(replace->script(1756282918UL /* to-str */)))->_value);
+			newString.replace(pos, searchStr->length(), ((String*)replace->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value);
 			
 			pos = newString.find((*searchStr));
 		}
@@ -323,14 +327,14 @@ namespace kit
 	ObjPtr String::print()
 	{
 		std::cout << _value;
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
 	ObjPtr String::printLine()
 	{
 		std::cout << _value << std::endl;
-		return NULL;
+		return ObjPtr();
 	}
 	
 	
@@ -339,7 +343,7 @@ namespace kit
 		std::stringstream ss;
 		
 		ss << _value;
-		ss << ((String*)(str->script(1756282918UL /* to-str */)))->_value;
+		ss << ((String*)str->sendMsg(MsgPtr(new Message(1756282918UL /* to-str */))).get())->_value;
 		
 		return String::make(ss.str());
 	}
@@ -347,8 +351,8 @@ namespace kit
 	
 	ObjPtr String::subString(ObjPtr startIndex, ObjPtr endIndex)
 	{
-		std::string newString = _value.substr(((Integer*)(startIndex->script(1756306272UL /* to-int */)))->_value,
-											  ((Integer*)(endIndex->script(1756306272UL /* to-int */)))->_value);
+		std::string newString = _value.substr(((Integer*)startIndex->sendMsg(MsgPtr(new Message(1756306272UL /* to-int */))).get())->_value,
+											  ((Integer*)endIndex->sendMsg(MsgPtr(new Message(1756306272UL /* to-int */))).get())->_value);
 		
 		return make(newString);
 	}
@@ -356,6 +360,6 @@ namespace kit
 	
 	ObjPtr String::split(ObjPtr delimiter)
 	{
-		return NULL;
+		return ObjPtr();
 	}
 }

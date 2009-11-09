@@ -9,14 +9,18 @@ SET ( kitsuneLib_SRCS	./runtime/src/array.cpp
 			./runtime/src/boolean.cpp
 			./runtime/src/float.cpp
 			./runtime/src/integer.cpp
-			./runtime/src/string.cpp)
+			./runtime/src/string.cpp
+			./common/shared_ptr/libs/smart_ptr/src/sp_collector.cpp
+                        ./common/shared_ptr/libs/smart_ptr/src/sp_debug_hooks.cpp)
 
 SET ( kitc_SRCS ./compiler/src/main.cpp
-				./compiler/src/expressions.cpp
-				./compiler/src/lexer.cpp
-				./compiler/src/parser.cpp
-				./compiler/src/generator.cpp
-				./compiler/src/identifiers.cpp)
+		./compiler/src/expressions.cpp
+		./compiler/src/lexer.cpp
+		./compiler/src/parser.cpp
+		./compiler/src/generator.cpp
+		./compiler/src/identifiers.cpp
+		./common/shared_ptr/libs/smart_ptr/src/sp_collector.cpp
+		./common/shared_ptr/libs/smart_ptr/src/sp_debug_hooks.cpp)
 
 SET ( kitHash_SRCS ./utils/src/kit-hash.cpp )
 

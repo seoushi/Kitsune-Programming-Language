@@ -44,7 +44,7 @@ namespace kit
 			Boolean();
 
 			static ObjPtr make(bool boolean);
-			ObjPtr script(MsgId message, ...);
+			ObjPtr sendMsg(MsgPtr message);
 
 			ObjPtr equal(ObjPtr value);
 			ObjPtr notEqual(ObjPtr value);

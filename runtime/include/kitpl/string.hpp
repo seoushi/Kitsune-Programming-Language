@@ -40,14 +40,14 @@
 namespace kit
 {
 	
-	class String : Object
+	class String : public Object
 	{
 		public:
 			
 			String();
 			
 			static ObjPtr make(std::string str);
-			ObjPtr script(MsgId message, ...);
+			ObjPtr sendMsg(MsgPtr message);
 			
 			ObjPtr equals(ObjPtr value);
 			ObjPtr greaterThan(ObjPtr value);

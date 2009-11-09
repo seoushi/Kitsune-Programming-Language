@@ -28,7 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
 #include <sstream>
 #include <math.h>
 #include <iostream>
@@ -48,149 +47,143 @@ namespace kit
 	{
 		Float* floatObj = new Float();
 		floatObj->_value = value;
-		return floatObj;
+		return ObjPtr(floatObj);
 	}
 
 
-	ObjPtr Float::script(MsgId message, ...)
+	ObjPtr Float::sendMsg(MsgPtr message)
 	{
-		va_list va;
-		ObjPtr result;
-		
-		va_start(va, message);
-
-		switch(message)
+		switch(message->id)
 		{
 			case 5859493UL: // ==
-				result = equals( va_arg(va, ObjPtr) );
+				return equals( message->args.front() );
 				break;
 			case 177563UL: // >
-				result = greaterThan( va_arg(va, ObjPtr) );
+				return greaterThan( message->args.front() );
 				break;
 			case 5859526UL: // >=
-				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
+				return greaterThanOrEqual( message->args.front() );
 				break;
 			case 177561UL: // <
-				result = lessThan( va_arg(va, ObjPtr) );
+				return lessThan( message->args.front() );
 				break;
 			case 5859460UL: // <=
-				result = greaterThanOrEqual( va_arg(va, ObjPtr) );
+				return greaterThanOrEqual( message->args.front() );
 				break;
 			case 5858873UL: // !=
-				result = notEqual( va_arg(va, ObjPtr) );
+				return notEqual( message->args.front() );
 				break;
 			case 177550UL: // +
-				result = add( va_arg(va, ObjPtr) );
+				return add( message->args.front() );
 				break;
 			case 177544UL: // -
-				result = sub( va_arg(va, ObjPtr) );
+				return sub( message->args.front() );
 				break;
 			case 177546UL: // /
-				result = div( va_arg(va, ObjPtr) );
+				return div( message->args.front() );
 				break;
 			case 177551UL: // *
-				result = mul( va_arg(va, ObjPtr) );
+				return mul( message->args.front() );
 				break;
 			case 177659UL: // ^
-				result = power( va_arg(va, ObjPtr) );
+				return power( message->args.front() );
 				break;
 			case 177536: // %
-				result = mod( va_arg(va, ObjPtr) );
+				return mod( message->args.front() );
 				break;
 			case 2088322081UL: // sqrt
-				result = squareRoot();
+				return squareRoot();
 				break;
 			case 1353689091UL: // to-float
-				result = this;
+				return make(_value);
 				break;
 			case 1756306272UL: // to-int
-				result = toInt();
+				return toInt();
 				break;
 			case 1756282918UL: // to-str
-				result = toStr();
+				return toStr();
 				break;
 			case 2123293021UL: // to-bool
-				result = toBool();
+				return toBool();
 				break;
 			default:
-				std::cerr << "Float does not support method(" << message << ")" << std::endl;
+				std::cerr << "Float does not support method(" << message->id << ")" << std::endl;
 				throw 100;
 		}
 		
-		va_end(va);
-		return result;
+		return ObjPtr();
 	}
 
 
 	ObjPtr Float::equals(ObjPtr value)
 	{
-		return Boolean::make(_value == ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value == ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::greaterThan(ObjPtr value)
 	{
-		return Boolean::make(_value > ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value > ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::greaterThanOrEqual(ObjPtr value)
 	{
-		return Boolean::make(_value >= ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value >= ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::lessThan(ObjPtr value)
 	{
-		return Boolean::make(_value < ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value < ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::lessThanOrEqual(ObjPtr value)
 	{
-		return Boolean::make(_value <= ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value <= ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::notEqual(ObjPtr value)
 	{
-		return Boolean::make(_value != ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Boolean::make(_value != ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 
 
 	ObjPtr Float::add(ObjPtr value)
 	{
-		return Float::make(_value + ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Float::make(_value + ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::sub(ObjPtr value)
 	{
-		return Float::make(_value - ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Float::make(_value - ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::div(ObjPtr value)
 	{
-		return Float::make(_value / ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Float::make(_value / ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::mul(ObjPtr value)
 	{
-		return Float::make(_value * ((Float*)value->script(1353689091UL /* to-float */))->_value);
+		return Float::make(_value * ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value);
 	}
 	
 	
 	ObjPtr Float::power(ObjPtr value)
 	{
-		return Float::make((float)pow(_value, ((Float*)value->script(1353689091UL /* to-float */))->_value));
+		return Float::make((float)pow(_value, ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value));
 	}
 	
 	
 	ObjPtr Float::mod(ObjPtr value)
 	{
-		return Float::make(fmod(_value, ((Float*)value->script(1353689091UL /* to-float */))->_value));
+		return Float::make((float)fmod(_value, ((Float*)value->sendMsg(MsgPtr(new Message(1353689091UL /* to-float */))).get())->_value));
 	}
 	
 	

@@ -44,7 +44,7 @@ namespace kit
 			Integer();
 
 			static ObjPtr make(int integer);
-			ObjPtr script(MsgId message, ...);
+			ObjPtr sendMsg(MsgPtr message);
 
 			ObjPtr equals(ObjPtr value);
 			ObjPtr greaterThan(ObjPtr value);

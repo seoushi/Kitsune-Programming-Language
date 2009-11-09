@@ -28,7 +28,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
 #include <sstream>
 #include <math.h>
 #include <iostream>
@@ -43,45 +42,41 @@ namespace kit
 	{
 	}
 
-
+	
 	ObjPtr Boolean::make(bool boolean)
 	{
 		Boolean* boolObj = new Boolean();
 		boolObj->_value = boolean;
 		
-		return boolObj;
+		return ObjPtr(boolObj);
 	}
 
 
-	ObjPtr Boolean::script(MsgId message, ...)
+	ObjPtr Boolean::sendMsg(MsgPtr message)
 	{
-		va_list va;
-		ObjPtr result;
 		
-		va_start(va, message);
-		
-		switch(message)
+		switch(message->id)
 		{
 			case 5859493UL: // ==
-				result = equal(va_arg(va, ObjPtr) );
+				return equal(message->args.front());
 				break;
 			case 5858873UL: // !=
-				result = notEqual(va_arg(va, ObjPtr) );
+				return notEqual(message->args.front());
 				break;
 			case 1756282918UL: // to-str
-				result = toStr();
+				return toStr();
 				break;
 			case 177539UL: // &
-				result = andOp(va_arg(va, ObjPtr));
+				return andOp(message->args.front());
 				break;
 			case 177625UL: // |
-				result = orOp(va_arg(va, ObjPtr));
+				return orOp(message->args.front());
 				break;
 			case 177540UL: // !
-				result = notOp();
+				return notOp();
 				break;
 			case 2123293021UL: // to-bool
-				result = this;
+				return make(_value);
 				break;
 			default:
 				std::cerr << "Boolean does not support method(" << message << ")" << std::endl;
@@ -89,28 +84,27 @@ namespace kit
 				break;
 		}
 		
-		va_end(va);
-		return result;
+		return ObjPtr();
 	}
 			
 	ObjPtr Boolean::equal(ObjPtr value)
 	{
-		return Boolean::make(_value == ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
+		return Boolean::make(_value == ((Boolean*)(value->sendMsg(MsgPtr( new Message(2123293021UL /* to-bool */))).get()))->_value);
 	}
 	
 	ObjPtr Boolean::notEqual(ObjPtr value)
 	{
-		return Boolean::make(_value != ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
+		return Boolean::make(_value != ((Boolean*)(value->sendMsg(MsgPtr( new Message(2123293021UL /* to-bool */))).get()))->_value);
 	}
 	
 	ObjPtr Boolean::andOp(ObjPtr value)
 	{
-		return Boolean::make(_value && ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
+		return Boolean::make(_value && ((Boolean*)(value->sendMsg(MsgPtr( new Message(2123293021UL /* to-bool */))).get()))->_value);
 	}
 	
 	ObjPtr Boolean::orOp(ObjPtr value)
 	{
-		return Boolean::make(_value || ((Boolean*)value->script(2123293021UL /* to-bool */))->_value);
+		return Boolean::make(_value || ((Boolean*)(value->sendMsg(MsgPtr( new Message(2123293021UL /* to-bool */))).get()))->_value);
 	}
 	
 	ObjPtr Boolean::notOp()
