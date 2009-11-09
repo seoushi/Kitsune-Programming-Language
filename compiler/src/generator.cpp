@@ -431,7 +431,9 @@ void Generator::GenHeader(std::string headerName)
 	cFile << "\tclass TopLevel : public Object" << std::endl;
 	cFile << "\t{" << std::endl;
 	cFile << "\t\tpublic:" << std::endl;
-	cFile << "\t\t\tstatic ObjPtr make(ObjPtr arguments, EntryFuncPtr entry);" << std::endl;	
+	cFile << "\t TopLevel(){};" << std::endl;
+	cFile << "\t virtual ~TopLevel(){};" << std::endl;
+	cFile << "\t\t\tstatic Object* make(ObjPtr arguments, EntryFuncPtr entry);" << std::endl;	
 	cFile << "\t\t\tObjPtr sendMsg(kit::MsgPtr message);" << std::endl;
 	cFile << std::endl;
 	cFile << "\t\tprivate:" << std::endl;
@@ -446,12 +448,12 @@ void Generator::GenHeader(std::string headerName)
 	cFile << "\t}" << std::endl;
 	cFile << std::endl;
 	
-	cFile << "\tObjPtr TopLevel::make(ObjPtr arguments, EntryFuncPtr entry)" << std::endl;
+	cFile << "\tObject* TopLevel::make(ObjPtr arguments, EntryFuncPtr entry)" << std::endl;
 	cFile << "\t{" << std::endl;
 	cFile << "\tTopLevel* top = new TopLevel();" << std::endl;
 	cFile << "\t\ttop->args = arguments;" << std::endl;
 	cFile << "\t\ttop->entryFunc = entry;" << std::endl;
-	cFile << "\treturn ObjPtr(top);" << std::endl;
+	cFile << "\treturn top;" << std::endl;
 	cFile << "\t}" << std::endl;
 	cFile << std::endl;
 	
@@ -475,7 +477,7 @@ void Generator::GenFooter()
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 
-	cFile << "kit::ObjPtr topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
+	cFile << "kit::Object* topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
 	cFile << "topLevel->sendMsg(kit::MsgPtr( new kit::Message(210648428421 /*start*/)));" << std::endl;
 	
 	cFile << "return 0;" << std::endl;
