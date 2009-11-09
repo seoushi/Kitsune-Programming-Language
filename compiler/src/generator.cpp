@@ -102,7 +102,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	GenHeader(cHeaderName);
 	
 	
-	cFile << "kit::Object* kitsune_entry_function(kit::Object* self)" << std::endl;
+	cFile << "kit::ObjPtr kitsune_entry_function(kit::ObjPtr self)" << std::endl;
 	cFile << "{" << std::endl;
 
 	for(unsigned int i = 0; i < exprs.size(); i++)
@@ -118,7 +118,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	// write all loose function
 	for(unsigned int i = 0; i < functions.size(); i++)
 	{
-		cFile << "kit::Object* kit_function_" << (i + 1);
+		cFile << "kit::ObjPtr kit_function_" << (i + 1);
 
 		if(!GenFun(functions[i]))
 		{
@@ -132,14 +132,14 @@ bool Generator::Generate(std::string filename, std::string copts)
 
 	for(unsigned int i = 0; i < functions.size(); i++)
 	{
-		headerFile << "kit::Object* kit_function_" << (i + 1) << "(kit::Object* self";
+		headerFile << "kit::ObjPtr kit_function_" << (i + 1) << "(kit::ObjPtr self";
 
 		// write out args from function expression
 		FuncExpr* func = (FuncExpr*)functions[i].get();
 
 		for(unsigned int j = 0; j < func->args.size(); j++)
 		{
-			headerFile << ", kit::Object* " << func->args[j];
+			headerFile << ", kit::ObjPtr " << func->args[j];
 		}
 
 		headerFile << ");" << std::endl;
@@ -152,7 +152,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 	headerFile.close();
 	
 
-	std::string sysCommand = "g++ " + cFileName + " " + copts + " -lkitsune -lgc -lm";
+	std::string sysCommand = "g++ " + cFileName + " " + copts + " -lkitsune -lm";
 	std::cout << sysCommand << std::endl;
 
 	system(sysCommand.c_str());
@@ -187,7 +187,7 @@ bool Generator::GenExpr(ExprPtr expr)
 
 			functions.push_back(expr);
 
-			cFile << "(kit::Object*) &kit_function_" << functions.size();
+			cFile << "(kit::ObjPtr) &kit_function_" << functions.size();
 			return true;
 
 			break;
@@ -215,7 +215,7 @@ bool Generator::GenExpr(ExprPtr expr)
 
 bool Generator::GenDef(ExprPtr expr)
 {
-	cFile << "kit::Object* ";
+	cFile << "kit::ObjPtr ";
 	return GenExpr(((DefExpr*)expr.get())->expr);
 }
 
@@ -226,11 +226,11 @@ bool Generator::GenFun(ExprPtr expr)
 
 
 	// write args
-	cFile << "(kit::Object* self";
+	cFile << "(kit::ObjPtr self";
 	
 	for(unsigned int i = 0; i < func->args.size(); i++)
 	{
-		cFile << ", kit::Object* " << func->args[i];
+		cFile << ", kit::ObjPtr " << func->args[i];
 	}
 	cFile << " )" << std::endl << "{" << std::endl;
 
@@ -263,19 +263,21 @@ bool Generator::GenFunCall(ExprPtr expr)
 	}
 
 
-	cFile << "->script(" << Identifiers::GetId(funcCall->funcName) << "/* " << funcCall->funcName << " */";
+	cFile << "->sendMsg(kit::MsgPtr((new kit::Message(" << Identifiers::GetId(funcCall->funcName) << "/* " << funcCall->funcName << " */))";
 
 	for(unsigned int i = 0; i < funcCall->args.size(); i++)
 	{
-		cFile << ", ";
+		cFile << "->add(";
 
 		if(!GenExpr(funcCall->args[i]))
 		{
 			return false;
 		}
+		
+		cFile << ")";
 	}
 
-	cFile << ")";
+	cFile << "))\n\t";
 
 	return true;
 }
@@ -291,13 +293,13 @@ bool Generator::GenLiteral(ExprPtr expr)
 			cFile << lit->stringValue;
 			break;
 		case LiteralType::String:
-			cFile << "kit::String::make(\"" << lit->stringValue << "\")";
+			cFile << "kit::ObjPtr(kit::String::make(\"" << lit->stringValue << "\"))";
 			break;
 		case LiteralType::Int:
-			cFile << "kit::Integer::make(" << lit->intValue << ")";
+			cFile << "kit::ObjPtr(kit::Integer::make(" << lit->intValue << "))";
 			break;
 		case LiteralType::Float:
-			cFile << "kit::Float::make(" << lit->floatValue << ")";
+			cFile << "kit::ObjPtr(kit::Float::make(" << lit->floatValue << "))";
 			break;
 		case LiteralType::Quoted:
 			cFile << lit->stringValue;
@@ -341,14 +343,14 @@ bool Generator::GenCond(ExprPtr expr)
 	if((cond->condType == CondType::If) || (cond->condType == CondType::Elif))
 	{
 		cFile << std::endl;
-		cFile << "if(((kit::Boolean*)";
+		cFile << "if(((kit::Boolean*)(";
 	
 		if(!GenExpr(cond->conditional))
 		{
 			return false;
 		}
 	
-		cFile << ")->_value )" << std::endl << "{" << std::endl;
+		cFile << ").get())->_value )" << std::endl << "{" << std::endl;
 	}
 	else if(cond->condType == CondType::Else)
 	{
@@ -413,7 +415,6 @@ void Generator::GenHeader(std::string headerName)
 		cFile << "#include \"" << headerFileName << "\"" << std::endl << std::endl;
 	}
 
-	cFile << "#include <gc/gc.h>" << std::endl;
 	cFile << "#include <kitpl/core.hpp>" << std::endl;
 	cFile << "#include <kitpl/array.hpp>" << std::endl;
 	cFile << "#include <kitpl/boolean.hpp>" << std::endl;
@@ -425,31 +426,31 @@ void Generator::GenHeader(std::string headerName)
 	
 	cFile << "namespace kit" << std::endl;
 	cFile << "{" << std::endl;
-	cFile << "\ttypedef Object* (*EntryFuncPtr)(Object*);" << std::endl;
+	cFile << "\ttypedef ObjPtr (*EntryFuncPtr)(ObjPtr);" << std::endl;
 	cFile << "\tclass TopLevel : public Object" << std::endl;
 	cFile << "\t{" << std::endl;
 	cFile << "\t\tpublic:" << std::endl;
-	cFile << "\t\t\tstatic Object* make(Object* arguments, EntryFuncPtr entry);" << std::endl;	
-	cFile << "\t\t\tObject* script(MsgId message, ...);" << std::endl;
+	cFile << "\t\t\tstatic ObjPtr make(ObjPtr arguments, EntryFuncPtr entry);" << std::endl;	
+	cFile << "\t\t\tObjPtr sendMsg(kit::MsgPtr message);" << std::endl;
 	cFile << std::endl;
 	cFile << "\t\tprivate:" << std::endl;
-	cFile << "\t\t\tObject* args;" << std::endl;
+	cFile << "\t\t\tObjPtr args;" << std::endl;
 	cFile << "\tEntryFuncPtr entryFunc;" << std::endl;
 	cFile << "\t};" << std::endl;
 	cFile << std::endl;
 	
-	cFile << "\tObject* TopLevel::script(MsgId message, ...)" << std::endl;
+	cFile << "\tObjPtr TopLevel::sendMsg(kit::MsgPtr message)" << std::endl;
 	cFile << "\t{" << std::endl;
-	cFile << "\t\tentryFunc(this);" << std::endl;
+	cFile << "\t\tentryFunc(ObjPtr(this));" << std::endl;
 	cFile << "\t}" << std::endl;
 	cFile << std::endl;
 	
-	cFile << "\tObject* TopLevel::make(Object* arguments, EntryFuncPtr entry)" << std::endl;
+	cFile << "\tObjPtr TopLevel::make(ObjPtr arguments, EntryFuncPtr entry)" << std::endl;
 	cFile << "\t{" << std::endl;
 	cFile << "\tTopLevel* top = new TopLevel();" << std::endl;
 	cFile << "\t\ttop->args = arguments;" << std::endl;
 	cFile << "\t\ttop->entryFunc = entry;" << std::endl;
-	cFile << "\treturn top;" << std::endl;
+	cFile << "\treturn ObjPtr(top);" << std::endl;
 	cFile << "\t}" << std::endl;
 	cFile << std::endl;
 	
@@ -464,19 +465,17 @@ void Generator::GenFooter()
 	cFile << "int main(int argc, char** argv)" << std::endl;
 	cFile << "{" << std::endl;
 
-	cFile << "GC_INIT();" << std::endl;
-	cFile << std::endl;
 	
-	cFile << "kit::Object* array = kit::Array::make();" << std::endl;
+	cFile << "kit::ObjPtr array = kit::ObjPtr(new kit::Array())->sendMsg(kit::MsgPtr( new kit::Message(2087696263/*make*/)));" << std::endl;
 	cFile << std::endl;
 	cFile << "for(unsigned i = 0; i < argc; i++)" << std::endl;
 	cFile << "{" << std::endl;
-	cFile << "\tarray->script(6382516965 /*add!*/, kit::String::make(argv[i]));" << std::endl;
+	cFile << "\tarray->sendMsg(kit::MsgPtr((new kit::Message(6382516965 /*add!*/))->add(kit::ObjPtr(kit::String::make(argv[i])))));" << std::endl;
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 
-	cFile << "kit::Object* topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
-	cFile << "topLevel->script(210648428421 /*start*/);" << std::endl;
+	cFile << "kit::ObjPtr topLevel = kit::TopLevel::make(array, &kitsune_entry_function);" << std::endl;
+	cFile << "topLevel->sendMsg(kit::MsgPtr( new kit::Message(210648428421 /*start*/)));" << std::endl;
 	
 	cFile << "return 0;" << std::endl;
 	
