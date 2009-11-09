@@ -37,7 +37,12 @@
 namespace kit
 {
 	// message id
-	typedef unsigned long MsgId;
+	#ifdef __i386__
+		typedef unsigned long MsgId;
+	#else
+		typedef unsigned int MsgId;
+	#endif
+
 
 	class Object;
 	typedef boost::shared_ptr<Object> ObjPtr;

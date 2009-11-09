@@ -113,6 +113,7 @@ bool Generator::Generate(std::string filename, std::string copts)
 		}
 	}
 
+	cFile << "return kit::Integer::make(0);" << std::endl;
 	cFile << "}" << std::endl << std::endl << std::endl;
 
 	// write all loose function
@@ -441,7 +442,7 @@ void Generator::GenHeader(std::string headerName)
 	
 	cFile << "\tObjPtr TopLevel::sendMsg(kit::MsgPtr message)" << std::endl;
 	cFile << "\t{" << std::endl;
-	cFile << "\t\tentryFunc(ObjPtr(this));" << std::endl;
+	cFile << "\t\treturn entryFunc(kit::ObjPtr(this));" << std::endl;
 	cFile << "\t}" << std::endl;
 	cFile << std::endl;
 	
@@ -470,7 +471,7 @@ void Generator::GenFooter()
 	cFile << std::endl;
 	cFile << "for(unsigned i = 0; i < argc; i++)" << std::endl;
 	cFile << "{" << std::endl;
-	cFile << "\tarray->sendMsg(kit::MsgPtr((new kit::Message(6382516965 /*add!*/))->add(kit::ObjPtr(kit::String::make(argv[i])))));" << std::endl;
+	cFile << "\tarray->sendMsg(kit::MsgPtr((new kit::Message(6382516965UL /*add!*/))->add(kit::ObjPtr(kit::String::make(argv[i])))));" << std::endl;
 	cFile << "}" << std::endl;
 	cFile << std::endl;
 

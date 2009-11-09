@@ -3,12 +3,13 @@
 #include <string.h>
 #include <string>
 #include <iostream>
+#include <kitpl/core.hpp>
 
 // this is a slightly modified version of djb2
 // orignal source from http://www.cse.yorku.ca/~oz/hash.html
-unsigned long hash(char* str)
+kit::MsgId hash(char* str)
 {
-	unsigned long hash = 5381;
+	kit::MsgId hash = 5381;
 	int c;
 
 	while(c = *str++)
