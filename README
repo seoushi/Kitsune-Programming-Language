@@ -54,3 +54,21 @@ The language, runtime and compiler are all under the BSD license which reads as 
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+Formal Syntax Definition:
+
+Operand                       "(" Message ")"
+Operand                       "'" identifier
+Operand                       StringLiteral
+Operand                       NumberLiteral
+
+Message                       [Operand] [{identifier [{Operand}]}] "."
+
+Program                       [{(Message | Condition | Definition) [Program]]}]
+
+Condition                     "if" Message "then" Program
+                                   [{"elif" Message "then" Program}]
+                                   ["else" Program]
+                                   "end"
+			
+Definition                    "def" identifier "=" Program "."
