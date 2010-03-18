@@ -1,8 +1,8 @@
 /*
- *  main.cpp
+ *  core.hpp
  *  kitsune runtime
  *
- * Copyright (c) 2009, Seoushi Games
+ * Copyright (c) 2010, Seoushi Games
  * All rights reserved.
  *	
  * Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,31 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "expressions.hpp"
-#include "lexer.hpp"
-#include "parser.hpp"
-#include "generator.hpp"
-#include <string.h>
+#ifndef _KIT_OBJ_HPP_
+#define _KIT_OBJ_HPP_
 
+#include <boost/shared_ptr.hpp>
+#include <map>
 
-
-void generate(char* filename, int argc, char** argv)
+namespace kitpl
 {
-	std::string ccOpts;
-	
-	for(int i = 2; i < argc; i++)
-	{
-		ccOpts += std::string(argv[i]);
-		ccOpts += " ";
-	}
 
-	kitc::Generator* gen = new kitc::Generator();	
-	gen->Generate(filename, ccOpts);
+struct obj;
+typedef boost::shared_ptr<obj> objPtr;
+
+typedef struct obj
+{
+	objPtr (*script)(objPtr);
+	std::map<std::string, objPtr> data;
+	objPtr parent;
+};
+
+objPtr objCreate(objPtr parent);
+	
+objPtr objLookup(std::string name, objPtr curObj);
+	
+objPtr objExec(objPtr object, objPtr parameters);
+
 }
 
-int main(int argc, char** argv)
-{
-	if(argc >= 2)
-	{
-		if((strcmp("help", argv[1]) == 0) || (strcmp("HELP", argv[1]) == 0))
-		{
-			printf("Usage is: kitsunec <file.kit> <C Compile Options> \n");
-		}
-		else
-		{
-			printf("Processing %s \n", argv[1]);
-			generate(argv[1], argc, argv);
-		}
-	}
-	else
-	{
-		printf("invalid usage. The proper format is:  kitsunec <file.kit> <C Compile Options> \n");
-	}
-	
-	return 0;
-}
+#endif

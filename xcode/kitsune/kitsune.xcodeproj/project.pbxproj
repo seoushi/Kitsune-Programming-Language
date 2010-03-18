@@ -1,0 +1,264 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3413B3751151A20900D3FFCC /* object.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3413B3721151A20900D3FFCC /* object.hpp */; };
+		3413B3761151A20900D3FFCC /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3413B3741151A20900D3FFCC /* object.cpp */; };
+		5073E0CB09E734E500EC74B6 /* kitsune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5073E0C409E734A800EC74B6 /* kitsune.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		32BAE0B70371A74B00C91783 /* kitsune_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kitsune_Prefix.pch; sourceTree = "<group>"; };
+		3413B3721151A20900D3FFCC /* object.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = object.hpp; sourceTree = "<group>"; };
+		3413B3741151A20900D3FFCC /* object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = object.cpp; sourceTree = "<group>"; };
+		5073E0C409E734A800EC74B6 /* kitsune.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = kitsune.cpp; sourceTree = "<group>"; };
+		5073E0C609E734A800EC74B6 /* kitsuneProj.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = kitsuneProj.xcconfig; sourceTree = "<group>"; };
+		5073E0C709E734A800EC74B6 /* kitsuneTarget.xcconfig */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xcconfig; path = kitsuneTarget.xcconfig; sourceTree = "<group>"; };
+		D2AAC09D05546B4700DB518D /* libkitsune.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libkitsune.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D2AAC09B05546B4700DB518D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC09D05546B4700DB518D /* libkitsune.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* kitsune */ = {
+			isa = PBXGroup;
+			children = (
+				3413B3771151A20E00D3FFCC /* runtime */,
+				5073E0CA09E734BC00EC74B6 /* Configuration Files */,
+				08FB77ACFE841707C02AAC07 /* Source */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = kitsune;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				32BAE0B70371A74B00C91783 /* kitsune_Prefix.pch */,
+				5073E0C409E734A800EC74B6 /* kitsune.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		3413B3701151A20900D3FFCC /* include */ = {
+			isa = PBXGroup;
+			children = (
+				3413B3711151A20900D3FFCC /* kitpl */,
+			);
+			name = include;
+			path = ../../runtime/include;
+			sourceTree = SOURCE_ROOT;
+		};
+		3413B3711151A20900D3FFCC /* kitpl */ = {
+			isa = PBXGroup;
+			children = (
+				3413B3721151A20900D3FFCC /* object.hpp */,
+			);
+			path = kitpl;
+			sourceTree = "<group>";
+		};
+		3413B3731151A20900D3FFCC /* src */ = {
+			isa = PBXGroup;
+			children = (
+				3413B3741151A20900D3FFCC /* object.cpp */,
+			);
+			name = src;
+			path = ../../runtime/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		3413B3771151A20E00D3FFCC /* runtime */ = {
+			isa = PBXGroup;
+			children = (
+				3413B3701151A20900D3FFCC /* include */,
+				3413B3731151A20900D3FFCC /* src */,
+			);
+			name = runtime;
+			sourceTree = "<group>";
+		};
+		5073E0CA09E734BC00EC74B6 /* Configuration Files */ = {
+			isa = PBXGroup;
+			children = (
+				5073E0C609E734A800EC74B6 /* kitsuneProj.xcconfig */,
+				5073E0C709E734A800EC74B6 /* kitsuneTarget.xcconfig */,
+			);
+			name = "Configuration Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC09905546B4700DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3413B3751151A20900D3FFCC /* object.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC09C05546B4700DB518D /* kitsune */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "kitsune" */;
+			buildPhases = (
+				D2AAC09905546B4700DB518D /* Headers */,
+				D2AAC09B05546B4700DB518D /* Frameworks */,
+				D2AAC09A05546B4700DB518D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = kitsune;
+			productName = libkitsune;
+			productReference = D2AAC09D05546B4700DB518D /* libkitsune.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB916408733D950010E9CD /* Build configuration list for PBXProject "kitsune" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* kitsune */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC09C05546B4700DB518D /* kitsune */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC09A05546B4700DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5073E0CB09E734E500EC74B6 /* kitsune.cpp in Sources */,
+				3413B3761151A20900D3FFCC /* object.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB916108733D950010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5073E0C709E734A800EC74B6 /* kitsuneTarget.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = kitsune_Prefix.pch;
+			};
+			name = Debug;
+		};
+		1DEB916208733D950010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5073E0C709E734A800EC74B6 /* kitsuneTarget.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = kitsune_Prefix.pch;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Release;
+		};
+		1DEB916508733D950010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5073E0C609E734A800EC74B6 /* kitsuneProj.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					../../common/shared_ptr,
+					../../runtime/include,
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		1DEB916608733D950010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5073E0C609E734A800EC74B6 /* kitsuneProj.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB916008733D950010E9CD /* Build configuration list for PBXNativeTarget "kitsune" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB916108733D950010E9CD /* Debug */,
+				1DEB916208733D950010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB916408733D950010E9CD /* Build configuration list for PBXProject "kitsune" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB916508733D950010E9CD /* Debug */,
+				1DEB916608733D950010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

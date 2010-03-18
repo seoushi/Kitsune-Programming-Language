@@ -1,0 +1,6 @@
+//
+// Prefix header for all source files of the 'kitsune' target in the 'kitsune' project.
+//
+
+
+#include <iostream>

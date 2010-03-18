@@ -1,8 +1,8 @@
 /*
- *  boolean.hpp
+ *  core.cpp
  *  kitsune runtime
  *
- * Copyright (c) 2009, Seoushi Games
+ * Copyright (c) 2010, Seoushi Games
  * All rights reserved.
  *	
  * Redistribution and use in source and binary forms, with or without
@@ -27,35 +27,68 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-       
-       
-#ifndef _KIT_BOOLEAN_H_
-#define _KIT_BOOLEAN_H_
+ 
+#include <kitpl/object.hpp>
 
-#include <kitpl/core.hpp>
 
-namespace kit
+namespace kitpl
 {
 
-	class Boolean : public Object
-	{
-		public:
 
-			Boolean();
-
-			static ObjPtr make(bool boolean);
-			ObjPtr sendMsg(MsgPtr message);
-
-			ObjPtr equal(ObjPtr value);
-			ObjPtr notEqual(ObjPtr value);
-			ObjPtr andOp(ObjPtr value);
-			ObjPtr orOp(ObjPtr value);
-			ObjPtr notOp();
-			ObjPtr toStr();
-
-			bool _value;
-	};
+objPtr objCreate(objPtr parent)
+{
+	objPtr object = objPtr(new obj());
+	object->parent = parent;
+	object->script = NULL;
+  
+	return object;
 }
 
-#endif
- 																																			
+
+objPtr objLookup(std::string name, objPtr curObj)
+{
+	objPtr object;
+	
+	// look at parameters first
+	if(object->data.find("_KITSUNE_PL_PARAMETERS_") != object->data.end())
+	{
+		object = object->data["_KITSUNE_PL_PARAMETERS_"];
+		
+		if (object->data.find(name) != object->data.end())
+		{
+			return object->data[name];
+		}
+	}
+	
+	//parameters did not have the varible
+	object = curObj;
+
+	//search the current object and it's parents
+	while(object)
+	{
+		if(object->data.find(name) != object->data.end())
+		{
+			return object->data[name];
+		}
+		
+		object = object->parent;
+	}
+
+	//TODO: create exception class and throw a method not found
+	throw 100;
+}
+
+
+objPtr objExec(objPtr object, objPtr parameters)
+{
+	if(object->script)
+	{
+		return object->script(parameters);
+	}
+	
+	//TODO: create exception class and throw object not executable
+	throw 200;
+}
+
+
+}
