@@ -1,0 +1,107 @@
+Object
+script
+data
+parent
+
+a function is an object
+setting a variable adds to the data portion of the object
+
+def add(x, y)
+{
+  x + y .
+}
+
+this would make an object that looks like
+
+object add
+script -> function: name = add, parameter1 = x, parameter2 = y
+data -> nil
+parent -> root
+
+
+The last result in the function is returned. If you want to for a return you can use the return keyword.
+
+
+def calculate(x,y,z)
+{
+  w = x + y .
+  q = z + x .
+  w * q .
+}
+
+this would make an object that looks like
+
+object calculate
+script -> function: name = add, parameter1 = x, parameter2 = y, parameter3 = z
+data -> w, q
+parent -> root
+
+
+functions can be defined within functions
+
+def calculate(x,y,z,w)
+{
+  def add(x, y)
+  {
+    x + y .
+  }
+
+  (add: (add: x, y) (add: z, w))
+}
+
+note that functions are denoted with a ':' the only exceptions to that rule are +,-,/,*,^,@ which are always considered functions
+
+
+conditions are called just like functions, they take a boolean statement and a block of code
+
+an if/else statement
+if: (1 > 2) { print: "something" . } { print: "something else" . }
+
+
+to make things easier to read you can used named parameters
+
+[if: (1 > 2) then: { print: "something" . } else: { print: "something else" . }]
+
+a [] block means that it is evaluating a function with named parameters.
+
+
+
+objects
+
+bob = Person clone: { name = "bob" . }
+
+Person is the object type and clone creates a new object with an optional block of stuff to process inside that object space.
+
+the result would look something like this
+
+object bob
+script -> nil
+data -> name
+parent -> Person
+
+
+
+parameters and scopes
+
+parameters are just another object with the data of the parameters
+
+scope lookup happens like this:
+first the variable is looked for in the parameters, if that fails then it looks for it in the object, if that fails then it works its way back up the parent objects.
+
+
+blocks
+
+blocks are just an object with a script, it is passes the parent from where ever it is called.
+functions are just blocks that have been named inside an object.
+
+
+def add() { x + y . }
+
+def doAdd()
+{
+  add: [x: 1 y: 2] .
+}
+ 
+def plusOne(x) { x + 1. }
+
+def map(array, function) { array each: plusOne }

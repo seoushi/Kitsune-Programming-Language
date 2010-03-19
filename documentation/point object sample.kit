@@ -1,0 +1,54 @@
+# a simple point object
+
+Point = Object clone: { 
+          x = 0. 
+          y = 0.
+
+          def: add, [a = nil, b = nil],
+          { 
+            result = clone: .
+            result do: { x = (a x) + (b x).
+                         y = (a y) + (b y). } .
+            result
+          }.
+
+          def: display, [],
+          {
+            formated_print: "Point at ({0}, {1})", x, y .
+          }.
+
+          def: isAtOrigin, []
+          {
+            if: [test = {(x equals: 0) and (y equals: 0) .}, then = { true . }, else = { false . }] .
+          }
+          
+          def: linearIncrement, []
+          {
+            incrementAmount = 1 .
+
+            loop: {true.}
+            {
+              x = x + incrementAmount.
+              y = y + incrementAmount.
+              yield: .
+              incrementAmount = incrementAmount + 1 .
+            }
+
+          }
+
+        } .
+
+p1 = Point clone: { x = 1. y = 2.} .
+p2 = Point clone: { x = 3. y = 4.} .
+
+p3 = p1 add: p2 .
+p3 display: .
+# this would print out "Point at (4, 6)"
+
+p4 = Point clone: {} .
+p4 linearIncrement: .
+p4 display: .
+# this would print out "Point at (1, 1)"
+p4 linearIncrement: .
+p4 display: .
+# this would print out "Point at (3, 3)"

@@ -47,34 +47,34 @@ objPtr objCreate(objPtr parent)
 
 objPtr objLookup(std::string name, objPtr curObj)
 {
-	objPtr object;
-	
-	// look at parameters first
-	if(object->data.find("_KITSUNE_PL_PARAMETERS_") != object->data.end())
-	{
-		object = object->data["_KITSUNE_PL_PARAMETERS_"];
-		
-		if (object->data.find(name) != object->data.end())
-		{
-			return object->data[name];
-		}
-	}
-	
-	//parameters did not have the varible
-	object = curObj;
+	objPtr object = curObj;
+	objPtr params;
 
 	//search the current object and it's parents
 	while(object)
 	{
+		// look at parameters first
+		if(object->data.find("_KITSUNE_PL_PARAMETERS_") != object->data.end())
+		{
+			params = object->data["_KITSUNE_PL_PARAMETERS_"];
+			
+			if (params->data.find(name) != params->data.end())
+			{
+				return params->data[name];
+			}
+		}
+		
+		//look at the object
 		if(object->data.find(name) != object->data.end())
 		{
 			return object->data[name];
 		}
 		
+		// it wasn't found so time to search it's parent
 		object = object->parent;
 	}
 
-	//TODO: create exception class and throw a method not found
+	//TODO: create exception class and throw a value not found
 	throw 100;
 }
 
@@ -91,4 +91,11 @@ objPtr objExec(objPtr object, objPtr parameters)
 }
 
 
+void objAssign(objPtr object, std::string field, objPtr data)
+{
+	object->data[field] = data;
 }
+
+
+}
+

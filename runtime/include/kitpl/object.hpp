@@ -52,6 +52,8 @@ objPtr objCreate(objPtr parent);
 objPtr objLookup(std::string name, objPtr curObj);
 	
 objPtr objExec(objPtr object, objPtr parameters);
+	
+void objAssign(objPtr object, std::string field, objPtr data);
 
 }
 
