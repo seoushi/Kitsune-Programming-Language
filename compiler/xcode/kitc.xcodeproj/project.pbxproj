@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		27843E031225B425009C7B0F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 27843E021225B425009C7B0F /* main.c */; };
-		8DD76FB00486AB0100D96B5E /* kitc.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6A0FF2C0290799A04C91782 /* kitc.1 */; };
+		27843E031225B425009C7B0F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27843E021225B425009C7B0F /* main.cpp */; };
+		27843E091225C18A009C7B0F /* SourceFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27843E081225C18A009C7B0F /* SourceFile.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,16 +18,16 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				8DD76FB00486AB0100D96B5E /* kitc.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		27843E021225B425009C7B0F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main.c; path = ../src/main.c; sourceTree = SOURCE_ROOT; };
+		27843E021225B425009C7B0F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/main.cpp; sourceTree = SOURCE_ROOT; };
+		27843E081225C18A009C7B0F /* SourceFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourceFile.cpp; path = ../src/SourceFile.cpp; sourceTree = SOURCE_ROOT; };
+		27843E0A1225C282009C7B0F /* SourceFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SourceFile.hpp; path = ../include/SourceFile.hpp; sourceTree = SOURCE_ROOT; };
 		8DD76FB20486AB0100D96B5E /* kitc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = kitc; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6A0FF2C0290799A04C91782 /* kitc.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = kitc.1; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,8 +44,8 @@
 		08FB7794FE84155DC02AAC07 /* kitc */ = {
 			isa = PBXGroup;
 			children = (
+				27843E0B1225C287009C7B0F /* include */,
 				08FB7795FE84155DC02AAC07 /* Source */,
-				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = kitc;
@@ -54,7 +54,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				27843E021225B425009C7B0F /* main.c */,
+				27843E021225B425009C7B0F /* main.cpp */,
+				27843E081225C18A009C7B0F /* SourceFile.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -67,12 +68,12 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		C6A0FF2B0290797F04C91782 /* Documentation */ = {
+		27843E0B1225C287009C7B0F /* include */ = {
 			isa = PBXGroup;
 			children = (
-				C6A0FF2C0290799A04C91782 /* kitc.1 */,
+				27843E0A1225C282009C7B0F /* SourceFile.hpp */,
 			);
-			name = Documentation;
+			name = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -118,7 +119,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27843E031225B425009C7B0F /* main.c in Sources */,
+				27843E031225B425009C7B0F /* main.cpp in Sources */,
+				27843E091225C18A009C7B0F /* SourceFile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,6 +160,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../include;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
@@ -171,6 +174,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../include;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 			};

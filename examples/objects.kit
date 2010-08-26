@@ -1,0 +1,23 @@
+#declaring an object
+
+Person = Object create 
+{
+	name = "unknown".
+	
+	say-hello = { "Hello " + name print. }.
+}.
+
+# Object is the base object, create is a message that takes a function and creates a new object and 
+# applies the function inside it's scope. Person stores the result of the new Object.
+# Person has a field called name and a method called say-hello
+
+# accessing fields is just like passing a message with no arguments
+Person name.
+
+# if you want to make a new instance of an object, for example bob you just create a new Object.
+bob = Person create {}.
+
+# fields are read only, the following doesn't work
+# (bob name) = "bob"
+# instead you would want to either declare it in the create function or by using the apply method like this
+bob apply {name = "bob"}.
