@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		27645013122C5B18002CD3EE /* Lexer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27645012122C5B18002CD3EE /* Lexer.cpp */; };
+		27645016122C5BA3002CD3EE /* Token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27645015122C5BA3002CD3EE /* Token.cpp */; };
 		27843E031225B425009C7B0F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27843E021225B425009C7B0F /* main.cpp */; };
 		27843E091225C18A009C7B0F /* SourceFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27843E081225C18A009C7B0F /* SourceFile.cpp */; };
 /* End PBXBuildFile section */
@@ -24,6 +26,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		27645011122C5B0E002CD3EE /* Lexer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Lexer.hpp; path = ../include/Lexer.hpp; sourceTree = SOURCE_ROOT; };
+		27645012122C5B18002CD3EE /* Lexer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Lexer.cpp; path = ../src/Lexer.cpp; sourceTree = SOURCE_ROOT; };
+		27645014122C5B9A002CD3EE /* Token.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Token.hpp; path = ../include/Token.hpp; sourceTree = SOURCE_ROOT; };
+		27645015122C5BA3002CD3EE /* Token.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Token.cpp; path = ../src/Token.cpp; sourceTree = SOURCE_ROOT; };
 		27843E021225B425009C7B0F /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../src/main.cpp; sourceTree = SOURCE_ROOT; };
 		27843E081225C18A009C7B0F /* SourceFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourceFile.cpp; path = ../src/SourceFile.cpp; sourceTree = SOURCE_ROOT; };
 		27843E0A1225C282009C7B0F /* SourceFile.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SourceFile.hpp; path = ../include/SourceFile.hpp; sourceTree = SOURCE_ROOT; };
@@ -54,6 +60,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				27645015122C5BA3002CD3EE /* Token.cpp */,
+				27645012122C5B18002CD3EE /* Lexer.cpp */,
 				27843E021225B425009C7B0F /* main.cpp */,
 				27843E081225C18A009C7B0F /* SourceFile.cpp */,
 			);
@@ -71,6 +79,8 @@
 		27843E0B1225C287009C7B0F /* include */ = {
 			isa = PBXGroup;
 			children = (
+				27645014122C5B9A002CD3EE /* Token.hpp */,
+				27645011122C5B0E002CD3EE /* Lexer.hpp */,
 				27843E0A1225C282009C7B0F /* SourceFile.hpp */,
 			);
 			name = include;
@@ -121,6 +131,8 @@
 			files = (
 				27843E031225B425009C7B0F /* main.cpp in Sources */,
 				27843E091225C18A009C7B0F /* SourceFile.cpp in Sources */,
+				27645013122C5B18002CD3EE /* Lexer.cpp in Sources */,
+				27645016122C5BA3002CD3EE /* Token.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
